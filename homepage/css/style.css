@@ -1,13 +1,14 @@
 :root {
-  --color-primary: #7ba05b;
-  --color-primary-dark: #5c8043;
-  --color-accent: #f0a458;
-  --color-accent-soft: #fbe4c8;
+  --color-primary: #ef9d2e;
+  --color-primary-dark: #c97a17;
+  --color-accent: #6b8f57;
+  --color-accent-soft: #fce6bd;
+  --color-leaf-soft: #e3ecdb;
   --color-bg: #fffaf3;
-  --color-bg-alt: #fdf1e2;
+  --color-bg-alt: #fdf1de;
   --color-text: #4a3f35;
   --color-text-light: #7a6f63;
-  --color-border: #ecdfcb;
+  --color-border: #f0ddb8;
   --max-width: 1080px;
   --font-heading: 'M PLUS Rounded 1c', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
   --font-base: 'Noto Sans JP', 'M PLUS Rounded 1c', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
@@ -70,15 +71,22 @@ ul, ol {
 }
 
 .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-family: var(--font-heading);
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 800;
   color: var(--color-primary-dark);
   text-decoration: none;
 }
 
-.logo span {
-  color: var(--color-accent);
+.logo-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(201, 122, 23, 0.25);
 }
 
 .site-nav ul {
@@ -153,7 +161,7 @@ ul, ol {
 .hero::after {
   width: 320px;
   height: 320px;
-  background: #e4efd9;
+  background: var(--color-leaf-soft);
   bottom: -140px;
   right: -100px;
 }
@@ -206,11 +214,11 @@ ul, ol {
 .btn-primary {
   background: var(--color-primary);
   color: #fff;
-  box-shadow: 0 8px 20px rgba(123, 160, 91, 0.35);
+  box-shadow: 0 8px 20px rgba(239, 157, 46, 0.35);
 }
 
 .btn-primary:hover {
-  box-shadow: 0 10px 24px rgba(123, 160, 91, 0.45);
+  box-shadow: 0 10px 24px rgba(239, 157, 46, 0.45);
 }
 
 .btn-outline {
