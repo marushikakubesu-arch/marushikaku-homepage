@@ -1,0 +1,21 @@
+# 環境変数・APIキー
+.env
+.env.*
+!.env.example
+
+# セッションファイル・クッキー
+*.session
+cookies.txt
+
+# ログ
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# エディタ
+.vscode/
+.idea/
