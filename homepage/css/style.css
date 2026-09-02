@@ -625,6 +625,12 @@ ul, ol {
   margin-top: 1em;
 }
 
+.blog-post-author {
+  color: var(--color-text-light);
+  font-size: 0.85rem;
+  text-align: right;
+}
+
 /* FAQ */
 .faq-list {
   margin-top: 2em;
