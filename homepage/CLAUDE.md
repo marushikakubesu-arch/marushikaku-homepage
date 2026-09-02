@@ -19,6 +19,8 @@
 - Instagram: https://www.instagram.com/marushikakube_su/
 - GitHubリポジトリ（Public）: https://github.com/marushikakubesu-arch/marushikaku-homepage
 - 公開URL（GitHub Pages）: https://marushikakubesu-arch.github.io/marushikaku-homepage/
+- Googleビジネスプロフィール: 登録済み（ホームページ・SNSリンク設定済み、Googleマップにも反映済み）
+- Google Search Console: 登録・所有権確認済み（HTMLファイル方式、`homepage/googlec0e21ed30566cb09.html`）
 
 ## ファイル構成
 ```
@@ -50,8 +52,12 @@ homepage/
 ## TODO
 - [ ] 利用者の声・利用者ブログ（post-1〜3）は当面このまま正式コンテンツとして公開中。新しい声・記事が集まり次第、随時追加・差し替え
 - [ ] BASEで商品の入れ替えがあった際は、shopセクションのiframe（items/xxxxx/widget）を更新
-- [ ] （任意）Googleマップの埋め込みをしたい場合はGoogle Maps Embed APIキーの発行が必要（現在はリンクボタンのみ）
 - [ ] （任意）独自ドメインの取得・接続
+
+## 完了した公開・SEO対応（2026-09-02）
+- GitHub Pagesで公開、Google Search Console登録・インデックス登録リクエスト済み
+- Googleビジネスプロフィール登録済み（Googleマップに反映済みのため、サイト内への地図埋め込みは不要と判断）
+- Instagram・Googleビジネスプロフィールにホームページリンクを設定済み
 
 ## 最終更新日
 2026-09-02
