@@ -934,9 +934,7 @@ ul, ol {
   }
 
   .page-plant {
-    width: 70px;
-    opacity: 0.75;
-    background-size: 100% 450px;
+    display: none;
   }
 
   .hero-plant {
