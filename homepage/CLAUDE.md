@@ -35,9 +35,8 @@ homepage/
 │   ├── logo.png
 │   └── shop-*.jpg    # 事業所外観・店内・作業風景の実写真
 ├── blog/             # 利用者ブログの記事ページ（1記事1HTML）
-│   ├── post-1.html〜post-3.html（サンプル記事）
-│   └── post-4.html（実際の投稿）
-└── archive/           # 使わなくなった素材の退避先
+│   └── post-4.html（実際の投稿。水やりについて）
+└── archive/           # 使わなくなった素材の退避先（post-1〜3.htmlはサンプル記事のため退避済み）
 ```
 リポジトリ直下の `.github/workflows/deploy.yml` がGitHub Pagesへの自動公開を担当（`homepage/`フォルダ配下の変更をトリガーに実行）。
 
@@ -51,7 +50,7 @@ homepage/
 - リポジトリはGitHub Pages公開のためPublicにしている（顧客の個人情報・APIキー等は含めない）
 
 ## TODO
-- [ ] 利用者の声・利用者ブログ（post-1〜3）は当面このまま正式コンテンツとして公開中。新しい声・記事が集まり次第、随時追加・差し替え
+- [ ] 利用者ブログは現在post-4（水やりについて）のみ公開中。サンプル記事（post-1〜3）はarchiveへ退避済み。新しい記事が集まり次第、随時追加
 - [ ] BASEで商品の入れ替えがあった際は、shopセクションのiframe（items/xxxxx/widget）を更新
 - [ ] （任意）独自ドメインの取得・接続
 
