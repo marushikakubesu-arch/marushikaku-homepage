@@ -562,6 +562,15 @@ ul, ol {
   background: var(--color-primary-dark);
 }
 
+.schedule-prep {
+  border-left-color: var(--color-leaf-soft);
+}
+
+.schedule-prep .schedule-tag {
+  color: var(--color-text);
+  background: var(--color-leaf-soft);
+}
+
 /* Plant sales links */
 .plant-links {
   display: flex;
