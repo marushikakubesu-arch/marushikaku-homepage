@@ -358,7 +358,35 @@
         </div>
         <div class="form-embed">
           <h3>オンラインお問い合わせフォーム</h3>
-          <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeBG54obhb0thiHdCUJEhIncl2zZsxCqTXrcqtxWVrDbLaOmQ/viewform?embedded=true" width="100%" height="1072" frameborder="0" marginheight="0" marginwidth="0">読み込んでいます…</iframe>
+          <form id="contactForm" class="contact-form" action="https://docs.google.com/forms/d/e/1FAIpQLSeBG54obhb0thiHdCUJEhIncl2zZsxCqTXrcqtxWVrDbLaOmQ/formResponse" method="POST" target="hidden_iframe">
+            <div class="form-field">
+              <label for="f-name">お名前<span class="form-required">必須</span></label>
+              <input type="text" id="f-name" name="entry.112423487" required>
+            </div>
+            <div class="form-field">
+              <label for="f-email">メールアドレス<span class="form-required">必須</span></label>
+              <input type="email" id="f-email" name="entry.911916954" required>
+            </div>
+            <div class="form-field">
+              <label for="f-tel">電話番号<span class="form-required">必須</span></label>
+              <input type="tel" id="f-tel" name="entry.1613386452" required>
+            </div>
+            <div class="form-field">
+              <label>ご希望の種類</label>
+              <div class="form-radio-group">
+                <label class="form-radio"><input type="radio" name="entry.1329975269" value="体験"><span>体験</span></label>
+                <label class="form-radio"><input type="radio" name="entry.1329975269" value="見学"><span>見学</span></label>
+                <label class="form-radio"><input type="radio" name="entry.1329975269" value="相談"><span>相談</span></label>
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="f-message">お問い合わせ内容</label>
+              <textarea id="f-message" name="entry.270639122" rows="5"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary form-submit">送信する</button>
+          </form>
+          <p id="formThanks" class="form-thanks" hidden>送信しました。お問い合わせいただきありがとうございます。担当者よりご連絡いたします。</p>
+          <iframe name="hidden_iframe" id="hidden_iframe" class="form-hidden-iframe" aria-hidden="true"></iframe>
         </div>
       </div>
     </div>

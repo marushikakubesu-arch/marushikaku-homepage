@@ -18,4 +18,21 @@ document.addEventListener('DOMContentLoaded', function () {
   if (yearEl) {
     yearEl.textContent = new Date().getFullYear();
   }
+
+  var contactForm = document.getElementById('contactForm');
+  var hiddenIframe = document.getElementById('hidden_iframe');
+  var formThanks = document.getElementById('formThanks');
+  if (contactForm && hiddenIframe && formThanks) {
+    var submitted = false;
+    contactForm.addEventListener('submit', function () {
+      submitted = true;
+    });
+    hiddenIframe.addEventListener('load', function () {
+      if (submitted) {
+        contactForm.hidden = true;
+        formThanks.hidden = false;
+        submitted = false;
+      }
+    });
+  }
 });
