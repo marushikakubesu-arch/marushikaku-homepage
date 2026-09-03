@@ -56,12 +56,18 @@ homepage/
 ## TODO
 - [ ] 利用者ブログは現在post-4（水やりについて）のみ公開中。サンプル記事（post-1〜3）はarchiveへ退避済み。新しい記事が集まり次第、随時追加
 - [ ] BASEで商品の入れ替えがあった際は、shopセクションのiframe（items/xxxxx/widget）を更新
-- [ ] 独自ドメイン(marushikakubase.com)は取得・メール認証済み。お名前.com側のDNS設定とGitHub Pages側のカスタムドメイン設定・HTTPS化が完了次第、Google Search Consoleの所有権確認をmarushikakubase.comでも再登録する
+- [ ] Google Search Consoleの所有権確認をmarushikakubase.comでも新規に行い、サイトマップ送信・インデックス登録リクエストを行う（旧github.io URLでの登録は残したままでよい）
+- [ ] Instagram・Googleビジネスプロフィールのリンクを、旧github.io URLからmarushikakubase.comに更新する
 
 ## 完了した公開・SEO対応（2026-09-02）
 - GitHub Pagesで公開、Google Search Console登録・インデックス登録リクエスト済み
 - Googleビジネスプロフィール登録済み（Googleマップに反映済みのため、サイト内への地図埋め込みは不要と判断）
 - Instagram・Googleビジネスプロフィールにホームページリンクを設定済み
+
+## 独自ドメイン接続（2026-09-03〜04）
+- marushikakubase.comを取得し、GitHub Pagesのカスタムドメインとして接続完了（HTTPS化・DNS checkも成功）
+- つまずいたポイント：お名前.comは「ドメインDNS設定」（Aレコード等の登録）と「ネームサーバー設定」（お名前.comのネームサーバーを実際に使うかの選択）が別画面になっており、後者を選択していなかったためDNSがいつまでも反映されなかった。「ネームサーバー設定」で「お名前.comのネームサーバーを使う」を選択したことで解決
+- 今後、同じ現象（DNSレコードを設定したのに何時間経っても反映されない）が起きた場合は、まず「ネームサーバー設定」が正しく選択されているか確認する
 
 ## 最終更新日
 2026-09-03
