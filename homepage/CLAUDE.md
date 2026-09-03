@@ -18,7 +18,8 @@
 - オンラインショップ（BASE）: https://marushikaku.base.ec/
 - Instagram: https://www.instagram.com/marushikakube_su/
 - GitHubリポジトリ（Public）: https://github.com/marushikakubesu-arch/marushikaku-homepage
-- 公開URL（GitHub Pages）: https://marushikakubesu-arch.github.io/marushikaku-homepage/
+- 独自ドメイン: marushikakubase.com（2026-09-03取得、お名前.comで管理。`homepage/CNAME`で設定）
+- 公開URL（GitHub Pages・旧URL）: https://marushikakubesu-arch.github.io/marushikaku-homepage/（独自ドメイン設定後はこちらから自動転送）
 - Googleビジネスプロフィール: 登録済み（ホームページ・SNSリンク設定済み、Googleマップにも反映済み）
 - Google Search Console: 登録・所有権確認済み（HTMLファイル方式、`homepage/googlec0e21ed30566cb09.html`）
 
@@ -26,6 +27,7 @@
 ```
 homepage/
 ├── CLAUDE.md
+├── CNAME              # 独自ドメイン(marushikakubase.com)設定用。GitHub Pagesが参照
 ├── index.html
 ├── css/
 │   └── style.css
@@ -54,7 +56,7 @@ homepage/
 ## TODO
 - [ ] 利用者ブログは現在post-4（水やりについて）のみ公開中。サンプル記事（post-1〜3）はarchiveへ退避済み。新しい記事が集まり次第、随時追加
 - [ ] BASEで商品の入れ替えがあった際は、shopセクションのiframe（items/xxxxx/widget）を更新
-- [ ] （任意）独自ドメインの取得・接続
+- [ ] 独自ドメイン(marushikakubase.com)は取得・メール認証済み。お名前.com側のDNS設定とGitHub Pages側のカスタムドメイン設定・HTTPS化が完了次第、Google Search Consoleの所有権確認をmarushikakubase.comでも再登録する
 
 ## 完了した公開・SEO対応（2026-09-02）
 - GitHub Pagesで公開、Google Search Console登録・インデックス登録リクエスト済み
