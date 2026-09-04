@@ -467,8 +467,13 @@ ul, ol {
   height: 56px;
   border-radius: 50%;
   background: var(--color-accent-soft);
-  font-size: 1.6rem;
+  color: var(--color-primary-dark);
   margin-bottom: 16px;
+}
+
+.card-icon svg {
+  width: 28px;
+  height: 28px;
 }
 
 .card h3 {
@@ -508,7 +513,13 @@ ul, ol {
 }
 
 .recruit-banner-icon {
-  font-size: 1.6rem;
+  display: inline-flex;
+  color: #fff;
+}
+
+.recruit-banner-icon svg {
+  width: 28px;
+  height: 28px;
 }
 
 .recruit-banner p {
