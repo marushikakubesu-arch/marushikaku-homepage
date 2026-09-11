@@ -28,6 +28,8 @@
 homepage/
 ├── CLAUDE.md
 ├── CNAME              # 独自ドメイン(marushikakubase.com)設定用。GitHub Pagesが参照
+├── robots.txt         # 検索エンジン向けクロール許可設定、sitemap.xmlの場所を明記
+├── sitemap.xml        # index.html・ブログ記事一覧のURLを記載
 ├── index.html
 ├── css/
 │   └── style.css
@@ -57,12 +59,14 @@ homepage/
   - フォーム項目とentry ID：お名前=entry.112423487（必須）／メールアドレス=entry.911916954（必須）／電話番号=entry.1613386452（必須）／ご希望の種類（体験・見学・相談）=entry.1329975269（任意）／お問い合わせ内容=entry.270639122（任意）
   - 元のGoogleフォーム側で質問の追加・削除・変更を行った場合、上記entry IDと`index.html`内のフォーム項目がずれるため、`index.html`のフォームも合わせて修正が必要
 - リポジトリはGitHub Pages公開のためPublicにしている（顧客の個人情報・APIキー等は含めない）
+- SEO対策（2026-09-11、「就労継続支援B型事業所 鈴鹿市」での検索順位向上を目的に実施）：`index.html`・ブログ記事(`blog/post-*.html`)にcanonical・OGP（og:title等）・Twitterカードを追加。`index.html`にはLocalBusinessのJSON-LD構造化データ（施設名・住所・電話番号・sameAs）も追加。あわせて`robots.txt`・`sitemap.xml`を新規作成。新しいページ（ブログ記事等）を追加する際は、同様にcanonical・OGP・meta descriptionを設定し、`sitemap.xml`にもURLを1行追加すること
 
 ## TODO
 - [ ] 利用者ブログは現在post-4（水やりについて）・post-5（写真撮影）・post-6（梱包について）・post-7（販売と写真撮影）を公開中。サンプル記事（post-1〜3）はarchiveへ退避済み。新しい記事が集まり次第、随時追加
 - [ ] BASEで商品の入れ替えがあった際は、shopセクションのiframe（items/xxxxx/widget）を更新
-- [ ] Google Search Consoleの所有権確認をmarushikakubase.comでも新規に行い、サイトマップ送信・インデックス登録リクエストを行う（旧github.io URLでの登録は残したままでよい）
+- [ ] Google Search Consoleの所有権確認をmarushikakubase.comでも新規に行い、サイトマップ（sitemap.xml）送信・インデックス登録リクエストを行う（旧github.io URLでの登録は残したままでよい）
 - [ ] Instagram・Googleビジネスプロフィールのリンクを、旧github.io URLからmarushikakubase.comに更新する
+- [ ] Googleビジネスプロフィールのカテゴリ・営業時間・住所がホームページと一致しているか確認し、口コミ・写真を増やす（「就労継続支援B型事業所 鈴鹿市」のローカル検索対策として重要）
 
 ## 完了した公開・SEO対応（2026-09-02）
 - GitHub Pagesで公開、Google Search Console登録・インデックス登録リクエスト済み
@@ -75,4 +79,4 @@ homepage/
 - 今後、同じ現象（DNSレコードを設定したのに何時間経っても反映されない）が起きた場合は、まず「ネームサーバー設定」が正しく選択されているか確認する
 
 ## 最終更新日
-2026-09-10
+2026-09-11
