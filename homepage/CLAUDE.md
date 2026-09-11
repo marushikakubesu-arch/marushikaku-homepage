@@ -21,7 +21,7 @@
 - 独自ドメイン: marushikakubase.com（2026-09-03取得、お名前.comで管理。`homepage/CNAME`で設定）
 - 公開URL（GitHub Pages・旧URL）: https://marushikakubesu-arch.github.io/marushikaku-homepage/（独自ドメイン設定後はこちらから自動転送）
 - Googleビジネスプロフィール: 登録済み（ホームページ・SNSリンク設定済み、Googleマップにも反映済み）
-- Google Search Console: 登録・所有権確認済み（HTMLファイル方式、`homepage/googlec0e21ed30566cb09.html`）
+- Google Search Console: 旧URL（github.io）・独自ドメイン（marushikakubase.com）ともに登録・所有権確認済み。marushikakubase.com側は2026-09-11に`sitemap.xml`を送信済み（ステータス「成功」）
 
 ## ファイル構成
 ```
@@ -64,8 +64,7 @@ homepage/
 ## TODO
 - [ ] 利用者ブログは現在post-4（水やりについて）・post-5（写真撮影）・post-6（梱包について）・post-7（販売と写真撮影）を公開中。サンプル記事（post-1〜3）はarchiveへ退避済み。新しい記事が集まり次第、随時追加
 - [ ] BASEで商品の入れ替えがあった際は、shopセクションのiframe（items/xxxxx/widget）を更新
-- [ ] Google Search Consoleの所有権確認をmarushikakubase.comでも新規に行い、サイトマップ（sitemap.xml）送信・インデックス登録リクエストを行う（旧github.io URLでの登録は残したままでよい）
-- [ ] Instagram・Googleビジネスプロフィールのリンクを、旧github.io URLからmarushikakubase.comに更新する
+- [ ] Instagram・Googleビジネスプロフィールのリンクを、旧github.io URLからmarushikakubase.comに更新する（未確認の場合）
 - [ ] Googleビジネスプロフィールのカテゴリ・営業時間・住所がホームページと一致しているか確認し、口コミ・写真を増やす（「就労継続支援B型事業所 鈴鹿市」のローカル検索対策として重要）
 
 ## 完了した公開・SEO対応（2026-09-02）
@@ -77,6 +76,9 @@ homepage/
 - marushikakubase.comを取得し、GitHub Pagesのカスタムドメインとして接続完了（HTTPS化・DNS checkも成功）
 - つまずいたポイント：お名前.comは「ドメインDNS設定」（Aレコード等の登録）と「ネームサーバー設定」（お名前.comのネームサーバーを実際に使うかの選択）が別画面になっており、後者を選択していなかったためDNSがいつまでも反映されなかった。「ネームサーバー設定」で「お名前.comのネームサーバーを使う」を選択したことで解決
 - 今後、同じ現象（DNSレコードを設定したのに何時間経っても反映されない）が起きた場合は、まず「ネームサーバー設定」が正しく選択されているか確認する
+
+## Search Consoleサイトマップ送信（2026-09-11）
+- marushikakubase.comプロパティに`sitemap.xml`を送信し、ステータス「成功」を確認
 
 ## 最終更新日
 2026-09-11
