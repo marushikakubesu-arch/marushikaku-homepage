@@ -777,6 +777,10 @@ ul, ol {
   border-bottom: 1px solid var(--color-border);
 }
 
+.blog-list li[hidden] {
+  display: none;
+}
+
 .blog-date {
   color: var(--color-text-light);
   font-size: 0.9rem;
@@ -803,6 +807,11 @@ ul, ol {
 .blog-title:hover {
   color: var(--color-primary-dark);
   text-decoration: underline;
+}
+
+.blog-more-wrap {
+  margin-top: 1.5em;
+  text-align: center;
 }
 
 /* Blog post page */

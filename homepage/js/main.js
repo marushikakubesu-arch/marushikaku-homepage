@@ -71,6 +71,28 @@ document.addEventListener('DOMContentLoaded', function () {
     startTimer();
   }
 
+  var blogList = document.querySelector('.blog-list');
+  var blogMoreBtn = document.getElementById('blogMoreBtn');
+  if (blogList && blogMoreBtn) {
+    var blogItems = blogList.querySelectorAll('li');
+    var blogVisibleCount = 3;
+    if (blogItems.length > blogVisibleCount) {
+      for (var bi = blogVisibleCount; bi < blogItems.length; bi++) {
+        blogItems[bi].hidden = true;
+      }
+      blogMoreBtn.addEventListener('click', function () {
+        var expanded = blogMoreBtn.getAttribute('aria-expanded') === 'true';
+        for (var bj = blogVisibleCount; bj < blogItems.length; bj++) {
+          blogItems[bj].hidden = expanded;
+        }
+        blogMoreBtn.textContent = expanded ? 'もっと見る' : '閉じる';
+        blogMoreBtn.setAttribute('aria-expanded', String(!expanded));
+      });
+    } else {
+      blogMoreBtn.hidden = true;
+    }
+  }
+
   var contactForm = document.getElementById('contactForm');
   var hiddenIframe = document.getElementById('hidden_iframe');
   var formThanks = document.getElementById('formThanks');
