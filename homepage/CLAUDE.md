@@ -44,7 +44,8 @@ homepage/
 │   ├── post-5.html（実際の投稿。写真撮影）
 │   ├── post-6.html（実際の投稿。梱包について）
 │   ├── post-7.html（実際の投稿。販売と写真撮影）
-│   └── post-8.html（実際の投稿。撮影デー）
+│   ├── post-8.html（実際の投稿。撮影デー）
+│   └── post-9.html（実際の投稿。今までの作業を通して思ったことと植物の紹介）
 └── archive/           # 使わなくなった素材の退避先（post-1〜3.htmlはサンプル記事のため退避済み）
 ```
 リポジトリ直下の `.github/workflows/deploy.yml` がGitHub Pagesへの自動公開を担当（`homepage/`フォルダ配下の変更をトリガーに実行）。
@@ -64,7 +65,7 @@ homepage/
 - SEO対策（2026-09-11、「就労継続支援B型事業所 鈴鹿市」での検索順位向上を目的に実施）：`index.html`・ブログ記事(`blog/post-*.html`)にcanonical・OGP（og:title等）・Twitterカードを追加。`index.html`にはLocalBusinessのJSON-LD構造化データ（施設名・住所・電話番号・sameAs）も追加。あわせて`robots.txt`・`sitemap.xml`を新規作成。新しいページ（ブログ記事等）を追加する際は、同様にcanonical・OGP・meta descriptionを設定し、`sitemap.xml`にもURLを1行追加すること
 
 ## TODO
-- [ ] 利用者ブログは現在post-4（水やりについて）・post-5（写真撮影）・post-6（梱包について）・post-7（販売と写真撮影）・post-8（撮影デー）を公開中。サンプル記事（post-1〜3）はarchiveへ退避済み。新しい記事が集まり次第、随時追加
+- [ ] 利用者ブログは現在post-4（水やりについて）・post-5（写真撮影）・post-6（梱包について）・post-7（販売と写真撮影）・post-8（撮影デー）・post-9（今までの作業を通して思ったことと植物の紹介）を公開中。サンプル記事（post-1〜3）はarchiveへ退避済み。新しい記事が集まり次第、随時追加
 - [ ] BASEで商品の入れ替えがあった際は、shopセクションのiframe（items/xxxxx/widget）を更新
 - [ ] Googleビジネスプロフィールの口コミ（クチコミ）を、利用者さん・ご家族に依頼して増やしていく（「就労継続支援B型事業所 鈴鹿市」のローカル検索対策として重要。件数が少ないほど効果が大きい）
 
@@ -89,4 +90,4 @@ homepage/
 - marushikakubase.comプロパティに`sitemap.xml`を送信し、ステータス「成功」を確認
 
 ## 最終更新日
-2026-09-14（利用者ブログの「もっと見る」機能を追加）
+2026-09-14（利用者ブログに新規記事「今までの作業を通して思ったことと植物の紹介」を追加）
