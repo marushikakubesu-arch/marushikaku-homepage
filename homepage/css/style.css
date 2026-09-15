@@ -217,6 +217,16 @@ ul, ol {
   margin: 0 auto;
 }
 
+.hero-video {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  margin: 2.5em auto 0;
+  border-radius: 20px;
+  box-shadow: 0 10px 24px rgba(122, 96, 55, 0.15);
+  background: #000;
+}
+
 .hero-plant {
   position: absolute;
   top: 0;
