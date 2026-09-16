@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>就労継続支援B型事業所 まるしかくベース｜利用者募集チラシ</title>
+<style>
+  :root{
+    --green:#4CAF64;
+    --green-dark:#2E7D42;
+    --green-tint:#EAF6EC;
+    --ink:#23302A;
+    --ink-soft:#5B6B62;
+    --paper:#FFFFFF;
+    --cream:#FBFAF6;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:#DDDDDD;
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic","Meiryo",sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .page{
+    width:210mm;
+    height:297mm;
+    margin:6mm auto;
+    background:var(--paper);
+    box-shadow:0 0 16px rgba(0,0,0,0.18);
+    padding:12mm 14mm;
+    display:flex;
+    flex-direction:column;
+    gap:6mm;
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* ---------- header ---------- */
+  .head{
+    display:flex;
+    align-items:center;
+    gap:5mm;
+  }
+  .mark{ flex:none; width:16mm; height:16mm; }
+  .head-text{ flex:auto; }
+  .eyebrow{
+    margin:0 0 1mm 0;
+    font-size:11pt;
+    font-weight:700;
+    letter-spacing:0.06em;
+    color:var(--green-dark);
+  }
+  .brand{
+    margin:0;
+    font-size:26pt;
+    line-height:1.1;
+    font-weight:800;
+    letter-spacing:0.03em;
+    color:var(--ink);
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    display:flex;
+    flex-direction:column;
+    gap:4mm;
+  }
+  .catch{
+    margin:0;
+    font-size:19pt;
+    line-height:1.4;
+    font-weight:800;
+    color:var(--ink);
+  }
+  .catch .accent{ color:var(--green-dark); }
+  .hero-art{
+    border-radius:6mm;
+    overflow:hidden;
+    background:var(--green-tint);
+    line-height:0;
+    height:68mm;
+  }
+  .hero-art img{ width:100%; height:100%; object-fit:cover; object-position:center bottom; display:block; }
+
+  /* ---------- flow ---------- */
+  .flow{ }
+  .flow-title{
+    margin:0 0 3mm 0;
+    font-size:12pt;
+    font-weight:700;
+    color:var(--ink-soft);
+  }
+  .flow-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .flow-list li{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2mm;
+    flex:1;
+    text-align:center;
+  }
+  .flow-arrow{
+    flex:none;
+    width:6mm;
+    height:6mm;
+    color:var(--green);
+    margin:0 1mm;
+  }
+  .flow-icon-badge{
+    width:16mm;
+    height:16mm;
+    border-radius:50%;
+    background:var(--green-tint);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--green-dark);
+  }
+  .flow-icon-badge svg{ width:9mm; height:9mm; }
+  .flow-label{
+    font-size:11pt;
+    font-weight:700;
+    color:var(--ink);
+  }
+  .flow-sub{
+    font-size:7.6pt;
+    color:var(--ink-soft);
+    line-height:1.3;
+  }
+
+  /* ---------- appeal ---------- */
+  .appeal-title{
+    margin:0 0 3mm 0;
+    font-size:12pt;
+    font-weight:700;
+    color:var(--ink-soft);
+  }
+  .appeal-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:3mm 5mm;
+  }
+  .appeal-list li{
+    display:flex;
+    align-items:flex-start;
+    gap:2.5mm;
+    font-size:10.5pt;
+    font-weight:600;
+    line-height:1.35;
+  }
+  .appeal-list svg{
+    flex:none;
+    width:4.6mm;
+    height:4.6mm;
+    margin-top:0.6mm;
+    color:var(--green);
+  }
+
+  /* ---------- CTA ---------- */
+  .cta{
+    background:var(--green-dark);
+    border-radius:6mm;
+    padding:6mm 8mm;
+    color:#FFFFFF;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:4mm;
+  }
+  .cta-main{
+    margin:0;
+    font-size:23pt;
+    font-weight:800;
+    letter-spacing:0.04em;
+  }
+  .cta-sub{
+    margin:1.5mm 0 0 0;
+    font-size:11pt;
+    font-weight:600;
+    opacity:0.95;
+  }
+  .cta-badge{
+    flex:none;
+    border:1.6pt solid #FFFFFF;
+    border-radius:99px;
+    padding:2.5mm 5mm;
+    font-size:11pt;
+    font-weight:700;
+    white-space:nowrap;
+  }
+
+  /* ---------- footer ---------- */
+  .foot{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:6mm;
+    border-top:0.6pt solid #DCE6DE;
+    padding-top:4mm;
+  }
+  .foot-info p{
+    margin:0 0 0.8mm 0;
+    font-size:9.6pt;
+    line-height:1.5;
+    color:var(--ink-soft);
+  }
+  .foot-info .foot-name{
+    font-size:11pt;
+    font-weight:800;
+    color:var(--ink);
+    margin-bottom:1.5mm;
+  }
+  .foot-qr{
+    flex:none;
+    display:flex;
+    align-items:center;
+    gap:3mm;
+  }
+  .foot-qr canvas{
+    width:22mm;
+    height:22mm;
+    border-radius:2mm;
+  }
+  .qr-label{
+    margin:0;
+    font-size:8.4pt;
+    line-height:1.4;
+    color:var(--ink-soft);
+    font-weight:600;
+    text-align:left;
+  }
+
+  @media print{
+    html,body{ background:none; }
+    .page{
+      margin:0;
+      box-shadow:none;
+    }
+    @page{ size:A4 portrait; margin:0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 共通アイコン定義 -->
+<svg style="display:none" aria-hidden="true">
+  <symbol id="icon-sprout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="12" y1="20" x2="12" y2="10"/>
+    <path d="M12,10 C9,10 6,8 6,5 C9,5 12,7 12,10 Z"/>
+    <path d="M12,10 C15,10 18,8 18,5 C15,5 12,7 12,10 Z"/>
+    <ellipse cx="12" cy="20.5" rx="5" ry="1.2"/>
+  </symbol>
+  <symbol id="icon-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8,7 L9.5,4.5 H14.5 L16,7"/>
+    <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+    <circle cx="12" cy="13.6" r="4"/>
+  </symbol>
+  <symbol id="icon-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6,8 H18 L17,21 H7 Z"/>
+    <path d="M9,8 V6 a3,3 0 0 1 6,0 v2"/>
+  </symbol>
+  <symbol id="icon-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4,8 L12,4 L20,8 L12,12 Z"/>
+    <path d="M4,8 V16 L12,20 V12 Z"/>
+    <path d="M20,8 V16 L12,20 V12 Z"/>
+  </symbol>
+  <symbol id="icon-laptop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="5" width="16" height="10" rx="1.2"/>
+    <path d="M2,18.5 H22 L20.5,15.5 H3.5 Z"/>
+  </symbol>
+  <symbol id="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="4" y1="12" x2="19" y2="12"/>
+    <path d="M14,7 L19,12 L14,17"/>
+  </symbol>
+  <symbol id="icon-leaf" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+    <path d="M3,21 C3,12 10,4 21,4 C21,13 14,21 3,21 Z"/>
+  </symbol>
+</svg>
+
+<div class="page">
+
+  <!-- 見出し -->
+  <header class="head">
+    <svg class="mark" viewBox="0 0 44 44" aria-hidden="true">
+      <rect x="5" y="5" width="24" height="24" rx="7" fill="none" stroke="#4CAF64" stroke-width="3"/>
+      <circle cx="30" cy="30" r="12.5" fill="#2E7D42"/>
+    </svg>
+    <div class="head-text">
+      <p class="eyebrow">就労継続支援B型事業所</p>
+      <h1 class="brand">まるしかくベース</h1>
+    </div>
+  </header>
+
+  <!-- メインコピー＋写真エリア -->
+  <section class="hero">
+    <h2 class="catch">植物に囲まれた、<span class="accent">心に優しい</span>事業所。</h2>
+    <div class="hero-art">
+      <img src="images/hero-placeholder.svg" alt="観葉植物に囲まれた作業スペースのイメージ">
+    </div>
+  </section>
+
+  <!-- 作業の流れ -->
+  <section class="flow">
+    <p class="flow-title">育てて、撮って、売って、届ける。ものづくりの全部に関われます。</p>
+    <ol class="flow-list">
+      <li>
+        <span class="flow-icon-badge"><svg><use href="#icon-sprout"/></svg></span>
+        <span class="flow-label">育てる</span>
+        <span class="flow-sub">水やり・植物のお世話</span>
+      </li>
+      <svg class="flow-arrow"><use href="#icon-arrow"/></svg>
+      <li>
+        <span class="flow-icon-badge"><svg><use href="#icon-camera"/></svg></span>
+        <span class="flow-label">撮る</span>
+        <span class="flow-sub">商品の撮影</span>
+      </li>
+      <svg class="flow-arrow"><use href="#icon-arrow"/></svg>
+      <li>
+        <span class="flow-icon-badge"><svg><use href="#icon-bag"/></svg></span>
+        <span class="flow-label">売る</span>
+        <span class="flow-sub">店舗・オンライン販売</span>
+      </li>
+      <svg class="flow-arrow"><use href="#icon-arrow"/></svg>
+      <li>
+        <span class="flow-icon-badge"><svg><use href="#icon-box"/></svg></span>
+        <span class="flow-label">届ける</span>
+        <span class="flow-sub">梱包・発送</span>
+      </li>
+      <svg class="flow-arrow"><use href="#icon-arrow"/></svg>
+      <li>
+        <span class="flow-icon-badge"><svg><use href="#icon-laptop"/></svg></span>
+        <span class="flow-label">PCで作業する</span>
+        <span class="flow-sub">データ入力など</span>
+      </li>
+    </ol>
+  </section>
+
+  <!-- アピールポイント -->
+  <section class="appeal">
+    <p class="appeal-title">まるしかくベースが選ばれる理由</p>
+    <ul class="appeal-list">
+      <li><svg><use href="#icon-leaf"/></svg>植物に囲まれた環境</li>
+      <li><svg><use href="#icon-leaf"/></svg>PC作業もできる</li>
+      <li><svg><use href="#icon-leaf"/></svg>植物が苦手でも取り組める作業あり</li>
+      <li><svg><use href="#icon-leaf"/></svg>職員と一緒に安心して作業できる</li>
+      <li><svg><use href="#icon-leaf"/></svg>実店舗での販売もあり</li>
+      <li><svg><use href="#icon-leaf"/></svg>送迎あり</li>
+    </ul>
+  </section>
+
+  <!-- 募集CTA -->
+  <section class="cta">
+    <div>
+      <p class="cta-main">利用者募集中</p>
+      <p class="cta-sub">見学・体験、お気軽にどうぞ</p>
+    </div>
+    <span class="cta-badge">送迎あり</span>
+  </section>
+
+  <!-- フッター（連絡先・QR） -->
+  <footer class="foot">
+    <div class="foot-info">
+      <p class="foot-name">就労継続支援B型事業所 まるしかくベース</p>
+      <p>〒513-0801　三重県鈴鹿市神戸8丁目6-16</p>
+      <p>TEL　059-358-8866</p>
+      <p>marushikakubase.com</p>
+    </div>
+    <div class="foot-qr">
+      <canvas id="qr-canvas" width="220" height="220"></canvas>
+      <p class="qr-label">Instagram<br>@marushikakube_su</p>
+    </div>
+  </footer>
+
+</div>
+
+<script src="vendor/qrcode.min.js"></script>
+<script>
+  (function(){
+    var canvas = document.getElementById('qr-canvas');
+    if (window.QRCode && canvas) {
+      QRCode.toCanvas(canvas, 'https://www.instagram.com/marushikakube_su/', {
+        width: 220,
+        margin: 1,
+        color: { dark: '#23302A', light: '#FFFFFF' }
+      }, function (err) {
+        if (err) console.error('QRコード生成に失敗しました:', err);
+        canvas.style.width = '22mm';
+        canvas.style.height = '22mm';
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

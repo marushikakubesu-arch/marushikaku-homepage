@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="観葉植物に囲まれた作業スペースのイメージイラスト">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F1F8F1"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="800" height="500" fill="url(#bgGrad)"/>
+  <circle cx="640" cy="120" r="150" fill="#FBF3D9" opacity="0.6"/>
+
+  <!-- table -->
+  <rect x="0" y="410" width="800" height="14" fill="#E4DCC8"/>
+  <rect x="0" y="424" width="800" height="76" fill="#F4EEE0"/>
+
+  <!-- pot 1 -->
+  <g>
+    <path d="M120,410 L150,410 L142,470 L128,470 Z" fill="#C97B4A"/>
+    <rect x="112" y="398" width="46" height="14" rx="4" fill="#B8663A"/>
+    <path d="M135,398 C90,398 78,350 90,315 C120,320 140,355 135,398 Z" fill="#4CAF64"/>
+    <path d="M135,398 C160,392 182,358 176,320 C148,326 128,362 135,398 Z" fill="#2E7D42"/>
+    <path d="M135,398 C120,392 108,368 112,345" fill="none" stroke="#2E7D42" stroke-width="2" opacity="0.5"/>
+  </g>
+
+  <!-- pot 2 (tall, center) -->
+  <g>
+    <path d="M330,410 L372,410 L362,478 L340,478 Z" fill="#D98F5B"/>
+    <rect x="322" y="396" width="58" height="16" rx="4" fill="#C97B4A"/>
+    <path d="M351,396 L351,270" fill="none" stroke="#2E7D42" stroke-width="6" stroke-linecap="round"/>
+    <path d="M351,300 C320,290 300,255 305,220 C340,225 362,262 351,300 Z" fill="#4CAF64"/>
+    <path d="M351,330 C382,320 402,285 397,250 C362,258 340,296 351,330 Z" fill="#57B86B"/>
+    <path d="M351,270 C328,260 312,235 315,210 C342,214 360,242 351,270 Z" fill="#2E7D42"/>
+  </g>
+
+  <!-- pot 3 -->
+  <g>
+    <path d="M540,414 L576,414 L568,470 L548,470 Z" fill="#C97B4A"/>
+    <rect x="533" y="402" width="50" height="14" rx="4" fill="#B8663A"/>
+    <path d="M558,402 C520,398 505,360 515,330 C548,334 566,368 558,402 Z" fill="#57B86B"/>
+    <path d="M558,402 C592,396 610,364 602,332 C572,338 552,370 558,402 Z" fill="#4CAF64"/>
+  </g>
+
+  <!-- small potted succulent -->
+  <g>
+    <path d="M660,420 L690,420 L684,458 L666,458 Z" fill="#D98F5B"/>
+    <rect x="654" y="410" width="42" height="12" rx="3" fill="#C97B4A"/>
+    <circle cx="675" cy="392" r="20" fill="#4CAF64"/>
+    <circle cx="675" cy="392" r="20" fill="none" stroke="#2E7D42" stroke-width="1.5" opacity="0.4"/>
+  </g>
+
+  <!-- camera resting on table, hinting at product photography -->
+  <g transform="translate(210,432)">
+    <rect x="0" y="10" width="70" height="42" rx="8" fill="#23302A"/>
+    <path d="M18,10 L26,-2 H50 L58,10 Z" fill="#23302A"/>
+    <circle cx="35" cy="32" r="15" fill="#3B4A41"/>
+    <circle cx="35" cy="32" r="9" fill="#F1F8F1"/>
+    <circle cx="58" cy="18" r="3" fill="#F1F8F1"/>
+  </g>
+
+  <!-- small shipping box, hinting at packing/shipping -->
+  <g transform="translate(440,436)">
+    <path d="M0,14 L34,0 L68,14 L34,28 Z" fill="#E9D9BA"/>
+    <path d="M0,14 L34,28 L34,58 L0,44 Z" fill="#D9C29B"/>
+    <path d="M68,14 L34,28 L34,58 L68,44 Z" fill="#C9AF83"/>
+    <line x1="34" y1="28" x2="34" y2="58" stroke="#8A7550" stroke-width="2"/>
+    <line x1="17" y1="21" x2="17" y2="51" stroke="#8A7550" stroke-width="1.5" opacity="0.6"/>
+  </g>
+
+  <!-- soft leaf confetti -->
+  <path d="M40,60 C40,45 55,35 70,35 C70,50 55,60 40,60 Z" fill="#DCEFDD"/>
+  <path d="M740,300 C740,285 755,275 770,275 C770,290 755,300 740,300 Z" fill="#DCEFDD"/>
+</svg>
