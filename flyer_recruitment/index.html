@@ -4,11 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>就労継続支援B型事業所 まるしかくベース｜利用者募集チラシ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
     --accent:#EF9D2E;
     --accent-dark:#C97A17;
     --accent-tint:#FCE6BD;
+    --green:#6B8F57;
+    --green-dark:#4F7A45;
+    --green-soft:#E3ECDB;
     --ink:#4A3F35;
     --ink-soft:#7A6F63;
     --paper:#FFFAF3;
@@ -32,174 +38,268 @@
     margin:6mm auto;
     background:var(--paper);
     box-shadow:0 0 16px rgba(0,0,0,0.18);
-    padding:12mm 14mm;
+    padding:7.5mm 11mm 0;
     display:flex;
     flex-direction:column;
-    gap:6mm;
+    gap:0mm;
     position:relative;
     overflow:hidden;
   }
 
-  /* ---------- header ---------- */
-  .head{
-    display:flex;
-    align-items:center;
-    gap:5mm;
-    position:relative;
-  }
-  .leaf-scatter{
-    position:absolute;
-    top:-4mm;
-    right:0;
-    width:32mm;
-    height:22mm;
-    pointer-events:none;
-    z-index:0;
-  }
-  .title-leaf{
-    position:absolute;
-    top:-3.5mm;
-    right:0;
-    width:20mm;
-    height:12mm;
-    pointer-events:none;
-    z-index:0;
-  }
   .corner-leaf{
     position:absolute;
+    top:0;
     left:0;
-    width:13mm;
-    height:34mm;
+    width:46mm;
+    height:64mm;
     pointer-events:none;
     z-index:0;
   }
-  .corner-leaf.tl{ top:0; }
-  .corner-leaf.bl{ bottom:0; }
-  .head-text{ position:relative; z-index:1; }
-  .mark{ flex:none; width:18mm; height:18mm; border-radius:50%; display:block; object-fit:cover; box-shadow:0 0 0 1px rgba(0,0,0,0.06); }
-  .head-text{ flex:auto; }
+  .corner-leaf.br{ top:auto; left:auto; bottom:0; right:0; transform:rotate(180deg); }
+
+  /* ---------- セクション見出し（番号バッジ＋ピル） ---------- */
+  .sec-head{
+    display:flex;
+    align-items:center;
+    gap:2.6mm;
+    position:relative;
+    z-index:1;
+  }
+  .sec-num{
+    flex:none;
+    width:5.8mm;
+    height:5.8mm;
+    border-radius:50%;
+    background:var(--accent-dark);
+    color:#FFFFFF;
+    font-weight:800;
+    font-size:10.5pt;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .sec-pill{
+    flex:none;
+    background:var(--accent-tint);
+    color:var(--ink);
+    font-weight:800;
+    font-size:10.3pt;
+    padding:0.7mm 4.5mm;
+    border-radius:99px;
+  }
+  .sec-note{
+    margin:0;
+    font-size:8.6pt;
+    color:var(--ink-soft);
+    font-weight:600;
+  }
+
+  /* ---------- header ---------- */
+  .head-hero{
+    position:relative;
+    flex-shrink:0;
+    border-radius:5mm;
+    overflow:hidden;
+    background-color:var(--accent-tint);
+    background-image:url(images/hero-exterior.jpg);
+    background-size:contain;
+    background-position:right center;
+    background-repeat:no-repeat;
+    z-index:1;
+  }
+  .head-scrim{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(100deg, var(--paper) 0%, var(--paper) 44%, rgba(255,250,243,0.9) 55%, rgba(255,250,243,0.45) 70%, rgba(255,250,243,0.05) 88%);
+  }
+  .head-content{
+    position:relative;
+    z-index:1;
+    padding:2.5mm 6mm 1.5mm;
+    display:flex;
+    flex-direction:column;
+    gap:3mm;
+  }
+  .head-top-row{
+    display:flex;
+    align-items:center;
+    gap:2.8mm;
+  }
+  .mark{ flex:none; width:13mm; height:13mm; border-radius:50%; display:block; object-fit:cover; box-shadow:0 0 0 2pt rgba(255,255,255,0.9); }
   .eyebrow{
-    margin:0 0 1mm 0;
-    font-size:11pt;
+    margin:0;
+    font-size:8.6pt;
     font-weight:700;
-    letter-spacing:0.06em;
+    letter-spacing:0.05em;
     color:var(--accent-dark);
   }
   .brand{
     margin:0;
-    font-size:26pt;
+    font-size:16.5pt;
     line-height:1.1;
     font-weight:800;
-    letter-spacing:0.03em;
+    letter-spacing:0.01em;
     color:var(--ink);
+  }
+  .head-copy{
+    position:relative;
+  }
+  .copy-deco{
+    position:absolute;
+    top:-3mm;
+    right:2mm;
+    width:16mm;
+    height:16mm;
+    pointer-events:none;
+    z-index:0;
+  }
+  .copy-line1{
+    position:relative;
+    margin:0;
+    font-family:"Zen Kaku Gothic New","Hiragino Sans",sans-serif;
+    font-size:15pt;
+    font-weight:700;
+    letter-spacing:0.02em;
+    line-height:1.4;
+    color:var(--ink);
+  }
+  .copy-line2{
+    position:relative;
+    margin:2mm 0 0;
+    font-family:"Zen Kaku Gothic New","Hiragino Sans",sans-serif;
+    font-size:26pt;
+    font-weight:800;
+    letter-spacing:0.01em;
+    line-height:1.3;
+    color:var(--ink);
+  }
+  .copy-line2 .accent-green{ color:var(--green-dark); font-weight:900; }
+  .copy-tail{
+    display:inline-block;
+    margin-top:1.5mm;
+    letter-spacing:0.14em;
+  }
+  .copy-cta-row{
+    display:flex;
+    justify-content:flex-end;
+    margin-top:2mm;
+  }
+  .copy-cta{
+    background:var(--accent-tint);
+    color:var(--accent-dark);
+    font-size:9pt;
+    font-weight:800;
+    padding:1.6mm 4.8mm;
+    border-radius:99px;
   }
 
-  /* ---------- hero ---------- */
-  .hero{
-    display:flex;
-    flex-direction:column;
-    gap:4mm;
-  }
-  .catch{
-    margin:0;
-    font-size:19pt;
-    line-height:1.4;
-    font-weight:800;
-    color:var(--ink);
-  }
-  .catch .accent{ color:var(--accent-dark); }
-  .hero-art{
+  /* ---------- セクション共通：写真グリッド ---------- */
+  .sec{ position:relative; z-index:1; }
+  .sec-body{ margin-top:1.4mm; }
+
+  .facility-grid{
     display:grid;
     grid-template-columns:repeat(4,1fr);
     gap:3mm;
   }
-  .photo-card{
-    margin:0;
-    display:flex;
-    flex-direction:column;
-    gap:1.3mm;
-  }
-  .photo-frame{
-    width:100%;
-    height:41mm;
-    border-radius:4mm;
+  .facility-card{ margin:0; display:flex; flex-direction:column; gap:1.6mm; }
+  .facility-frame{
+    position:relative;
+    height:27mm;
+    border-radius:3.5mm;
     overflow:hidden;
     background-color:var(--accent-tint);
     background-size:contain;
     background-position:center;
     background-repeat:no-repeat;
   }
-  .photo-card figcaption{
-    font-size:7.4pt;
-    font-weight:600;
+  .facility-frame .badge{
+    position:absolute;
+    left:2mm;
+    bottom:2mm;
+    width:8mm;
+    height:8mm;
+    border-radius:50%;
+    background:var(--green);
+    color:#FFFFFF;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 0 0 1.6pt var(--paper);
+  }
+  .facility-frame .badge svg{ width:4.6mm; height:4.6mm; }
+  .facility-card figcaption{
+    font-size:7.6pt;
+    font-weight:700;
+    letter-spacing:0.02em;
     color:var(--ink-soft);
     text-align:center;
   }
-  .pos-plants{ background-image:url(images/hero-plants.jpg); }
-  .pos-pc{ background-image:url(images/hero-pc.jpg); }
-  .pos-studio{ background-image:url(images/hero-studio.jpg); }
-  .pos-exterior{ background-image:url(images/hero-exterior.jpg); }
+  .f-exterior{ background-image:url(images/hero-exterior.jpg); }
+  .f-plants{ background-image:url(images/hero-plants.jpg); }
+  .f-photo{ background-image:url(images/hero-studio.jpg); }
+  .f-pc{ background-image:url(images/hero-pc.jpg); }
 
   /* ---------- flow ---------- */
-  .flow{ }
-  .flow-title{
-    position:relative;
-    margin:0 0 3mm 0;
-    font-size:12pt;
-    font-weight:700;
-    color:var(--ink-soft);
-  }
   .flow-list{
     list-style:none;
     margin:0;
     padding:0;
     display:flex;
-    align-items:center;
+    align-items:flex-start;
     justify-content:space-between;
   }
   .flow-list li{
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:2mm;
+    gap:1.4mm;
     flex:1;
     text-align:center;
   }
   .flow-arrow{
     flex:none;
-    width:6mm;
-    height:6mm;
+    width:6.6mm;
+    height:6.6mm;
     color:var(--accent);
-    margin:0 1mm;
+    margin:7.6mm 1mm 0;
   }
   .flow-icon-badge{
-    width:18mm;
-    height:18mm;
+    width:21mm;
+    height:21mm;
     border-radius:50%;
     background:var(--accent-tint);
     display:block;
     overflow:hidden;
-    border:1.6pt solid var(--accent);
+    border:2pt solid var(--accent);
   }
   .flow-icon-badge img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .flow-tag{
+    display:flex;
+    align-items:center;
+    gap:1mm;
+    color:var(--green);
+  }
+  .flow-tag svg{ width:3.4mm; height:3.4mm; }
   .flow-label{
-    font-size:11pt;
-    font-weight:700;
+    font-size:10.5pt;
+    font-weight:800;
     color:var(--ink);
   }
   .flow-sub{
-    font-size:7.6pt;
+    font-size:7.2pt;
     color:var(--ink-soft);
     line-height:1.3;
   }
 
   /* ---------- appeal ---------- */
-  .appeal-title{
-    position:relative;
-    margin:0 0 3mm 0;
-    font-size:12pt;
+  .appeal-head{ display:flex; align-items:center; gap:3.5mm; }
+  .appeal-note{
+    margin:0;
+    font-size:9pt;
     font-weight:700;
-    color:var(--ink-soft);
+    color:var(--green-dark);
+    font-style:italic;
   }
   .appeal-list{
     list-style:none;
@@ -207,124 +307,168 @@
     padding:0;
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:3mm 5mm;
+    gap:2mm 5mm;
   }
   .appeal-list li{
     display:flex;
     align-items:flex-start;
-    gap:2.5mm;
-    font-size:10.5pt;
-    font-weight:600;
-    line-height:1.35;
+    gap:2.2mm;
+    font-size:10pt;
+    font-weight:700;
+    line-height:1.3;
   }
   .appeal-list svg{
     flex:none;
-    width:4.6mm;
-    height:4.6mm;
-    margin-top:0.6mm;
-    color:#6b8f57;
+    width:4.4mm;
+    height:4.4mm;
+    margin-top:0.5mm;
+    color:var(--green);
   }
 
   /* ---------- CTA ---------- */
-  .cta{
-    background:var(--accent-dark);
-    border-radius:6mm;
-    padding:6mm 8mm;
-    color:#FFFFFF;
+  .cta-row{
     display:flex;
     align-items:center;
-    justify-content:space-between;
     gap:4mm;
+  }
+  .cta-banner{
+    flex:1.5;
+    position:relative;
+    background:var(--accent);
+    clip-path:polygon(2.5% 0%, 97.5% 0%, 100% 22%, 100% 78%, 97.5% 100%, 2.5% 100%, 0% 78%, 0% 22%);
+    padding:2.5mm 8mm;
+    color:#FFFFFF;
   }
   .cta-main{
     margin:0;
-    font-size:23pt;
+    font-size:21pt;
     font-weight:800;
-    letter-spacing:0.04em;
+    letter-spacing:0.03em;
   }
   .cta-sub{
-    margin:1.5mm 0 0 0;
+    margin:1mm 0 0;
     font-size:11pt;
+    font-weight:800;
+  }
+  .cta-note{
+    margin:0.6mm 0 0;
+    font-size:8pt;
     font-weight:600;
     opacity:0.95;
   }
-  .cta-badge{
+  .cta-badges{
     flex:none;
-    border:1.6pt solid #FFFFFF;
-    border-radius:99px;
-    padding:2.5mm 5mm;
-    font-size:11pt;
-    font-weight:700;
-    white-space:nowrap;
-  }
-
-  /* ---------- footer ---------- */
-  .foot{
     display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:6mm;
-    border-top:0.6pt solid var(--border);
-    padding-top:4mm;
+    gap:2.6mm;
   }
-  .foot-info p{
-    margin:0 0 0.8mm 0;
-    font-size:9.6pt;
-    line-height:1.5;
-    color:var(--ink-soft);
-  }
-  .foot-info .foot-company{
-    font-size:8pt;
-    font-weight:600;
-    color:var(--ink-soft);
-    margin-bottom:0.3mm;
-  }
-  .foot-info .foot-name{
-    font-size:11pt;
-    font-weight:800;
-    color:var(--ink);
-    margin-bottom:1.5mm;
-  }
-  /* ---------- access map ---------- */
-  .access{
+  .cta-badge{
+    width:19mm;
+    height:19mm;
+    border-radius:50%;
     display:flex;
     flex-direction:column;
-    gap:1.5mm;
+    align-items:center;
+    justify-content:center;
+    gap:0.6mm;
+    font-size:7.6pt;
+    font-weight:800;
+    line-height:1.2;
+    text-align:center;
   }
-  .access-title{
-    position:relative;
+  .cta-badge.bus{ background:var(--green); color:#FFFFFF; }
+  .cta-badge.bus svg{ width:5mm; height:5mm; }
+  .cta-badge.visit{ background:var(--accent-tint); color:var(--accent-dark); border:1.4pt solid var(--accent); }
+  .cta-photo-wrap{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:1mm;
+  }
+  .cta-photo{
+    flex:none;
+    height:16mm;
+    border-radius:3.5mm;
+    overflow:hidden;
+    background-color:var(--accent-tint);
+    background-image:url(images/cta-plant.jpg);
+    background-size:contain;
+    background-position:center;
+    background-repeat:no-repeat;
+  }
+  .cta-photo-caption{
     margin:0;
-    font-size:11pt;
+    font-size:6.6pt;
     font-weight:700;
+    line-height:1.3;
     color:var(--ink-soft);
+    text-align:center;
+  }
+
+  /* ---------- access ---------- */
+  .access-row{
+    display:flex;
+    gap:5mm;
   }
   .access-map{
-    width:100%;
-    height:32mm;
+    flex:1.1;
+    position:relative;
+    align-self:stretch;
     border-radius:4mm;
     overflow:hidden;
     background:#FBF6EC;
     border:0.6pt solid var(--border);
   }
   .access-map svg{ width:100%; height:100%; display:block; }
-  .foot-qr{
+  .contact{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:1.2mm;
+  }
+  .contact-row{ display:flex; align-items:baseline; gap:3mm; flex-wrap:wrap; }
+  .contact p{ margin:0; font-size:9pt; line-height:1.5; color:var(--ink-soft); }
+  .contact .c-company{ font-size:8pt; font-weight:600; }
+  .contact .c-name{ font-size:11pt; font-weight:800; color:var(--ink); }
+  .contact .c-hours{ font-size:8.6pt; font-weight:700; color:var(--ink); }
+  .contact .c-tel{ font-size:16pt; font-weight:800; color:var(--accent-dark); letter-spacing:0.02em; }
+  .contact .c-tel-note{ font-size:7.6pt; color:var(--ink-soft); }
+  .contact .c-links{ display:flex; gap:4mm; margin-top:0.8mm; }
+  .contact .c-links span{ display:flex; align-items:center; gap:1.4mm; font-size:8.6pt; font-weight:700; color:var(--ink-soft); }
+  .contact .c-links svg{ width:3.6mm; height:3.6mm; color:var(--green); }
+  .qr-block{
     flex:none;
     display:flex;
     align-items:center;
     gap:3mm;
   }
-  .foot-qr canvas{
-    width:22mm;
-    height:22mm;
-    border-radius:2mm;
+  .qr-block canvas{ width:19mm; height:19mm; border-radius:2mm; }
+  .qr-label{ margin:0; font-size:7.8pt; line-height:1.4; color:var(--ink-soft); font-weight:700; }
+  .qr-note{
+    display:inline-block;
+    margin-top:0.8mm;
+    background:var(--accent);
+    color:#FFFFFF;
+    font-size:6.8pt;
+    font-weight:700;
+    padding:0.6mm 2mm;
+    border-radius:99px;
   }
-  .qr-label{
+
+  /* ---------- footer band ---------- */
+  .foot-band{
+    margin:0 -11mm 0;
+    padding:7.6mm 11mm 3.5mm;
+    background:var(--green);
+    clip-path:polygon(0% 26%, 8% 10%, 17% 24%, 26% 6%, 35% 24%, 44% 7%, 53% 24%, 62% 6%, 71% 24%, 80% 8%, 89% 24%, 100% 10%, 100% 100%, 0% 100%);
+    text-align:center;
+  }
+  .foot-band p{
     margin:0;
-    font-size:8.4pt;
-    line-height:1.4;
-    color:var(--ink-soft);
-    font-weight:600;
-    text-align:left;
+    color:#FFFFFF;
+    font-size:10.5pt;
+    font-weight:800;
+    letter-spacing:0.02em;
   }
 
   @media print{
@@ -345,10 +489,63 @@
     <line x1="4" y1="12" x2="19" y2="12"/>
     <path d="M14,7 L19,12 L14,17"/>
   </symbol>
-  <symbol id="icon-leaf" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-    <path d="M3,21 C3,12 10,4 21,4 C21,13 14,21 3,21 Z"/>
+  <symbol id="icon-leaf-check" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+    <path d="M4,20 C4,10 11,4 21,3 C21,13 15,19 5,20.5 Z"/>
   </symbol>
-  <!-- homepageの葉っぱ散らし装飾と同じ形状・技法（css/style.cssの背景SVGより流用：pathをdefsに置きuse x/y+transform rotateで同一点を軸に回転） -->
+  <symbol id="icon-agave" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+    <path d="M12,13 C10,12.3 8.7,9.5 9,6.2 C9.2,4 10.4,2.2 12,1.4 C13.6,2.2 14.8,4 15,6.2 C15.3,9.5 14,12.3 12,13 Z"/>
+    <path d="M12,13 C10,12.3 8.7,9.5 9,6.2 C9.2,4 10.4,2.2 12,1.4 C13.6,2.2 14.8,4 15,6.2 C15.3,9.5 14,12.3 12,13 Z" transform="rotate(60 12 13)"/>
+    <path d="M12,13 C10,12.3 8.7,9.5 9,6.2 C9.2,4 10.4,2.2 12,1.4 C13.6,2.2 14.8,4 15,6.2 C15.3,9.5 14,12.3 12,13 Z" transform="rotate(120 12 13)"/>
+    <path d="M12,13 C10,12.3 8.7,9.5 9,6.2 C9.2,4 10.4,2.2 12,1.4 C13.6,2.2 14.8,4 15,6.2 C15.3,9.5 14,12.3 12,13 Z" transform="rotate(180 12 13)"/>
+    <path d="M12,13 C10,12.3 8.7,9.5 9,6.2 C9.2,4 10.4,2.2 12,1.4 C13.6,2.2 14.8,4 15,6.2 C15.3,9.5 14,12.3 12,13 Z" transform="rotate(240 12 13)"/>
+    <path d="M12,13 C10,12.3 8.7,9.5 9,6.2 C9.2,4 10.4,2.2 12,1.4 C13.6,2.2 14.8,4 15,6.2 C15.3,9.5 14,12.3 12,13 Z" transform="rotate(300 12 13)"/>
+    <circle cx="12" cy="13" r="1.7"/>
+  </symbol>
+  <symbol id="icon-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="3.5" width="14" height="17" rx="1"/>
+    <line x1="9" y1="8" x2="10.2" y2="8"/>
+    <line x1="13.8" y1="8" x2="15" y2="8"/>
+    <line x1="9" y1="12.2" x2="10.2" y2="12.2"/>
+    <line x1="13.8" y1="12.2" x2="15" y2="12.2"/>
+    <rect x="10" y="16" width="4" height="4.5"/>
+  </symbol>
+  <symbol id="icon-sprout" viewBox="0 0 24 24">
+    <line x1="12" y1="20" x2="12" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M12,12 C8,12 5,9.4 5,5.8 C9.2,5.8 12,8.4 12,12 Z" fill="currentColor" stroke="none"/>
+    <path d="M12,12 C16,12 19,9.4 19,5.8 C14.8,5.8 12,8.4 12,12 Z" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="icon-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8,7 L9.5,4.5 H14.5 L16,7"/>
+    <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+    <circle cx="12" cy="13.6" r="4"/>
+  </symbol>
+  <symbol id="icon-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="5" width="16" height="11" rx="1.2"/>
+    <line x1="9" y1="19" x2="15" y2="19"/>
+    <line x1="12" y1="16" x2="12" y2="19"/>
+  </symbol>
+  <symbol id="icon-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3,4 h2.4 l2.2,11.2 h9.8 l1.8,-7.6 H7.2"/>
+    <circle cx="9.5" cy="19" r="1.4" fill="currentColor" stroke="none"/>
+    <circle cx="16" cy="19" r="1.4" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="icon-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+    <path d="M4,8 L12,4 L20,8 L12,12 Z"/>
+    <path d="M4,8 V16 L12,20 V12 Z"/>
+    <path d="M20,8 V16 L12,20 V12 Z"/>
+  </symbol>
+  <symbol id="icon-bus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="6" width="18" height="10" rx="2"/>
+    <line x1="3" y1="11" x2="21" y2="11" stroke-width="1.3"/>
+    <circle cx="7.5" cy="18" r="1.5" fill="currentColor" stroke="none"/>
+    <circle cx="16.5" cy="18" r="1.5" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="icon-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.5"/>
+    <ellipse cx="12" cy="12" rx="3.6" ry="8.5"/>
+    <line x1="3.5" y1="12" x2="20.5" y2="12"/>
+  </symbol>
+  <!-- homepageの葉っぱ散らし装飾（css/style.cssの背景SVGより流用） -->
   <path id="deco-leaf-o" d="M0,-52 C16,-42 24,-20 24,0 C24,20 16,40 0,54 C-16,40 -24,20 -24,0 C-24,-20 -16,-42 0,-52 Z"/>
   <path id="deco-leaf-h" d="M0,-24 C-8,-37 -28,-35 -30,-18 C-32,-2 -15,12 0,30 C15,12 32,-2 30,-18 C28,-35 8,-37 0,-24 Z"/>
   <path id="deco-leaf-r" d="M0,-35 C16,-25 20,-4 12,16 C6,30 -6,30 -12,16 C-20,-4 -16,-25 0,-35 Z"/>
@@ -356,199 +553,245 @@
 
 <div class="page">
 
-  <!-- コーナー装飾（葉っぱの枝、ページ左上・左下） -->
-  <svg class="corner-leaf tl" viewBox="0 0 45 120" aria-hidden="true">
-    <path d="M20,116 C10,90 18,60 15,30 C13,15 18,6 25,2" fill="none" stroke="#6b8f57" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>
-    <use href="#deco-leaf-o" transform="translate(19,100) rotate(-15) scale(0.3)" fill="#6b8f57"/>
-    <use href="#deco-leaf-h" transform="translate(13,75) rotate(20) scale(0.26)" fill="#e3ecdb"/>
-    <use href="#deco-leaf-r" transform="translate(19,50) rotate(-20) scale(0.24)" fill="#6b8f57" opacity="0.85"/>
-    <use href="#deco-leaf-o" transform="translate(15,25) rotate(15) scale(0.16)" fill="#e3ecdb" opacity="0.9"/>
+  <!-- コーナー装飾（葉っぱの枝、左上・右下） -->
+  <svg class="corner-leaf tl" viewBox="0 0 140 200" aria-hidden="true">
+    <path d="M4,4 C30,20 55,40 62,70 C68,96 60,120 44,142" fill="none" stroke="var(--green)" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>
+    <use href="#deco-leaf-o" transform="translate(20,18) rotate(-30) scale(0.4)" fill="var(--green)"/>
+    <use href="#deco-leaf-h" transform="translate(46,10) rotate(20) scale(0.32)" fill="var(--green-soft)"/>
+    <use href="#deco-leaf-r" transform="translate(6,45) rotate(-50) scale(0.3)" fill="var(--green)" opacity="0.85"/>
+    <use href="#deco-leaf-o" transform="translate(52,42) rotate(30) scale(0.24)" fill="var(--green-soft)" opacity="0.9"/>
+    <use href="#deco-leaf-h" transform="translate(30,75) rotate(-10) scale(0.22)" fill="var(--green)" opacity="0.8"/>
+    <use href="#deco-leaf-r" transform="translate(50,105) rotate(15) scale(0.2)" fill="var(--green-soft)" opacity="0.85"/>
   </svg>
-  <svg class="corner-leaf bl" viewBox="0 0 45 120" aria-hidden="true">
-    <path d="M20,4 C10,30 18,60 15,90 C13,105 18,114 25,118" fill="none" stroke="#6b8f57" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>
-    <use href="#deco-leaf-o" transform="translate(19,20) rotate(15) scale(0.3)" fill="#6b8f57"/>
-    <use href="#deco-leaf-h" transform="translate(13,45) rotate(-20) scale(0.26)" fill="#e3ecdb"/>
-    <use href="#deco-leaf-r" transform="translate(19,70) rotate(20) scale(0.24)" fill="#6b8f57" opacity="0.85"/>
-    <use href="#deco-leaf-o" transform="translate(15,95) rotate(-15) scale(0.16)" fill="#e3ecdb" opacity="0.9"/>
+  <svg class="corner-leaf br" viewBox="0 0 140 200" aria-hidden="true">
+    <path d="M4,4 C30,20 55,40 62,70 C68,96 60,120 44,142" fill="none" stroke="var(--green)" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>
+    <use href="#deco-leaf-o" transform="translate(20,18) rotate(-30) scale(0.4)" fill="var(--green)"/>
+    <use href="#deco-leaf-h" transform="translate(46,10) rotate(20) scale(0.32)" fill="var(--green-soft)"/>
+    <use href="#deco-leaf-r" transform="translate(6,45) rotate(-50) scale(0.3)" fill="var(--green)" opacity="0.85"/>
+    <use href="#deco-leaf-o" transform="translate(52,42) rotate(30) scale(0.24)" fill="var(--green-soft)" opacity="0.9"/>
+    <use href="#deco-leaf-h" transform="translate(30,75) rotate(-10) scale(0.22)" fill="var(--green)" opacity="0.8"/>
+    <use href="#deco-leaf-r" transform="translate(50,105) rotate(15) scale(0.2)" fill="var(--green-soft)" opacity="0.85"/>
   </svg>
 
-  <!-- 見出し -->
-  <header class="head">
-    <img class="mark" src="images/logo.png" alt="まるしかくベース ロゴ">
-    <div class="head-text">
-      <p class="eyebrow">就労継続支援B型事業所</p>
-      <h1 class="brand">まるしかくベース</h1>
+  <!-- 見出し＋メインコピー＋外観写真 -->
+  <div class="head-hero" role="img" aria-label="まるしかくベースの事業所外観">
+    <div class="head-scrim"></div>
+    <div class="head-content">
+      <div class="head-top-row">
+        <img class="mark" src="images/logo.png" alt="まるしかくベース ロゴ">
+        <div>
+          <p class="eyebrow">就労継続支援B型事業所</p>
+          <h1 class="brand">まるしかくベース</h1>
+        </div>
+      </div>
+      <div class="head-copy">
+        <svg class="copy-deco" viewBox="0 0 60 60" aria-hidden="true">
+          <use href="#deco-leaf-o" transform="translate(46,14) rotate(20) scale(0.16)" fill="var(--green-soft)" opacity="0.8"/>
+          <use href="#deco-leaf-h" transform="translate(30,8) rotate(-15) scale(0.13)" fill="var(--green)" opacity="0.6"/>
+        </svg>
+        <p class="copy-line1">人も植物も、育つペースはそれぞれ。</p>
+        <p class="copy-line2"><span class="accent-green">自分のペースで、</span><br><span class="copy-tail">一歩ずつ。</span></p>
+        <div class="copy-cta-row"><span class="copy-cta">見学・体験随時受付中！</span></div>
+      </div>
     </div>
-    <svg class="leaf-scatter" viewBox="0 0 130 90" aria-hidden="true">
-      <use href="#deco-leaf-o" transform="translate(30,72) rotate(-20) scale(0.34)" fill="#6b8f57"/>
-      <use href="#deco-leaf-h" transform="translate(52,50) rotate(20) scale(0.3)" fill="#e3ecdb"/>
-      <use href="#deco-leaf-r" transform="translate(40,26) rotate(-30) scale(0.3)" fill="#e3ecdb" opacity="0.9"/>
-      <use href="#deco-leaf-o" transform="translate(66,18) rotate(25) scale(0.22)" fill="#6b8f57" opacity="0.85"/>
-      <circle cx="76" cy="10" r="3.4" fill="#EF9D2E" opacity="0.85"/>
-    </svg>
-  </header>
+  </div>
 
-  <!-- メインコピー＋写真エリア -->
-  <section class="hero">
-    <h2 class="catch">植物に囲まれた、<span class="accent">心に優しい</span>事業所。</h2>
-    <div class="hero-art">
-      <figure class="photo-card">
-        <div class="photo-frame pos-exterior" role="img" aria-label="まるしかくベースの事業所外観"></div>
+  <!-- ①施設紹介 -->
+  <section class="sec">
+    <div class="sec-head">
+      <span class="sec-num">1</span>
+      <span class="sec-pill">施設紹介</span>
+    </div>
+    <div class="sec-body facility-grid">
+      <figure class="facility-card">
+        <div class="facility-frame f-exterior"><span class="badge"><svg><use href="#icon-building"/></svg></span></div>
         <figcaption>事業所外観</figcaption>
       </figure>
-      <figure class="photo-card">
-        <div class="photo-frame pos-plants" role="img" aria-label="観葉植物が並ぶ事業所内販売スペースのようす"></div>
+      <figure class="facility-card">
+        <div class="facility-frame f-plants"><span class="badge"><svg><use href="#icon-sprout"/></svg></span></div>
         <figcaption>事業所内販売スペース</figcaption>
       </figure>
-      <figure class="photo-card">
-        <div class="photo-frame pos-studio" role="img" aria-label="商品撮影用のスペースのようす"></div>
+      <figure class="facility-card">
+        <div class="facility-frame f-photo" role="img" aria-label="商品撮影用のスペースのようす"><span class="badge"><svg><use href="#icon-camera"/></svg></span></div>
         <figcaption>商品撮影スペース</figcaption>
       </figure>
-      <figure class="photo-card">
-        <div class="photo-frame pos-pc" role="img" aria-label="パソコンで作業するスペースのようす"></div>
+      <figure class="facility-card">
+        <div class="facility-frame f-pc"><span class="badge"><svg><use href="#icon-monitor"/></svg></span></div>
         <figcaption>PC作業スペース</figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- 作業の流れ -->
-  <section class="flow">
-    <p class="flow-title">育てて、撮って、PCで作業して、売って、届ける。ものづくりの全部に関われます。
-      <svg class="title-leaf" viewBox="0 0 80 40" aria-hidden="true">
-        <use href="#deco-leaf-o" transform="translate(16,26) rotate(-15) scale(0.26)" fill="#6b8f57" opacity="0.85"/>
-        <use href="#deco-leaf-h" transform="translate(38,12) rotate(20) scale(0.2)" fill="#e3ecdb" opacity="0.95"/>
-      </svg>
-    </p>
-    <ol class="flow-list">
-      <li>
-        <span class="flow-icon-badge"><img src="images/step-grow.jpg" alt="水やりなど植物のお世話をするようす"></span>
-        <span class="flow-label">育てる</span>
-        <span class="flow-sub">水やり・植物のお世話</span>
-      </li>
-      <svg class="flow-arrow"><use href="#icon-arrow"/></svg>
-      <li>
-        <span class="flow-icon-badge"><img src="images/step-photo.jpg" alt="スマートフォンで商品の植物を撮影しているようす"></span>
-        <span class="flow-label">撮る</span>
-        <span class="flow-sub">商品の撮影</span>
-      </li>
-      <svg class="flow-arrow"><use href="#icon-arrow"/></svg>
-      <li>
-        <span class="flow-icon-badge"><img src="images/step-pc.jpg" alt="パソコンで作業するようす"></span>
-        <span class="flow-label">PCで作業する</span>
-        <span class="flow-sub">データ入力など</span>
-      </li>
-      <svg class="flow-arrow"><use href="#icon-arrow"/></svg>
-      <li>
-        <span class="flow-icon-badge"><img src="images/step-sell.jpg" alt="お客様に商品の植物をお渡ししているようす"></span>
-        <span class="flow-label">売る</span>
-        <span class="flow-sub">店舗・オンライン販売</span>
-      </li>
-      <svg class="flow-arrow"><use href="#icon-arrow"/></svg>
-      <li>
-        <span class="flow-icon-badge"><img src="images/step-ship.jpg" alt="商品を梱包するようす"></span>
-        <span class="flow-label">届ける</span>
-        <span class="flow-sub">梱包・発送</span>
-      </li>
-    </ol>
+  <!-- ②仕事の流れ -->
+  <section class="sec">
+    <div class="sec-head">
+      <span class="sec-num">2</span>
+      <span class="sec-pill">仕事の流れ</span>
+      <p class="sec-note">育てて、撮って、PCで作業して、売って、届ける。ものづくりの全部に関われます。</p>
+    </div>
+    <div class="sec-body">
+      <ol class="flow-list">
+        <li>
+          <span class="flow-icon-badge"><img src="images/step-grow.jpg" alt="水やりなど植物のお世話をするようす"></span>
+          <span class="flow-tag"><svg><use href="#icon-sprout"/></svg><span class="flow-label">育てる</span></span>
+          <span class="flow-sub">水やり・植物のお世話</span>
+        </li>
+        <svg class="flow-arrow"><use href="#icon-arrow"/></svg>
+        <li>
+          <span class="flow-icon-badge"><img src="images/step-photo.jpg" alt="スマートフォンで商品の植物を撮影しているようす"></span>
+          <span class="flow-tag"><svg><use href="#icon-camera"/></svg><span class="flow-label">撮る</span></span>
+          <span class="flow-sub">商品の撮影</span>
+        </li>
+        <svg class="flow-arrow"><use href="#icon-arrow"/></svg>
+        <li>
+          <span class="flow-icon-badge"><img src="images/step-pc.jpg" alt="パソコンで作業するようす"></span>
+          <span class="flow-tag"><svg><use href="#icon-monitor"/></svg><span class="flow-label">PCで作業する</span></span>
+          <span class="flow-sub">データ入力など</span>
+        </li>
+        <svg class="flow-arrow"><use href="#icon-arrow"/></svg>
+        <li>
+          <span class="flow-icon-badge"><img src="images/step-sell.jpg" alt="お客様に商品の植物をお渡ししているようす"></span>
+          <span class="flow-tag"><svg><use href="#icon-cart"/></svg><span class="flow-label">売る</span></span>
+          <span class="flow-sub">店舗・オンライン販売</span>
+        </li>
+        <svg class="flow-arrow"><use href="#icon-arrow"/></svg>
+        <li>
+          <span class="flow-icon-badge"><img src="images/step-ship.jpg" alt="商品を梱包するようす"></span>
+          <span class="flow-tag"><svg><use href="#icon-box"/></svg><span class="flow-label">届ける</span></span>
+          <span class="flow-sub">梱包・発送</span>
+        </li>
+      </ol>
+    </div>
   </section>
 
-  <!-- アピールポイント -->
-  <section class="appeal">
-    <p class="appeal-title">まるしかくベースが選ばれる理由
-      <svg class="title-leaf" viewBox="0 0 80 40" aria-hidden="true">
-        <use href="#deco-leaf-r" transform="translate(16,26) rotate(-20) scale(0.27)" fill="#e3ecdb" opacity="0.95"/>
-        <use href="#deco-leaf-o" transform="translate(38,14) rotate(18) scale(0.22)" fill="#6b8f57" opacity="0.9"/>
-      </svg>
-    </p>
-    <ul class="appeal-list">
-      <li><svg><use href="#icon-leaf"/></svg>植物に囲まれた環境</li>
-      <li><svg><use href="#icon-leaf"/></svg>PC作業もできる</li>
-      <li><svg><use href="#icon-leaf"/></svg>植物が苦手でも取り組める作業あり</li>
-      <li><svg><use href="#icon-leaf"/></svg>職員と一緒に安心して作業できる</li>
-      <li><svg><use href="#icon-leaf"/></svg>実店舗での販売もあり</li>
-      <li><svg><use href="#icon-leaf"/></svg>送迎あり</li>
+  <!-- ③まるしかくベースの特徴 -->
+  <section class="sec">
+    <div class="sec-head appeal-head">
+      <div class="sec-head" style="gap:2.6mm;">
+        <span class="sec-num">3</span>
+        <span class="sec-pill">まるしかくベースの特徴</span>
+      </div>
+      <p class="appeal-note">＼植物に興味がなくても大丈夫！／</p>
+    </div>
+    <ul class="sec-body appeal-list">
+      <li><svg><use href="#icon-agave"/></svg>植物に囲まれた環境</li>
+      <li><svg><use href="#icon-agave"/></svg>PC作業もできる</li>
+      <li><svg><use href="#icon-agave"/></svg>植物が苦手でも取り組める作業あり</li>
+      <li><svg><use href="#icon-agave"/></svg>職員と一緒に安心して作業できる</li>
+      <li><svg><use href="#icon-agave"/></svg>実店舗での販売もあり</li>
+      <li><svg><use href="#icon-agave"/></svg>送迎あり</li>
     </ul>
   </section>
 
-  <!-- 募集CTA -->
-  <section class="cta">
-    <div>
-      <p class="cta-main">利用者募集中</p>
-      <p class="cta-sub">見学・体験、お気軽にどうぞ</p>
+  <!-- ④利用者募集中 -->
+  <section class="sec">
+    <div class="sec-head">
+      <span class="sec-num">4</span>
+      <span class="sec-pill">利用者募集中</span>
     </div>
-    <span class="cta-badge">送迎あり</span>
-  </section>
-
-  <!-- アクセスマップ -->
-  <section class="access">
-    <p class="access-title">アクセス（鈴鹿市駅から徒歩4分）
-      <svg class="title-leaf" viewBox="0 0 80 40" aria-hidden="true">
-        <use href="#deco-leaf-h" transform="translate(16,26) rotate(-10) scale(0.24)" fill="#6b8f57" opacity="0.85"/>
-        <use href="#deco-leaf-o" transform="translate(38,13) rotate(22) scale(0.2)" fill="#e3ecdb" opacity="0.95"/>
-      </svg>
-    </p>
-    <div class="access-map">
-      <svg viewBox="0 0 400 90" role="img" aria-label="まるしかくベース周辺の簡易アクセスマップ（実際の位置関係に基づく）。鈴鹿市駅から徒歩4分">
-        <!-- 水路（OpenStreetMap実データに基づく形状。事業所の西側約35mを北西から南へ流れ、南の小学校方面へ続く） -->
-        <path d="M14,20 C60,21 100,22 126,23 C150,24 162,25 170,26 C180,32 187,38 190,42 C191,44 191.5,45 192,46 C196,52 200,57 203,61 C208,70 212,80 216,90" fill="none" stroke="#AFCBE0" stroke-width="2.2" stroke-linecap="round"/>
-        <!-- 鈴鹿線（ティア鈴鹿神戸～事業所～鈴鹿市駅～鈴鹿市役所方面） -->
-        <path d="M14,30 C40,32 65,34 88,36 C130,37 165,38 200,38 C222,46 238,62 255,74 C277,80 295,83 312,86 C335,88 360,89 392,89" fill="none" stroke="#8A8A8A" stroke-width="2.6" stroke-dasharray="1,4" stroke-linecap="round"/>
-
-        <g fill="#8FBF6B">
-          <circle cx="340" cy="10" r="3.2"/>
-          <circle cx="55" cy="14" r="3"/>
-          <circle cx="18" cy="66" r="3"/>
-        </g>
-
-        <!-- ティア鈴鹿神戸（事業所のほぼ真西・近い） -->
-        <circle cx="88" cy="36" r="3.6" fill="#FFFFFF" stroke="#7A6F63" stroke-width="1.6"/>
-        <text x="88" y="25" text-anchor="middle" font-size="8" fill="#4A3F35">ティア鈴鹿神戸</text>
-
-        <!-- まるしかくベース（事業所） -->
-        <g transform="translate(200,38)">
-          <path d="M0,0 L-6,-12 L-2,-12 L-2,-25 L2,-25 L2,-12 L6,-12 Z" fill="#D6503C"/>
-        </g>
-        <text x="200" y="11" text-anchor="middle" font-size="10.5" font-weight="700" fill="#D6503C">まるしかくベース</text>
-
-        <!-- 鈴鹿市立神戸小学校（事業所のほぼ真南・近い） -->
-        <g transform="translate(180,54)">
-          <rect x="-9" y="-7" width="18" height="11" fill="#CBB89A" stroke="#8A7A5E" stroke-width="1"/>
-          <polygon points="-11,-7 0,-15 11,-7" fill="#8A7A5E"/>
-          <rect x="-2.5" y="-1" width="5" height="5" fill="#8A7A5E"/>
-        </g>
-        <text x="180" y="70" text-anchor="middle" font-size="7.5" fill="#4A3F35">鈴鹿市立神戸小学校</text>
-
-        <!-- 鈴鹿市駅（事業所の南南東・徒歩4分） -->
-        <circle cx="255" cy="74" r="4" fill="#FFFFFF" stroke="#4A3F35" stroke-width="1.8"/>
-        <text x="255" y="66" text-anchor="middle" font-size="8" fill="#4A3F35">鈴鹿市駅</text>
-
-        <!-- 鈴鹿市役所（駅よりさらに南東） -->
-        <circle cx="312" cy="86" r="4" fill="#FFFFFF" stroke="#4A3F35" stroke-width="1.8"/>
-        <text x="320" y="83" text-anchor="start" font-size="8.5" fill="#4A3F35">鈴鹿市役所</text>
-
-        <g transform="translate(370,16)">
-          <circle r="9" fill="#FFFFFF" stroke="#7A6F63" stroke-width="1.4"/>
-          <path d="M0,-7 L2.4,0 L0,7 L-2.4,0 Z" fill="#7A6F63"/>
-          <text x="0" y="-11" text-anchor="middle" font-size="7" font-weight="700" fill="#7A6F63">N</text>
-        </g>
-      </svg>
+    <div class="sec-body cta-row">
+      <div class="cta-banner">
+        <p class="cta-main">利用者募集中</p>
+        <p class="cta-sub">まずは見学・体験から！</p>
+        <p class="cta-note">お気軽にお問い合わせください</p>
+      </div>
+      <div class="cta-badges">
+        <span class="cta-badge bus"><svg><use href="#icon-bus"/></svg>送迎あり</span>
+        <span class="cta-badge visit">見学<br>歓迎</span>
+      </div>
+      <div class="cta-photo-wrap">
+        <div class="cta-photo" role="img" aria-label="利用者が撮影した商品の植物（ステファニア・スベローサ）の写真"></div>
+        <p class="cta-photo-caption">利用者さんの撮影した植物<br>ステファニア・スベローサ</p>
+      </div>
     </div>
   </section>
 
-  <!-- フッター（連絡先・QR） -->
-  <footer class="foot">
-    <div class="foot-info">
-      <p class="foot-company">株式会社SOL</p>
-      <p class="foot-name">就労継続支援B型事業所 まるしかくベース</p>
-      <p>〒513-0801　三重県鈴鹿市神戸8丁目6-16</p>
-      <p>TEL　059-358-8866　／　営業時間　月〜金 10:00-16:00</p>
-      <p>marushikakubase.com</p>
+  <!-- ⑤アクセス・お問い合わせ -->
+  <section class="sec">
+    <div class="sec-head">
+      <span class="sec-num">5</span>
+      <span class="sec-pill">アクセス・お問い合わせ</span>
     </div>
-    <div class="foot-qr">
-      <canvas id="qr-canvas" width="220" height="220"></canvas>
-      <p class="qr-label">Instagram<br>@marushikakube_su</p>
+    <div class="sec-body access-row">
+      <div class="access-map">
+        <svg viewBox="0 0 260 130" role="img" aria-label="まるしかくベース周辺の簡易アクセスマップ（実際の位置関係に基づく）。鈴鹿市駅から徒歩4分">
+          <!-- 水路（OpenStreetMap実データに基づく形状） -->
+          <path d="M9,26 C40,27 66,28 84,29 C100,30 108,31 113,32 C120,37 125,42 127,45 C128,47 128.5,48 129,49 C132,54 135,58 137,61 C141,68 144,76 147,85" fill="none" stroke="#AFCBE0" stroke-width="2" stroke-linecap="round"/>
+          <!-- 鈴鹿線（ティア鈴鹿神戸～事業所～鈴鹿市駅～鈴鹿市役所方面） -->
+          <path d="M9,34 C27,36 44,38 60,39 C88,40 111,41 134,41 C149,48 160,60 172,70 C187,75 200,77 213,80 C229,82 246,83 253,83" fill="none" stroke="#8A8A8A" stroke-width="2.4" stroke-dasharray="1,4" stroke-linecap="round"/>
+
+          <g fill="#8FBF6B" opacity="0.55">
+            <circle cx="225" cy="14" r="3"/>
+            <circle cx="38" cy="16" r="2.8"/>
+            <circle cx="14" cy="74" r="2.8"/>
+          </g>
+
+          <!-- ティア鈴鹿神戸 -->
+          <circle cx="60" cy="39" r="3.2" fill="#FFFFFF" stroke="#7A6F63" stroke-width="1.5"/>
+          <text x="60" y="29" text-anchor="middle" font-size="7.4" fill="#4A3F35">ティア鈴鹿神戸</text>
+
+          <!-- まるしかくベース（事業所） -->
+          <g transform="translate(134,41)">
+            <path d="M0,0 L-5,-11 L-1.6,-11 L-1.6,-23 L1.6,-23 L1.6,-11 L5,-11 Z" fill="#D6503C"/>
+          </g>
+          <text x="134" y="14" text-anchor="middle" font-size="9" font-weight="700" fill="#D6503C">まるしかくベース</text>
+
+          <!-- 鈴鹿市立神戸小学校 -->
+          <g transform="translate(120,58)">
+            <rect x="-8" y="-6" width="16" height="10" fill="#CBB89A" stroke="#8A7A5E" stroke-width="1"/>
+            <polygon points="-10,-6 0,-13 10,-6" fill="#8A7A5E"/>
+            <rect x="-2.2" y="-1" width="4.4" height="4.5" fill="#8A7A5E"/>
+          </g>
+          <text x="120" y="72" text-anchor="middle" font-size="6.6" fill="#4A3F35">鈴鹿市立神戸小学校</text>
+
+          <!-- 鈴鹿市駅 -->
+          <circle cx="172" cy="70" r="3.6" fill="#FFFFFF" stroke="#4A3F35" stroke-width="1.7"/>
+          <text x="172" y="63" text-anchor="middle" font-size="7" fill="#4A3F35">鈴鹿市駅</text>
+
+          <!-- 鈴鹿市役所 -->
+          <circle cx="213" cy="80" r="3.6" fill="#FFFFFF" stroke="#4A3F35" stroke-width="1.7"/>
+          <text x="219" y="77" text-anchor="start" font-size="7.4" fill="#4A3F35">鈴鹿市役所</text>
+
+          <g transform="translate(240,14)">
+            <circle r="8" fill="#FFFFFF" stroke="#7A6F63" stroke-width="1.3"/>
+            <path d="M0,-6 L2.1,0 L0,6 L-2.1,0 Z" fill="#7A6F63"/>
+            <text x="0" y="-10" text-anchor="middle" font-size="6.2" font-weight="700" fill="#7A6F63">N</text>
+          </g>
+
+          <!-- 徒歩4分のラベル -->
+          <g transform="translate(190,98)">
+            <rect x="-30" y="-11" width="60" height="22" rx="4" fill="var(--accent)"/>
+            <text x="0" y="-1" text-anchor="middle" font-size="7.6" font-weight="700" fill="#FFFFFF">鈴鹿市駅から</text>
+            <text x="0" y="8" text-anchor="middle" font-size="7.6" font-weight="700" fill="#FFFFFF">徒歩4分</text>
+          </g>
+        </svg>
+      </div>
+      <div class="contact">
+        <p class="c-company">株式会社SOL</p>
+        <p class="c-name">就労継続支援B型事業所 まるしかくベース</p>
+        <p>〒513-0801　三重県鈴鹿市神戸8丁目6-16</p>
+        <p class="c-hours">利用時間　月〜金 10:00〜16:00</p>
+        <p class="c-tel">TEL　059-358-8866</p>
+        <p class="c-tel-note">お電話での問い合わせはこちら</p>
+        <div class="c-links">
+          <span><svg><use href="#icon-globe"/></svg>marushikakubase.com</span>
+          <span><svg><use href="#icon-cart"/></svg>marushikaku.base.ec</span>
+        </div>
+        <div class="qr-block">
+          <canvas id="qr-canvas" width="220" height="220"></canvas>
+          <div>
+            <p class="qr-label">Instagram<br>@marushikakube_su</p>
+            <span class="qr-note">日々の様子を配信中！</span>
+          </div>
+        </div>
+      </div>
     </div>
-  </footer>
+  </section>
+
+  <!-- フッター帯 -->
+  <div class="foot-band">
+    <p>まるしかくベースは、あなたの「やってみたい」を応援します。</p>
+  </div>
 
 </div>
 
@@ -563,8 +806,8 @@
         color: { dark: '#23302A', light: '#FFFFFF' }
       }, function (err) {
         if (err) console.error('QRコード生成に失敗しました:', err);
-        canvas.style.width = '22mm';
-        canvas.style.height = '22mm';
+        canvas.style.width = '19mm';
+        canvas.style.height = '19mm';
       });
     }
   })();
