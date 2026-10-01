@@ -549,6 +549,111 @@ ul, ol {
   color: var(--color-text-light);
 }
 
+/* Strengths section (3つの強み) */
+.eyebrow {
+  display: inline-block;
+  color: var(--color-primary-dark);
+  background: #fff;
+  border: 1px solid var(--color-accent-soft);
+  border-radius: 999px;
+  padding: 6px 18px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  font-size: 0.85rem;
+  margin-bottom: 1em;
+}
+
+.strengths-intro-img {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  margin: 2em auto;
+  border-radius: 20px;
+  box-shadow: 0 10px 24px rgba(122, 96, 55, 0.1);
+}
+
+.strengths-overview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 1.5em 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.strengths-overview li {
+  flex: 1 1 200px;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 14px 18px;
+  box-shadow: 0 10px 24px rgba(122, 96, 55, 0.06);
+  font-weight: 700;
+}
+
+.strengths-overview .strength-num {
+  display: block;
+  margin: 0 0 0.2em;
+}
+
+.feature-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 40px;
+  margin-top: 3em;
+}
+
+.feature-row.reverse {
+  flex-direction: row-reverse;
+}
+
+.feature-media {
+  flex: 1 1 280px;
+}
+
+.feature-media .feature-img {
+  display: block;
+  width: 100%;
+  border-radius: 20px;
+  box-shadow: 0 10px 24px rgba(122, 96, 55, 0.1);
+}
+
+.feature-media .shop-grid-widget {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin: 0;
+}
+
+.feature-text {
+  flex: 1 1 280px;
+}
+
+.strength-num {
+  margin: 0 0 0.3em;
+  color: var(--color-primary-dark);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  font-size: 0.85rem;
+}
+
+.feature-text h3 {
+  color: var(--color-primary-dark);
+  font-size: 1.3rem;
+  margin-bottom: 0.5em;
+}
+
+.ok-badge {
+  display: inline-block;
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 700;
+  padding: 6px 18px;
+  border-radius: 999px;
+  margin: 0 0 0.8em;
+}
+
 .card h3 {
   color: var(--color-primary-dark);
   font-size: 1.1rem;
