@@ -604,10 +604,6 @@ ul, ol {
   margin-top: 3em;
 }
 
-.feature-row.reverse {
-  flex-direction: row-reverse;
-}
-
 .feature-media {
   flex: 1 1 280px;
 }
