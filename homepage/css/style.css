@@ -498,6 +498,57 @@ ul, ol {
   height: 28px;
 }
 
+/* Wage simulation (used in B-type section) */
+.wage-sim {
+  margin-top: 2em;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  padding: 32px 28px;
+  box-shadow: 0 10px 24px rgba(122, 96, 55, 0.06);
+}
+
+.wage-sim-question {
+  font-weight: 700;
+  margin-top: 0;
+}
+
+.wage-sim-days {
+  margin-bottom: 1.5em;
+}
+
+.wage-sim-result {
+  background: var(--color-accent-soft);
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 1em;
+}
+
+.wage-sim-breakdown {
+  margin: 0 0 8px;
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+}
+
+.wage-sim-total {
+  margin: 0;
+  font-weight: 700;
+}
+
+.wage-sim-amount {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--color-primary-dark);
+  margin-left: 8px;
+}
+
+.wage-sim-sub {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+}
+
 .card h3 {
   color: var(--color-primary-dark);
   font-size: 1.1rem;
@@ -519,6 +570,31 @@ ul, ol {
 
 .card-link:hover {
   text-decoration: underline;
+}
+
+/* Recommend grid (compact checklist style, overrides .card-grid/.card/.card-icon) */
+.recommend-grid {
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 14px;
+}
+
+.recommend-grid .card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+}
+
+.recommend-grid .card-icon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 0;
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.recommend-grid .card p {
+  font-size: 0.95rem;
 }
 
 /* Recruit banner */

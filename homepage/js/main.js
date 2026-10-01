@@ -93,6 +93,38 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  var wageSimDays = document.getElementById('wageSimDays');
+  var wageSimAmount = document.getElementById('wageSimAmount');
+  var wageSimBreakdown = document.getElementById('wageSimBreakdown');
+  if (wageSimDays && wageSimAmount && wageSimBreakdown) {
+    var WAGE_PER_DAY = 900;
+    var WEEKS_PER_MONTH = 4.33;
+    var WAGE_BONUS = { 1: 0, 2: 0, 3: 10000, 4: 20000, 5: 30000 };
+
+    var updateWageSim = function (days) {
+      var monthlyDays = Math.round(days * WEEKS_PER_MONTH);
+      var baseAmount = WAGE_PER_DAY * monthlyDays;
+      var bonus = WAGE_BONUS[days] || 0;
+      if (bonus > 0) {
+        var total = baseAmount + bonus;
+        wageSimBreakdown.textContent = '900円 × ' + monthlyDays + '日 = ' + baseAmount.toLocaleString() + '円 ＋ 週' + days + '日利用ボーナス ' + bonus.toLocaleString() + '円';
+        wageSimAmount.textContent = '合計 約' + total.toLocaleString() + '円';
+      } else {
+        wageSimBreakdown.textContent = '900円 × ' + monthlyDays + '日';
+        wageSimAmount.textContent = '約' + baseAmount.toLocaleString() + '円';
+      }
+    };
+
+    wageSimDays.querySelectorAll('input[name="wage-sim-day"]').forEach(function (input) {
+      input.addEventListener('change', function () {
+        updateWageSim(Number(input.value));
+      });
+    });
+
+    var wageSimChecked = wageSimDays.querySelector('input[name="wage-sim-day"]:checked');
+    updateWageSim(wageSimChecked ? Number(wageSimChecked.value) : 3);
+  }
+
   var contactForm = document.getElementById('contactForm');
   var hiddenIframe = document.getElementById('hidden_iframe');
   var formThanks = document.getElementById('formThanks');
