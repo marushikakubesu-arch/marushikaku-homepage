@@ -448,7 +448,7 @@
   .contact .c-links svg{ width:3.8mm; height:3.8mm; color:var(--green); }
 
   /* ---------- 表裏（両面）版の追加・調整 2026-10-05 ---------- */
-  .page.front{ gap:9.5mm; }
+  .page.front{ gap:8.5mm; }
   .page.back{ gap:5.5mm; }
   .page + .page{ margin-top:6mm; }
   .page > .foot-band{ margin-top:auto; }
@@ -465,8 +465,8 @@
   .appeal-note{ font-size:11pt; }
   .sec-body{ margin-top:2.6mm; }
   .str-grid{ gap:4mm; }
-  .str-photo{ height:58mm; }
-  .str-wage{ height:58mm; padding-top:6mm; }
+  .str-photo{ height:51mm; }
+  .str-wage{ height:51mm; padding-top:5mm; }
   .str-tag{ font-size:10pt; padding:1.1mm 4mm; }
   .w-lead{ font-size:10.5pt; }
   .w-num{ font-size:27pt; white-space:nowrap; }
@@ -527,6 +527,19 @@
   .contact .c-walk{ font-size:11.5pt; }
   .contact .c-tel{ font-size:20pt; font-weight:900; color:var(--accent-dark); letter-spacing:0.01em; }
   .contact .c-links span{ font-size:9.6pt; }
+  .str-card{ display:grid; grid-template-rows:auto 1fr auto; }
+  .str-foot{
+    height:19mm;
+    display:flex;
+    align-items:center;
+    gap:2.6mm;
+    padding:0 3.4mm;
+    background:var(--green-soft);
+  }
+  .str-foot canvas{ flex:none; width:14mm; height:14mm; display:block; background:#FFFFFF; }
+  .str-foot p{ margin:0; font-size:7.8pt; font-weight:800; line-height:1.45; color:var(--ink); }
+  .str-foot .foot-pointer{ color:var(--green-dark); }
+  .str-foot .str-disc{ margin:0; font-size:7.2pt; font-weight:600; color:var(--ink-soft); line-height:1.4; }
   .qr-pair{ display:flex; gap:6mm; margin-top:1.2mm; }
   .qr-pair .qr-block canvas{ width:22mm; height:22mm; }
 
@@ -687,12 +700,19 @@
           <p class="str-title">本物の商品として、<br>お客様の元へ届く</p>
           <p class="str-sub">育てた植物を店舗とネットショップで販売。社会に出る実感があります。</p>
         </div>
+        <div class="str-foot">
+          <canvas data-qr="https://marushikaku.base.ec/" width="220" height="220"></canvas>
+          <p>実際に販売されている<br>商品が、こちらから<br>ご覧いただけます</p>
+        </div>
       </div>
       <div class="str-card">
         <div class="str-photo p-pc" role="img" aria-label="PC作業スペース"><span class="str-tag">強み02</span></div>
         <div class="str-body">
           <p class="str-title">次につながる<br>スキルが身につく</p>
           <p class="str-sub">水やり・梱包から商品撮影、PCでのデータ入力まで全工程を経験。</p>
+        </div>
+        <div class="str-foot">
+          <p class="foot-pointer">仕事の流れ・事業所の様子は<br>裏面をご覧ください →</p>
         </div>
       </div>
       <div class="str-card">
@@ -705,6 +725,8 @@
         <div class="str-body">
           <p class="str-title">工賃も<br>しっかり獲得できる</p>
           <p class="str-sub">週の利用日数に応じて、工賃の目安が上がります。</p>
+        </div>
+        <div class="str-foot">
           <p class="str-disc">※あくまで目安です。実際の工賃は作業内容や実績により変動します。</p>
         </div>
       </div>
@@ -921,7 +943,7 @@
           <span><svg><use href="#icon-cart"/></svg>marushikaku.base.ec</span>
         </div>
         <div class="qr-pair">
-          <div class="qr-block"><canvas data-qr="https://marushikaku.base.ec/" width="220" height="220"></canvas><p class="qr-label">オンラインショップ<br>（BASE）</p></div>
+          <div class="qr-block"><canvas data-qr="https://marushikaku.base.ec/" width="220" height="220"></canvas><p class="qr-label">実際に販売されている商品が<br>こちらからご覧いただけます</p></div>
           <div class="qr-block"><canvas data-qr="https://www.instagram.com/marushikakube_su/" width="220" height="220"></canvas><p class="qr-label">Instagram<br>@marushikakube_su</p></div>
         </div>
       </div>
