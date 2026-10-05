@@ -107,6 +107,8 @@ homepage/
 - marushikakubase.comプロパティに`sitemap.xml`を送信し、ステータス「成功」を確認
 
 ## 最終更新日
+2026-10-05（Search Console実績〔9/2〜10/2：表示1,040回・クリック41回・平均順位4.2位。一般検索はクリック0〜少数〕を受けて、`index.html`のtitle・meta description・og/twitterの文面を「鈴鹿市の就労継続支援B型｜見学・体験受付中｜まるしかくベース」へ変更し、JSON-LDに営業時間〔月〜金10:00-16:00〕を追加。効果は2〜4週間後にSearch ConsoleのCTRで確認する。旧URL〔github.io〕がGoogle検索に残っている件は、HP側は`marushikakubase.com`に統一済みのため、GitHub Pages設定とSearch ConsoleのURL検査での確認が必要）
+
 2026-10-02（`#strengths`の`.feature-row`の並びを「テキストが先、画像・ウィジェットが後」に統一し、未使用になった`.feature-row.reverse`をCSSから削除／フッターにWAMNET事業所情報・LITALICO仕事ナビへのリンクを追加／`#contact`の`dl`に「送迎」「お弁当」の項目を追加）
 
 2026-10-01（3つの強みセクションにSTRENGTH01の前に水やり写真を追加、STRENGTH01のBASE商品ウィジェットを異なる植物2種に差し替え、`.strength-num`の表記を「STRENGTH 01/02/03」から「強み01/02/03」に変更、`#strengths`の見出しを「植物を育てながら、ちゃんと働く」から「植物を育てながら、『できる』を増やしていく」に変更、リード文と水やり写真の間に3つの強みのタイトルだけをまとめた概要ブロック`.strengths-overview`を追加）
