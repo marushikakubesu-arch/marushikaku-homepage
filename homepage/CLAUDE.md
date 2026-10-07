@@ -54,7 +54,8 @@ homepage/
 │   ├── post-11.html（実際の投稿。面談とこの前のサプライズ）
 │   ├── post-12.html（実際の投稿。新しいことの挑戦）
 │   ├── post-13.html（実際の投稿。今月ラスト）
-│   └── post-14.html（実際の投稿。初めての植え替え）
+│   ├── post-14.html（実際の投稿。初めての植え替え）
+│   └── post-15.html（実際の投稿。水やりと商品カード作り）
 └── archive/           # 使わなくなった素材の退避先（post-1〜3.htmlはサンプル記事のため退避済み）
 ```
 リポジトリ直下の `.github/workflows/deploy.yml` がGitHub Pagesへの自動公開を担当（`homepage/`フォルダ配下の変更をトリガーに実行）。
@@ -83,7 +84,7 @@ homepage/
 - SEO対策（2026-09-11、「就労継続支援B型事業所 鈴鹿市」での検索順位向上を目的に実施）：`index.html`・ブログ記事(`blog/post-*.html`)にcanonical・OGP（og:title等）・Twitterカードを追加。`index.html`にはLocalBusinessのJSON-LD構造化データ（施設名・住所・電話番号・sameAs）も追加。あわせて`robots.txt`・`sitemap.xml`を新規作成。新しいページ（ブログ記事等）を追加する際は、同様にcanonical・OGP・meta descriptionを設定し、`sitemap.xml`にもURLを1行追加すること
 
 ## TODO
-- [ ] 利用者ブログは現在post-4（水やりについて）・post-5（写真撮影）・post-6（梱包について）・post-7（販売と写真撮影）・post-8（撮影デー）・post-9（今までの作業を通して思ったことと植物の紹介）・post-10（事業所の見学）・post-11（面談とこの前のサプライズ）・post-12（新しいことの挑戦）・post-13（今月ラスト）・post-14（初めての植え替え）を公開中。サンプル記事（post-1〜3）はarchiveへ退避済み。新しい記事が集まり次第、随時追加
+- [ ] 利用者ブログは現在post-4（水やりについて）・post-5（写真撮影）・post-6（梱包について）・post-7（販売と写真撮影）・post-8（撮影デー）・post-9（今までの作業を通して思ったことと植物の紹介）・post-10（事業所の見学）・post-11（面談とこの前のサプライズ）・post-12（新しいことの挑戦）・post-13（今月ラスト）・post-14（初めての植え替え）・post-15（水やりと商品カード作り）を公開中。サンプル記事（post-1〜3）はarchiveへ退避済み。新しい記事が集まり次第、随時追加
 - [ ] BASEで商品の入れ替えがあった際は、shopセクションのiframe（items/xxxxx/widget）を更新
 - [ ] Googleビジネスプロフィールの口コミ（クチコミ）を、利用者さん・ご家族に依頼して増やしていく（「就労継続支援B型事業所 鈴鹿市」のローカル検索対策として重要。件数が少ないほど効果が大きい）
 
@@ -108,6 +109,8 @@ homepage/
 - marushikakubase.comプロパティに`sitemap.xml`を送信し、ステータス「成功」を確認
 
 ## 最終更新日
+2026-10-07（利用者ブログに新規記事post-15「水やりと商品カード作り」を追加。`index.html`の一覧・`sitemap.xml`も更新。先にpost-14〔初めての植え替え〕が公開済みだったため、番号をpost-15に振り直した）
+
 2026-10-05（利用者ブログにpost-14「初めての植え替え」を追加。`index.html`の一覧・`sitemap.xml`も更新）
 
 2026-10-05（Search Console実績〔9/2〜10/2：表示1,040回・クリック41回・平均順位4.2位。一般検索はクリック0〜少数〕を受けて、`index.html`のtitle・meta description・og/twitterの文面を「鈴鹿市の就労継続支援B型｜見学・体験受付中｜まるしかくベース」へ変更し、JSON-LDに営業時間〔月〜金10:00-16:00〕を追加。効果は2〜4週間後にSearch ConsoleのCTRで確認する。旧URL〔github.io〕がGoogle検索に残っている件は、HP側は`marushikakubase.com`に統一済みのため、GitHub Pages設定とSearch ConsoleのURL検査での確認が必要）
