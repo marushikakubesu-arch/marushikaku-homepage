@@ -48,6 +48,14 @@ h2{font-size:16px;margin:14px 0 8px}
 .cd{border:1px solid var(--bd);background:#fff;border-radius:8px;min-height:64px;padding:3px 1px;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--tx);overflow:hidden}
 .cd b{font-size:13px}.cd i{font-style:normal;white-space:nowrap}
 .cd.t{border-color:var(--g);background:var(--gl)}.cd.sel{outline:2px solid var(--g)}
+.alb{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.ai{position:relative}.ai img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;display:block}
+.ai span{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);color:#fff;font-size:11px;text-align:center;border-radius:0 0 8px 8px;padding:1px 0}
+.lb{align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,.85);color:#fff;padding:12px;text-align:center}
+.lb figure{margin:0;flex:1;min-width:0}.lb figcaption{font-size:12px;margin-top:4px}
+.lb img{width:100%;max-height:68vh;object-fit:contain;border-radius:8px}
+.cmp{display:flex;gap:6px;width:100%}
+.lb .btn.s{background:#fff}
 .cw{color:var(--bl)}.cf{color:var(--g)}.dn{color:var(--mu)}
 </style>
 </head>
@@ -192,7 +200,7 @@ function render(){
     const items = [];
     S.plants.forEach(p => ["water","fert"].forEach(t => { const d = dueInfo(p, t); if (d?.due) items.push({p,t,d}); }));
     items.sort((a,b) => b.d.late - a.d.late);
-    main.innerHTML = items.length ? items.map(({p,t,d}) => `<div class="card row">${thumb(p)}<div class="grow"><b>${esc(p.name)}</b><div class="mu">${TYPE[t]}　<span class="due">${d.text}</span></div></div><button class="btn sm ${t==="water"?"w":""}" data-act="done" data-id="${p.id}" data-t="${t}">済</button></div>`).join("")
+    main.innerHTML = items.length ? items.map(({p,t,d}) => `<div class="card row">${thumb(p)}<div class="grow"><b>${esc(p.name)}</b><div class="mu">${TYPE[t]}　<span class="due">${d.text}</span></div></div>${t==="water"?`<button class="btn sm s" data-act="waterphoto" data-id="${p.id}">📷</button>`:""}<button class="btn sm ${t==="water"?"w":""}" data-act="done" data-id="${p.id}" data-t="${t}">済</button></div>`).join("")
       : `<div class="empty">${S.plants.length ? "今日やることはありません 🎉" : "「植物」タブから植物を登録しましょう"}</div>`;
   } else if (tab === "calendar") {
     main.innerHTML = calHtml();
@@ -228,7 +236,8 @@ function renderPlant(main){
   <div class="card"><div>${esc(p.species)||"品種未設定"}</div><div class="mu">購入日：${esc(p.bought)||"-"}　置き場所：${pl?esc(pl.name):"-"}</div>
   <div class="mu">💧${w?`${w.days}日おき（<span class="${w.due?"due":"ok"}">${w.text}</span>）`:"未設定"}　🧪${f?`${f.days}日おき（<span class="${f.due?"due":"ok"}">${f.text}</span>）`:"未設定"}</div>
   ${p.memo?`<div style="margin-top:6px">${esc(p.memo)}</div>`:""}</div>
-  <div class="btns"><button class="btn w" data-act="done" data-id="${p.id}" data-t="water">💧水やり済</button><button class="btn" data-act="done" data-id="${p.id}" data-t="fert">🧪肥料済</button><button class="btn s" data-act="growth" data-id="${p.id}">🌱成長記録</button><button class="btn s" data-act="lux" data-id="${p.id}">☀️LUX</button></div>
+  <div class="btns"><button class="btn w" data-act="done" data-id="${p.id}" data-t="water">💧水やり済</button><button class="btn w" data-act="waterphoto" data-id="${p.id}">💧📷水やり＋写真</button><button class="btn" data-act="done" data-id="${p.id}" data-t="fert">🧪肥料済</button><button class="btn s" data-act="growth" data-id="${p.id}">📷成長記録（写真）</button><button class="btn s" data-act="lux" data-id="${p.id}">☀️LUX</button></div>
+  ${logs.some(l => l.photo) ? `<h2>写真アルバム</h2>${logs.filter(l => l.photo).length > 1 ? `<div class="btns"><button class="btn s sm" data-act="cmplatest" data-id="${p.id}">🔍 最初の写真と最新を比較</button></div>` : ""}<div class="alb">${logs.filter(l => l.photo).map(l => `<div class="ai" data-act="photo" data-id="${l.id}"><img src="${l.photo}"><span>${l.date.slice(2)}</span></div>`).join("")}</div>` : ""}
   <h2>履歴</h2><div class="card">${logs.length ? logs.map(l => logHtml(l)).join("") : `<div class="mu">まだ記録がありません</div>`}</div>
   <button class="btn d" data-act="delplant" data-id="${p.id}">この植物を削除</button>`;
 }
@@ -270,6 +279,20 @@ function addLog(base, fields, title){
   });
 }
 
+// 写真の拡大表示。cmp=true で、その植物の最初の写真と並べて比較する
+function openPhoto(id, cmp){
+  const l = S.logs.find(x => x.id === id); if (!l) return;
+  const all = logsOf(x => x.plantId === l.plantId && x.photo), first = all[all.length - 1], can = first && first.id !== l.id;
+  const fig = (o, label) => `<figure><img src="${o.photo}"><figcaption>${label}<br>${esc(o.date)}${o.value!=="" && o.value!=null ? "　草丈 "+esc(o.value)+" cm" : ""}${o.note?"<br>"+esc(o.note):""}</figcaption></figure>`;
+  let m = document.querySelector(".lb");
+  if (!m) { m = document.createElement("div"); m.className = "modal lb"; document.body.appendChild(m); }
+  m.innerHTML = (cmp && can ? `<div class="cmp">${fig(first, "最初")}${fig(l, dayDiff(l.date, first.date) + "日後")}</div>` : fig(l, TYPE[l.type]))
+    + `<div class="btns">${can ? `<button class="btn s sm" id="lbt">${cmp ? "1枚で見る" : "最初の写真と比較"}</button>` : ""}<button class="btn s sm" id="lbx">閉じる</button></div>`;
+  m.onclick = e => { if (e.target === m) m.remove(); };
+  m.querySelector("#lbx").onclick = () => m.remove();
+  const t = m.querySelector("#lbt"); if (t) t.onclick = () => openPhoto(id, !cmp);
+}
+
 // ---------- イベント ----------
 document.addEventListener("click", e => {
   const nav = e.target.closest("nav button");
@@ -279,6 +302,9 @@ document.addEventListener("click", e => {
   if (a === "calday") { calSel = id; render(); }
   else if (a === "calprev" || a === "calnext") { const d = new Date(calM.y, calM.m + (a === "calnext" ? 1 : -1), 1); calM = {y: d.getFullYear(), m: d.getMonth()}; calSel = ymd(d); render(); }
   else if (a === "caltoday") { const d = new Date(); calM = {y: d.getFullYear(), m: d.getMonth()}; calSel = today(); render(); }
+  else if (a === "photo") openPhoto(id, true);
+  else if (a === "cmplatest") { const ph = logsOf(l => l.plantId === id && l.photo); if (ph.length > 1) openPhoto(ph[0].id, true); }
+  else if (a === "waterphoto") addLog({type:"water", plantId:id}, [{n:"photo",l:"写真（任意）",t:"photo"},{n:"note",l:"メモ",t:"textarea"}], "💧水やり（写真つき）");
   else if (a === "plant") { view = {k:"plant", id}; render(); scrollTo(0,0); }
   else if (a === "place") { view = {k:"place", id}; render(); scrollTo(0,0); }
   else if (a === "done") { S.logs.push({id:uid(), type:el.dataset.t, plantId:id, date:today(), value:"", note:"", photo:null, u:now()}); save(); render(); }
@@ -326,8 +352,29 @@ function loadGis(){
 }
 // interactive=true: 画面操作から呼ばれたときだけログイン画面を出す
 // pick=true: アカウント選択画面を必ず出す（別のGoogleアカウントへ切り替え）
+// ホーム画面アプリ(iPhone)は小窓が開けないため、画面ごとGoogleのログインへ移って戻る方式を使う
+const STANDALONE = !!navigator.standalone || matchMedia("(display-mode: standalone)").matches;
+const REDIRECT_URI = "https://marushikakubesu-arch.github.io/plant_care_app/";
+function takeRedirectToken(){
+  const h = new URLSearchParams(location.hash.slice(1));
+  if (!h.has("access_token") && !h.has("error")) return false;
+  history.replaceState(null, "", location.pathname + location.search);
+  if (h.get("error")) { syncMsg = "連携できませんでした：" + h.get("error"); return false; }
+  if (!h.get("state") || h.get("state") !== lsGet("plant_oauth_state")) { syncMsg = "連携の確認に失敗しました。もう一度お試しください"; return false; }
+  token = h.get("access_token"); tokenExp = now() + (+h.get("expires_in") || 3600) * 1000;
+  try { localStorage.removeItem("plant_oauth_state"); } catch {}
+  return true;
+}
 async function getToken(interactive, pick){
   if (!pick && token && now() < tokenExp - 60000) return token;
+  if (STANDALONE) {
+    if (!interactive) throw new Error("同期ボタンを押してください");
+    const st = [...crypto.getRandomValues(new Uint8Array(16))].map(b => b.toString(16).padStart(2, "0")).join("");
+    try { localStorage.setItem("plant_oauth_state", st); } catch {}
+    location.href = "https://accounts.google.com/o/oauth2/v2/auth?" + new URLSearchParams({client_id: GOOGLE_CLIENT_ID, redirect_uri: REDIRECT_URI,
+      response_type: "token", scope: "https://www.googleapis.com/auth/drive.appdata", state: st, ...(pick ? {prompt: "select_account"} : {})});
+    return new Promise(() => {});
+  }
   await loadGis();
   return new Promise((ok, ng) => {
     tokenClient = tokenClient || google.accounts.oauth2.initTokenClient({
@@ -391,7 +438,11 @@ function scheduleSync(){
 }
 
 // ---------- 起動 ----------
-function start(){ dbGet().then(d => { if (d) S = normalize(d); render(); scheduleSync(); }); }
+function start(){ dbGet().then(d => {
+  if (d) S = normalize(d);
+  const back = takeRedirectToken(); if (back || syncMsg) tab = "settings";
+  render(); if (back) syncNow(false); else scheduleSync();
+}); }
 dbReq.onsuccess = start;
 if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js");
 </script>
