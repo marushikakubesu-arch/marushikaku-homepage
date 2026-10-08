@@ -19,12 +19,12 @@ HTML/CSS/JavaScript単体（ライブラリなし）、IndexedDBで端末内保�
 - サーバー不要・個人情報なし。データは端末のブラウザ内にだけ保存し、機種変更用に書き出し/読み込みを用意。
 - 写真は縮小してJPEG化して保存（容量節約）。
 - 記録は1つのlogs配列に種類(type)で統一：water/fert/growth/lux/air。LUXと空気循環は置き場所にも紐づく。
-- スマホへの導入にはHTTPS公開が必要（現状はPCで動作確認のみ。公開方法は未決定）。
+- スマホへの導入にはHTTPS公開が必要。公開用の別リポジトリ（marushikakubesu-arch/plant_care_app、GitHub Pages）から公開。公開URL: https://marushikakubesu-arch.github.io/plant_care_app/
+- 更新時はこのフォルダの内容を公開用リポジトリへ反映する（ホームページとは別管理）。
 
 ## TODO
-- PCでの動作確認（python -m http.server 8080 → http://localhost:8080/）
-- 公開方法の決定（GitHub Pages等）とスマホ実機確認
-- 必要なら植物ごとの成長グラフ、LUX推移グラフ
+- スマホ実機での使い勝手確認
+- 必要なら成長・LUXの推移グラフ、置き場所の移動履歴
 
 ## 最終更新日
 2026-10-08
