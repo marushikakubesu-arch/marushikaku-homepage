@@ -255,7 +255,7 @@ function calHtml(){
   const detail = items.length ? items.map(({p, t, done}) => {
     const d = !done && calSel === td ? dueInfo(p, t) : null;
     const st = done ? `<span class="ok">✓済み</span>` : d ? `<span class="${d.late > 0 || d.text === "記録なし" ? "due" : ""}">${d.text}</span>` : "予定";
-    const btn = !done && calSel === td ? `<button class="btn sm ${t==="water"?"w":""}" data-act="done" data-id="${p.id}" data-t="${t}">済</button>` : "";
+    const btn = !done && calSel === td ? `<button class="btn sm ${t==="water"?"w":""}" data-act="done" data-id="${p.id}" data-t="${t}">${{water:"水やり",fert:"肥料",repot:"植え替え"}[t]}</button>` : "";
     return `<div class="card row" data-act="plant" data-id="${p.id}">${thumb(p)}<div class="grow"><b>${esc(p.name)}</b><div class="mu">${TYPE[t]}　${st}</div></div>${btn}</div>`;
   }).join("") : `<div class="empty">この日の予定・記録はありません</div>`;
   return `<div class="row" style="justify-content:space-between;margin-bottom:8px"><button class="btn s sm" data-act="calprev">‹</button><b>${y}年${m+1}月</b><span><button class="btn s sm" data-act="caltoday">今日</button> <button class="btn s sm" data-act="calnext">›</button></span></div>
