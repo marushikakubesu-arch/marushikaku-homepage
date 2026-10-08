@@ -58,11 +58,17 @@ h2{font-size:16px;margin:14px 0 8px}
 <script>
 "use strict";
 // ---------- 保存（IndexedDBに全データを1件で保存） ----------
-let S = {plants:[], places:[], logs:[]};
+// 各データ(plants/places/logs)は更新日時 u(ms) を持つ。削除は S.del に {id,u} の印を残す（同期用）。
+let S = {plants:[], places:[], logs:[], del:[]};
 const dbReq = indexedDB.open("plant_care", 1);
 dbReq.onupgradeneeded = () => dbReq.result.createObjectStore("kv");
 function dbGet(){return new Promise(r=>{const q=dbReq.result.transaction("kv").objectStore("kv").get("state");q.onsuccess=()=>r(q.result);q.onerror=()=>r(null);});}
-function save(){dbReq.result.transaction("kv","readwrite").objectStore("kv").put(S,"state");}
+function saveLocal(){dbReq.result.transaction("kv","readwrite").objectStore("kv").put(S,"state");}
+function save(){ saveLocal(); scheduleSync(); }
+const now = () => Date.now();
+const touch = o => { o.u = now(); return o; };
+function tomb(ids){ const u = now(); ids.forEach(id => S.del.push({id, u})); }
+function normalize(d){ d.del = d.del || []; ["plants","places","logs"].forEach(k => d[k].forEach(o => { if (typeof o.u !== "number") o.u = 0; })); return d; }
 
 // ---------- ユーティリティ ----------
 const $ = s => document.querySelector(s);
@@ -153,7 +159,7 @@ function render(){
       return `<div class="card" data-act="place" data-id="${pl.id}"><b>📍${esc(pl.name)}</b> <span class="mu">${n}鉢</span><div class="mu">☀️${lx ? lx.value+" lux ("+lx.date+")" : "LUX未記録"}</div><div class="mu">🌀${ar ? esc(ar.note||"記録あり")+" ("+ar.date+")" : "空気循環 未記録"}</div></div>`;
     }).join("") : `<div class="empty">右下の＋で置き場所を登録（例：リビング窓際）</div>`;
   } else {
-    main.innerHTML = `<div class="card"><b>データのバックアップ</b><div class="mu">データはこの端末のブラウザ内にだけ保存されています。機種変更前に書き出してください。</div><div class="btns"><button class="btn" data-act="export">書き出す</button><button class="btn s" data-act="import">読み込む</button></div></div><div class="mu">植物 ${S.plants.length} / 場所 ${S.places.length} / 記録 ${S.logs.length}</div>`;
+    main.innerHTML = `<div class="card"><b>複数端末の同期（Googleドライブ）</b>${!GOOGLE_CLIENT_ID ? `<div class="mu">未設定です（OAuthクライアントIDが必要）</div>` : `<div class="mu" id="syncst">${esc(syncStatus())}</div><div class="btns"><button class="btn" data-act="sync">${localStorage.getItem("plant_sync_on")?"今すぐ同期":"Googleドライブと連携"}</button></div>`}</div><div class="card"><b>データのバックアップ</b><div class="mu">データはこの端末のブラウザ内にだけ保存されています。機種変更前に書き出してください。</div><div class="btns"><button class="btn" data-act="export">書き出す</button><button class="btn s" data-act="import">読み込む</button></div></div><div class="mu">植物 ${S.plants.length} / 場所 ${S.places.length} / 記録 ${S.logs.length}</div>`;
   }
 }
 
@@ -202,17 +208,17 @@ function plantForm(p){
   ], o => {
     if (!o.name) return;
     const photo = o.photo || p.photo || null; delete o.photo;
-    if (isNew) S.plants.push({id:uid(), ...o, photo}); else Object.assign(p, o, {photo});
+    if (isNew) S.plants.push({id:uid(), ...o, photo, u:now()}); else Object.assign(p, o, {photo}, {u:now()});
   });
 }
 function placeForm(pl){
   const isNew = !pl; pl = pl || {};
   openForm(isNew ? "置き場所を登録" : "置き場所を編集", [{n:"name",l:"名前（必須）",v:pl.name},{n:"memo",l:"メモ（窓の向きなど）",t:"textarea",v:pl.memo}],
-    o => { if (!o.name) return; if (isNew) S.places.push({id:uid(), ...o}); else Object.assign(pl, o); });
+    o => { if (!o.name) return; if (isNew) S.places.push({id:uid(), ...o, u:now()}); else Object.assign(pl, o, {u:now()}); });
 }
 function addLog(base, fields, title){
   openForm(title, [{n:"date",l:"日付",t:"date",v:today()}, ...fields], o => {
-    S.logs.push({id:uid(), value:"", note:"", photo:null, ...base, ...o});
+    S.logs.push({id:uid(), value:"", note:"", photo:null, ...base, ...o, u:now()});
   });
 }
 
@@ -224,21 +230,22 @@ document.addEventListener("click", e => {
   const id = el.dataset.id, a = el.dataset.act;
   if (a === "plant") { view = {k:"plant", id}; render(); scrollTo(0,0); }
   else if (a === "place") { view = {k:"place", id}; render(); scrollTo(0,0); }
-  else if (a === "done") { S.logs.push({id:uid(), type:el.dataset.t, plantId:id, date:today(), value:"", note:"", photo:null}); save(); render(); }
+  else if (a === "done") { S.logs.push({id:uid(), type:el.dataset.t, plantId:id, date:today(), value:"", note:"", photo:null, u:now()}); save(); render(); }
   else if (a === "growth") addLog({type:"growth", plantId:id}, [{n:"value",l:"草丈（cm）",t:"number"},{n:"note",l:"メモ",t:"textarea"},{n:"photo",l:"写真",t:"photo"}], "成長記録");
   else if (a === "lux") addLog({type:"lux", plantId:id, placeId:plantById(id).placeId||null}, [{n:"value",l:"LUX",t:"number"},{n:"note",l:"メモ",t:"textarea"}], "LUXを記録");
   else if (a === "placelux") addLog({type:"lux", placeId:id}, [{n:"value",l:"LUX",t:"number"},{n:"note",l:"メモ（時間帯・天気など）",t:"textarea"}], "LUXを記録");
   else if (a === "placeair") addLog({type:"air", placeId:id}, [{n:"value",l:"稼働時間（分）",t:"number"},{n:"note",l:"メモ（サーキュレーターの向き・強さなど）",t:"textarea"}], "空気循環を記録");
-  else if (a === "dellog") { if (confirm("この記録を削除しますか？")) { S.logs = S.logs.filter(l => l.id !== id); save(); render(); } }
-  else if (a === "delplant") { if (confirm("植物と記録を削除しますか？")) { S.plants = S.plants.filter(p => p.id !== id); S.logs = S.logs.filter(l => l.plantId !== id); view = null; save(); render(); } }
-  else if (a === "delplace") { if (confirm("置き場所を削除しますか？（記録も削除されます）")) { S.places = S.places.filter(p => p.id !== id); S.plants.forEach(p => { if (p.placeId === id) p.placeId = ""; }); S.logs = S.logs.filter(l => l.placeId !== id); view = null; save(); render(); } }
+  else if (a === "dellog") { if (confirm("この記録を削除しますか？")) { tomb([id]); S.logs = S.logs.filter(l => l.id !== id); save(); render(); } }
+  else if (a === "delplant") { if (confirm("植物と記録を削除しますか？")) { tomb([id, ...S.logs.filter(l => l.plantId === id).map(l => l.id)]); S.plants = S.plants.filter(p => p.id !== id); S.logs = S.logs.filter(l => l.plantId !== id); view = null; save(); render(); } }
+  else if (a === "delplace") { if (confirm("置き場所を削除しますか？（記録も削除されます）")) { tomb([id, ...S.logs.filter(l => l.placeId === id).map(l => l.id)]); S.places = S.places.filter(p => p.id !== id); S.plants.forEach(p => { if (p.placeId === id) { p.placeId = ""; touch(p); } }); S.logs = S.logs.filter(l => l.placeId !== id); view = null; save(); render(); } }
   else if (a === "export") {
     const a2 = document.createElement("a"); a2.href = URL.createObjectURL(new Blob([JSON.stringify(S)], {type:"application/json"}));
     a2.download = "plant_care_backup_" + today() + ".json"; a2.click();
-  } else if (a === "import") {
+  } else if (a === "sync") syncNow(true);
+  else if (a === "import") {
     const i = document.createElement("input"); i.type = "file"; i.accept = ".json,application/json";
     i.onchange = async () => { try { const d = JSON.parse(await i.files[0].text()); if (!Array.isArray(d.plants) || !Array.isArray(d.places) || !Array.isArray(d.logs)) throw 0;
-      if (confirm("現在のデータを置き換えて読み込みますか？")) { S = d; save(); render(); } } catch { alert("読み込めないファイルです"); } };
+      if (confirm("現在のデータを置き換えて読み込みますか？")) { normalize(d); ["plants","places","logs"].forEach(k => d[k].forEach(touch)); S = d; save(); render(); } } catch { alert("読み込めないファイルです"); } };
     i.click();
   }
 });
@@ -246,8 +253,92 @@ $("#back").onclick = () => { view = null; render(); };
 $("#edit").onclick = () => view.k === "plant" ? plantForm(plantById(view.id)) : placeForm(placeById(view.id));
 $("#fab").onclick = () => tab === "plants" ? plantForm() : placeForm();
 
+// ---------- Googleドライブ同期（appDataFolder。サーバー不要） ----------
+// OAuthクライアントID（ウェブ）。公開されても問題ない種類の値。空のあいだは同期機能は使えない。
+const GOOGLE_CLIENT_ID = "218853536367-1krvvs2koi9q2av5hrld2ndcll43latp.apps.googleusercontent.com";
+const FILE_NAME = "plant_care.json", API = "https://www.googleapis.com";
+let token = null, tokenExp = 0, tokenClient = null, syncing = false, syncAgain = false, syncMsg = "", syncTimer = null;
+const lsGet = k => { try { return localStorage.getItem(k); } catch { return null; } };
+function syncStatus(){
+  const t = lsGet("plant_sync_last");
+  return syncMsg || (t ? "最終同期：" + new Date(+t).toLocaleString("ja-JP") : "まだ同期していません");
+}
+function setSyncMsg(m){ syncMsg = m; const el = $("#syncst"); if (el) el.textContent = syncStatus(); }
+
+function loadGis(){
+  return new Promise((ok, ng) => {
+    if (window.google?.accounts?.oauth2) return ok();
+    const s = document.createElement("script"); s.src = "https://accounts.google.com/gsi/client";
+    s.onload = ok; s.onerror = () => ng(new Error("Googleに接続できません（オフライン？）")); document.head.appendChild(s);
+  });
+}
+// interactive=true: 画面操作から呼ばれたときだけログイン画面を出す
+async function getToken(interactive){
+  if (token && now() < tokenExp - 60000) return token;
+  await loadGis();
+  return new Promise((ok, ng) => {
+    tokenClient = tokenClient || google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID, scope: "https://www.googleapis.com/auth/drive.appdata", callback: () => {}
+    });
+    tokenClient.callback = r => {
+      if (r.error) return ng(new Error(r.error === "access_denied" ? "許可されませんでした" : "ログインが必要です"));
+      token = r.access_token; tokenExp = now() + r.expires_in * 1000; ok(token);
+    };
+    tokenClient.error_callback = () => ng(new Error("ログインが必要です（同期ボタンを押してください）"));
+    tokenClient.requestAccessToken({prompt: interactive ? "" : "none"});
+  });
+}
+async function gfetch(url, opt){
+  const r = await fetch(API + url, {...opt, headers: {Authorization: "Bearer " + token, ...(opt?.headers||{})}});
+  if (!r.ok) throw new Error("Googleドライブとの通信に失敗しました(" + r.status + ")");
+  return r;
+}
+// 新しい更新日時を採用して統合。削除の印のほうが新しければ削除を優先。
+function mergeState(a, b){
+  const del = new Map();
+  [...a.del, ...b.del].forEach(d => { if (!del.has(d.id) || del.get(d.id) < d.u) del.set(d.id, d.u); });
+  const out = {del: [...del].map(([id, u]) => ({id, u}))};
+  ["plants","places","logs"].forEach(k => {
+    const m = new Map();
+    [...a[k], ...b[k]].forEach(o => { const c = m.get(o.id); if (!c || o.u > c.u) m.set(o.id, o); });
+    out[k] = [...m.values()].filter(o => !(del.has(o.id) && del.get(o.id) >= o.u));
+  });
+  return out;
+}
+async function syncNow(interactive){
+  if (!GOOGLE_CLIENT_ID) return;
+  if (syncing) { syncAgain = true; return; }
+  syncing = true; setSyncMsg("同期中…");
+  try {
+    await getToken(interactive);
+    const q = encodeURIComponent(`name='${FILE_NAME}'`);
+    const files = (await (await gfetch(`/drive/v3/files?spaces=appDataFolder&q=${q}&fields=files(id)`)).json()).files;
+    let id = files[0]?.id, remote = null;
+    if (id) { const d = await (await gfetch(`/drive/v3/files/${id}?alt=media`)).json(); if (Array.isArray(d.plants) && Array.isArray(d.places) && Array.isArray(d.logs)) remote = normalize(d); }
+    S = remote ? mergeState(normalize(S), remote) : S;
+    saveLocal();
+    const body = JSON.stringify(S);
+    if (id) await gfetch(`/upload/drive/v3/files/${id}?uploadType=media`, {method: "PATCH", headers: {"Content-Type": "application/json"}, body});
+    else {
+      const bd = "plant" + uid(), meta = JSON.stringify({name: FILE_NAME, parents: ["appDataFolder"]});
+      await gfetch(`/upload/drive/v3/files?uploadType=multipart`, {method: "POST", headers: {"Content-Type": "multipart/related; boundary=" + bd},
+        body: `--${bd}\r\nContent-Type: application/json\r\n\r\n${meta}\r\n--${bd}\r\nContent-Type: application/json\r\n\r\n${body}\r\n--${bd}--`});
+    }
+    try { localStorage.setItem("plant_sync_on", "1"); localStorage.setItem("plant_sync_last", String(now())); } catch {}
+    syncMsg = ""; render();
+  } catch (e) {
+    token = null; setSyncMsg("同期できませんでした：" + e.message);
+  }
+  syncing = false;
+  if (syncAgain) { syncAgain = false; scheduleSync(); }
+}
+function scheduleSync(){
+  if (!GOOGLE_CLIENT_ID || !lsGet("plant_sync_on")) return;
+  clearTimeout(syncTimer); syncTimer = setTimeout(() => syncNow(false), 3000);
+}
+
 // ---------- 起動 ----------
-function start(){ dbGet().then(d => { if (d) S = d; render(); }); }
+function start(){ dbGet().then(d => { if (d) S = normalize(d); render(); scheduleSync(); }); }
 dbReq.onsuccess = start;
 if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js");
 </script>
