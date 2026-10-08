@@ -159,7 +159,7 @@ function render(){
       return `<div class="card" data-act="place" data-id="${pl.id}"><b>📍${esc(pl.name)}</b> <span class="mu">${n}鉢</span><div class="mu">☀️${lx ? lx.value+" lux ("+lx.date+")" : "LUX未記録"}</div><div class="mu">🌀${ar ? esc(ar.note||"記録あり")+" ("+ar.date+")" : "空気循環 未記録"}</div></div>`;
     }).join("") : `<div class="empty">右下の＋で置き場所を登録（例：リビング窓際）</div>`;
   } else {
-    main.innerHTML = `<div class="card"><b>複数端末の同期（Googleドライブ）</b>${!GOOGLE_CLIENT_ID ? `<div class="mu">未設定です（OAuthクライアントIDが必要）</div>` : `<div class="mu" id="syncst">${esc(syncStatus())}</div><div class="btns"><button class="btn" data-act="sync">${localStorage.getItem("plant_sync_on")?"今すぐ同期":"Googleドライブと連携"}</button></div>`}</div><div class="card"><b>データのバックアップ</b><div class="mu">データはこの端末のブラウザ内にだけ保存されています。機種変更前に書き出してください。</div><div class="btns"><button class="btn" data-act="export">書き出す</button><button class="btn s" data-act="import">読み込む</button></div></div><div class="mu">植物 ${S.plants.length} / 場所 ${S.places.length} / 記録 ${S.logs.length}</div>`;
+    main.innerHTML = `<div class="card"><b>複数端末の同期（Googleドライブ）</b>${!GOOGLE_CLIENT_ID ? `<div class="mu">未設定です（OAuthクライアントIDが必要）</div>` : `<div class="mu" id="syncst">${esc(syncStatus())}</div><div class="btns"><button class="btn" data-act="sync">${lsGet("plant_sync_on")?"今すぐ同期":"Googleドライブと連携"}</button>${lsGet("plant_sync_on")?`<button class="btn s" data-act="syncswitch">別のアカウントで連携し直す</button>`:""}</div>`}</div><div class="card"><b>データのバックアップ</b><div class="mu">データはこの端末のブラウザ内にだけ保存されています。機種変更前に書き出してください。</div><div class="btns"><button class="btn" data-act="export">書き出す</button><button class="btn s" data-act="import">読み込む</button></div></div><div class="mu">植物 ${S.plants.length} / 場所 ${S.places.length} / 記録 ${S.logs.length}</div>`;
   }
 }
 
@@ -242,6 +242,7 @@ document.addEventListener("click", e => {
     const a2 = document.createElement("a"); a2.href = URL.createObjectURL(new Blob([JSON.stringify(S)], {type:"application/json"}));
     a2.download = "plant_care_backup_" + today() + ".json"; a2.click();
   } else if (a === "sync") syncNow(true);
+  else if (a === "syncswitch") syncNow(true, true);
   else if (a === "import") {
     const i = document.createElement("input"); i.type = "file"; i.accept = ".json,application/json";
     i.onchange = async () => { try { const d = JSON.parse(await i.files[0].text()); if (!Array.isArray(d.plants) || !Array.isArray(d.places) || !Array.isArray(d.logs)) throw 0;
@@ -273,8 +274,9 @@ function loadGis(){
   });
 }
 // interactive=true: 画面操作から呼ばれたときだけログイン画面を出す
-async function getToken(interactive){
-  if (token && now() < tokenExp - 60000) return token;
+// pick=true: アカウント選択画面を必ず出す（別のGoogleアカウントへ切り替え）
+async function getToken(interactive, pick){
+  if (!pick && token && now() < tokenExp - 60000) return token;
   await loadGis();
   return new Promise((ok, ng) => {
     tokenClient = tokenClient || google.accounts.oauth2.initTokenClient({
@@ -285,7 +287,7 @@ async function getToken(interactive){
       token = r.access_token; tokenExp = now() + r.expires_in * 1000; ok(token);
     };
     tokenClient.error_callback = () => ng(new Error("ログインが必要です（同期ボタンを押してください）"));
-    tokenClient.requestAccessToken({prompt: interactive ? "" : "none"});
+    tokenClient.requestAccessToken({prompt: pick ? "select_account" : interactive ? "" : "none"});
   });
 }
 async function gfetch(url, opt){
@@ -305,12 +307,12 @@ function mergeState(a, b){
   });
   return out;
 }
-async function syncNow(interactive){
+async function syncNow(interactive, pick){
   if (!GOOGLE_CLIENT_ID) return;
   if (syncing) { syncAgain = true; return; }
   syncing = true; setSyncMsg("同期中…");
   try {
-    await getToken(interactive);
+    await getToken(interactive, pick);
     const q = encodeURIComponent(`name='${FILE_NAME}'`);
     const files = (await (await gfetch(`/drive/v3/files?spaces=appDataFolder&q=${q}&fields=files(id)`)).json()).files;
     let id = files[0]?.id, remote = null;
