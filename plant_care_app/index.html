@@ -16,6 +16,14 @@
 html[data-theme="night"]{--g:#3f8a63;--gl:#1f3027;--bg:#121c17;--tx:#e8efe9;--mu:#8fa399;--bd:#2a3d33;--red:#d9776c;--bl:#5f93a6;--gold:#c9a965;--card:#1b2a22;--nav:#0b130f;--navtx:#7f958a;--navon:#e3c98f;--barbg:rgba(18,28,23,.96)}
 html[data-theme="sand"]{--g:#8a6f4d;--gl:#f0e8d8;--bg:#f6f1e8;--tx:#2d2a26;--mu:#8a8274;--bd:#e6ddcc;--red:#b0483e;--bl:#5f7f8a;--gold:#a47c3f;--card:#fffdf9;--nav:#5a4a35;--navtx:#cdbfa6;--navon:#f0d9a0;--barbg:rgba(246,241,232,.96)}
 html[data-theme="rose"]{--g:#b45f72;--gl:#f8e9ea;--bg:#fbf5f4;--tx:#3a2a2c;--mu:#9a8a8a;--bd:#f0dfdf;--red:#a63d3d;--bl:#6f8aa0;--gold:#c0996a;--card:#fff;--nav:#8f4455;--navtx:#e8c3ca;--navon:#fff0d0;--barbg:rgba(251,245,244,.96)}
+html[data-theme="ocean"]{--g:#2f6f9f;--gl:#e8f1f8;--bg:#f4f8fb;--tx:#1c2733;--mu:#75879a;--bd:#dfe9f1;--red:#b0483e;--bl:#4a7a8c;--gold:#b8975a;--card:#fff;--nav:#1f4f73;--navtx:#a9c6dc;--navon:#f0e0b5;--barbg:rgba(244,248,251,.96)}
+html[data-theme="lavender"]{--g:#7a5fa3;--gl:#f0ebf8;--bg:#f8f6fb;--tx:#2b2635;--mu:#8a829a;--bd:#e8e2f0;--red:#ad4a55;--bl:#5f7fa3;--gold:#b8975a;--card:#fff;--nav:#5b4682;--navtx:#cdbfe3;--navon:#f3e3b8;--barbg:rgba(248,246,251,.96)}
+html[data-theme="mint"]{--g:#1f9d7a;--gl:#e1f5ee;--bg:#f3faf7;--tx:#17302a;--mu:#6f8f84;--bd:#d9ece4;--red:#b0483e;--bl:#4a7a8c;--gold:#b8975a;--card:#fff;--nav:#137a5e;--navtx:#b6e3d4;--navon:#fff1c2;--barbg:rgba(243,250,247,.96)}
+html[data-theme="terracotta"]{--g:#b8603c;--gl:#f6e6d8;--bg:#fbf6f1;--tx:#33261f;--mu:#96806f;--bd:#eddcc9;--red:#a63d3d;--bl:#5f7f8a;--gold:#b0893f;--card:#fffdfa;--nav:#7a3f27;--navtx:#e2bfa9;--navon:#ffe3a8;--barbg:rgba(251,246,241,.96)}
+html[data-theme="midnight"]{--g:#3b7fb8;--gl:#1b2a3d;--bg:#0f1722;--tx:#e6edf5;--mu:#8c9db3;--bd:#243247;--red:#e0796d;--bl:#6aa6c9;--gold:#d4b370;--card:#172232;--nav:#09101a;--navtx:#7f93ab;--navon:#e8cf94;--barbg:rgba(15,23,34,.96)}
+html[data-theme="mocha"]{--g:#a0714a;--gl:#2d231d;--bg:#1a1411;--tx:#f0e6dc;--mu:#a39080;--bd:#3a2e26;--red:#e0806f;--bl:#7a98a6;--gold:#d9b680;--card:#261d18;--nav:#100b09;--navtx:#9b8878;--navon:#ecd29a;--barbg:rgba(26,20,17,.96)}
+html[data-theme="wine"]{--g:#9c3f58;--gl:#311f27;--bg:#1c1216;--tx:#f3e6ea;--mu:#a58f97;--bd:#3d2a32;--red:#e38a86;--bl:#8099b3;--gold:#d6b27a;--card:#2a1b21;--nav:#120a0d;--navtx:#a08a92;--navon:#ecd29a;--barbg:rgba(28,18,22,.96)}
+html[data-theme="graphite"]{--g:#5f7f73;--gl:#25282b;--bg:#17181a;--tx:#ececec;--mu:#9a9da3;--bd:#33363a;--red:#de7a70;--bl:#7d9bb0;--gold:#cbb27c;--card:#212326;--nav:#0d0e10;--navtx:#8a8d93;--navon:#e5d09a;--barbg:rgba(23,24,26,.96)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:"Hiragino Sans","Yu Gothic",system-ui,sans-serif;letter-spacing:.04em;padding-bottom:80px}
 header{background:var(--bg);color:var(--tx);padding:18px 20px 14px;border-bottom:1px solid var(--gold);position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px}
@@ -126,10 +134,18 @@ function normalize(d){ d.del = d.del || []; d.ferts = d.ferts || []; d.mems = d.
 
 // ---------- デザイン（この端末だけ。同期しない） ----------
 const THEMES = [
-  {id:"forest", name:"フォレスト", note:"白と緑にゴールド", sw:["#f7faf8","#2f6b4f","#b8975a"], meta:"#f7faf8"},
-  {id:"night",  name:"ナイト",     note:"深い緑黒のダーク", sw:["#121c17","#3f8a63","#c9a965"], meta:"#121c17"},
-  {id:"sand",   name:"サンド",     note:"ベージュとブラウン", sw:["#f6f1e8","#8a6f4d","#a47c3f"], meta:"#f6f1e8"},
-  {id:"rose",   name:"ローズ",     note:"やさしいピンク",   sw:["#fbf5f4","#b45f72","#c0996a"], meta:"#fbf5f4"}
+  {g:"LIGHT", id:"forest",     name:"フォレスト",     note:"白と緑にゴールド",     sw:["#f7faf8","#2f6b4f","#b8975a"], meta:"#f7faf8"},
+  {g:"LIGHT", id:"mint",       name:"ミント",         note:"白とすっきりした緑",   sw:["#f3faf7","#1f9d7a","#b8975a"], meta:"#f3faf7"},
+  {g:"LIGHT", id:"ocean",      name:"オーシャン",     note:"白とブルー",           sw:["#f4f8fb","#2f6f9f","#b8975a"], meta:"#f4f8fb"},
+  {g:"LIGHT", id:"lavender",   name:"ラベンダー",     note:"白とやさしい紫",       sw:["#f8f6fb","#7a5fa3","#b8975a"], meta:"#f8f6fb"},
+  {g:"LIGHT", id:"rose",       name:"ローズ",         note:"やさしいピンク",       sw:["#fbf5f4","#b45f72","#c0996a"], meta:"#fbf5f4"},
+  {g:"LIGHT", id:"sand",       name:"サンド",         note:"ベージュとブラウン",   sw:["#f6f1e8","#8a6f4d","#a47c3f"], meta:"#f6f1e8"},
+  {g:"LIGHT", id:"terracotta", name:"テラコッタ",     note:"あたたかい赤茶",       sw:["#fbf6f1","#b8603c","#b0893f"], meta:"#fbf6f1"},
+  {g:"DARK",  id:"night",      name:"ナイト",         note:"深い緑黒",             sw:["#121c17","#3f8a63","#c9a965"], meta:"#121c17"},
+  {g:"DARK",  id:"midnight",   name:"ミッドナイト",   note:"青みの黒",             sw:["#0f1722","#3b7fb8","#d4b370"], meta:"#0f1722"},
+  {g:"DARK",  id:"mocha",      name:"モカ",           note:"ダークブラウン",       sw:["#1a1411","#a0714a","#d9b680"], meta:"#1a1411"},
+  {g:"DARK",  id:"wine",       name:"ワイン",         note:"深いボルドー",         sw:["#1c1216","#9c3f58","#d6b27a"], meta:"#1c1216"},
+  {g:"DARK",  id:"graphite",   name:"グラファイト",   note:"落ち着いたグレー",     sw:["#17181a","#5f7f73","#cbb27c"], meta:"#17181a"}
 ];
 const curTheme = () => { try { const t = localStorage.getItem("plant_theme"); return THEMES.some(x => x.id === t) ? t : "forest"; } catch { return "forest"; } };
 function applyTheme(id){
@@ -311,7 +327,7 @@ function foldCard(key, title, body){
 function themeCard(){
   const cur = curTheme();
   return foldCard("theme", "DESIGN　デザイン", `<div class="mu" style="margin:4px 0 6px">この端末だけの設定です（ほかのスマホには反映されません）</div>`
-    + THEMES.map(t => `<div class="row th${t.id === cur ? " on" : ""}" data-act="theme" data-id="${t.id}"><span class="sw">${t.sw.map(c => `<i style="background:${c}"></i>`).join("")}</span><div class="grow"><b>${t.name}</b><div class="mu">${t.note}</div></div><span>${t.id === cur ? "✓" : ""}</span></div>`).join(""));
+    + THEMES.map((t, i) => (i === 0 || THEMES[i - 1].g !== t.g ? `<div class="mu" style="margin:10px 0 2px;letter-spacing:.2em;font-size:11px">${t.g}</div>` : "") + `<div class="row th${t.id === cur ? " on" : ""}" data-act="theme" data-id="${t.id}"><span class="sw">${t.sw.map(c => `<i style="background:${c}"></i>`).join("")}</span><div class="grow"><b>${t.name}</b><div class="mu">${t.note}</div></div><span>${t.id === cur ? "✓" : ""}</span></div>`).join(""));
 }
 // 設定タブの「登録の管理」カード（置き場所・肥料の種類）。k = "place" | "fert"
 // 置き場所の行：鉢数・最新のLUX・空気循環。名前をタップすると詳細（LUX・空気循環の記録）を開く
