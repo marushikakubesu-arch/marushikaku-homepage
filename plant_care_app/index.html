@@ -61,6 +61,8 @@ h2{font-family:var(--serif);font-size:13px;font-weight:500;letter-spacing:.22em;
 .mt{padding:9px 11px 11px}.md{font-size:11px;color:var(--mu);letter-spacing:.1em}.mn{font-family:var(--serif);font-size:14px;letter-spacing:.06em;margin-top:2px}
 .th{padding:10px 0;border-top:1px solid var(--bd);cursor:pointer}.th.on b{color:var(--g)}
 .sw{display:inline-flex;flex:none;border:1px solid var(--bd);border-radius:4px;overflow:hidden}.sw i{width:18px;height:28px;display:block}
+.fh{display:flex;justify-content:space-between;align-items:center;cursor:pointer}.fa{color:var(--gold);font-size:16px;padding-left:12px}
+.fb{margin-top:6px}.shut .fb{display:none}
 .sc{cursor:pointer}.sc.on{border-color:var(--gold);background:var(--gl)}
 .ck{width:26px;height:26px;border:1px solid var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--g);font-size:16px;flex:none;background:var(--card)}
 .bar{position:fixed;left:0;right:0;bottom:calc(54px + env(safe-area-inset-bottom));padding:10px 18px;background:var(--barbg);border-top:1px solid var(--bd);z-index:6}
@@ -296,14 +298,20 @@ function render(){
       return `<div class="pc" data-act="plant" data-id="${p.id}">${p.photo ? `<img class="pi" src="${p.photo}">` : `<div class="pi np">NO PHOTO</div>`}<div class="pb"><div class="pn">${esc(p.name)}</div><div class="mu">${esc(p.species)}</div><div class="mu">${pl ? ""+esc(pl.name) : "場所未設定"}</div><div class="mu" style="margin-top:4px">${w?`水 <span class="${w.due?"due":"ok"}">${w.text}</span> `:""}${f?`肥 <span class="${f.due?"due":"ok"}">${f.text}</span>`:""}</div></div></div>`;
     }).join("") + `</div>` : `<div class="empty">右下の＋で植物を登録</div>`;
   } else {
-    main.innerHTML = themeCard() + manageCard("PLACES　置き場所", S.places, "place", placeSub) + manageCard("SPECIES　品種", [...S.specs].sort((a, b) => a.name.localeCompare(b.name, "ja")), "spec", s => S.plants.filter(p => sameSpec(p.species, s.name)).length + "鉢") + manageCard("FERTILIZERS　肥料の種類", S.ferts, "fert") + `<div class="card"><b>複数端末の同期（Googleドライブ）</b>${!GOOGLE_CLIENT_ID ? `<div class="mu">未設定です（OAuthクライアントIDが必要）</div>` : `<div class="mu" id="syncst">${esc(syncStatus())}</div><div class="btns"><button class="btn" data-act="sync">${lsGet("plant_sync_on")?"今すぐ同期":"Googleドライブと連携"}</button>${lsGet("plant_sync_on")?`<button class="btn s" data-act="syncswitch">別のアカウントで連携し直す</button>`:""}</div>`}</div><div class="card"><b>データのバックアップ</b><div class="mu">データはこの端末のブラウザ内にだけ保存されています。機種変更前に書き出してください。</div><div class="btns"><button class="btn" data-act="export">書き出す</button><button class="btn s" data-act="import">読み込む</button></div></div><div class="mu">植物 ${S.plants.length} / 場所 ${S.places.length} / 記録 ${S.logs.length}</div><div class="mu">購入金額の合計：${yen(S.plants.reduce((s, p) => s + (+p.price || 0), 0))}</div>`;
+    main.innerHTML = manageCard("PLACES　置き場所", S.places, "place", placeSub) + manageCard("SPECIES　品種", [...S.specs].sort((a, b) => a.name.localeCompare(b.name, "ja")), "spec", s => S.plants.filter(p => sameSpec(p.species, s.name)).length + "鉢") + manageCard("FERTILIZERS　肥料の種類", S.ferts, "fert") + themeCard() + foldCard("sync", "複数端末の同期（Googleドライブ）", `${!GOOGLE_CLIENT_ID ? `<div class="mu">未設定です（OAuthクライアントIDが必要）</div>` : `<div class="mu" id="syncst">${esc(syncStatus())}</div><div class="btns"><button class="btn" data-act="sync">${lsGet("plant_sync_on")?"今すぐ同期":"Googleドライブと連携"}</button>${lsGet("plant_sync_on")?`<button class="btn s" data-act="syncswitch">別のアカウントで連携し直す</button>`:""}</div>`}`) + foldCard("backup", "データのバックアップ", `<div class="mu">データはこの端末のブラウザ内にだけ保存されています。機種変更前に書き出してください。</div><div class="btns"><button class="btn" data-act="export">書き出す</button><button class="btn s" data-act="import">読み込む</button></div>`) + `<div class="mu">植物 ${S.plants.length} / 場所 ${S.places.length} / 記録 ${S.logs.length}</div><div class="mu">購入金額の合計：${yen(S.plants.reduce((s, p) => s + (+p.price || 0), 0))}</div>`;
   }
 }
 
+// 設定タブのカードは、見出しをタップして折りたためる（開閉はこの端末に記憶）
+const foldGet = () => { try { return new Set(JSON.parse(localStorage.getItem("plant_fold") || "[]")); } catch { return new Set(); } };
+function foldCard(key, title, body){
+  const shut = foldGet().has(key);
+  return `<div class="card fold${shut ? " shut" : ""}"><div class="fh" data-act="fold" data-id="${key}"><b>${title}</b><span class="fa">${shut ? "＋" : "－"}</span></div><div class="fb">${body}</div></div>`;
+}
 function themeCard(){
   const cur = curTheme();
-  return `<div class="card"><b>DESIGN　デザイン</b><div class="mu" style="margin:4px 0 6px">この端末だけの設定です（ほかのスマホには反映されません）</div>`
-    + THEMES.map(t => `<div class="row th${t.id === cur ? " on" : ""}" data-act="theme" data-id="${t.id}"><span class="sw">${t.sw.map(c => `<i style="background:${c}"></i>`).join("")}</span><div class="grow"><b>${t.name}</b><div class="mu">${t.note}</div></div><span>${t.id === cur ? "✓" : ""}</span></div>`).join("") + `</div>`;
+  return foldCard("theme", "DESIGN　デザイン", `<div class="mu" style="margin:4px 0 6px">この端末だけの設定です（ほかのスマホには反映されません）</div>`
+    + THEMES.map(t => `<div class="row th${t.id === cur ? " on" : ""}" data-act="theme" data-id="${t.id}"><span class="sw">${t.sw.map(c => `<i style="background:${c}"></i>`).join("")}</span><div class="grow"><b>${t.name}</b><div class="mu">${t.note}</div></div><span>${t.id === cur ? "✓" : ""}</span></div>`).join(""));
 }
 // 設定タブの「登録の管理」カード（置き場所・肥料の種類）。k = "place" | "fert"
 // 置き場所の行：鉢数・最新のLUX・空気循環。名前をタップすると詳細（LUX・空気循環の記録）を開く
@@ -312,8 +320,8 @@ function placeSub(pl){
   return `${n}鉢<br>${pl.lux!==""&&pl.lux!=null ? "LUX "+esc(pl.lux)+" lux" : lx ? "LUX "+esc(lx.value)+" lux ("+lx.date+")" : "LUX 未設定"}<br>${pl.air ? "空気循環 "+esc(pl.air) : ar ? "空気循環 "+esc(ar.note||"記録あり")+" ("+ar.date+")" : "空気循環 未設定"}`;
 }
 function manageCard(title, list, k, sub){
-  return `<div class="card"><b>${title}</b>` + (list.length ? list.map(o => `<div class="row" style="padding:9px 0;border-top:1px solid var(--bd)"><div class="grow" ${k==="place" ? `data-act="place" data-id="${o.id}"` : ""}>${esc(o.name)}${sub ? `<div class="mu">${sub(o)}</div>` : o.memo ? `<div class="mu">${esc(o.memo)}</div>` : ""}</div><button class="btn s sm" data-act="${k}edit" data-id="${o.id}">編集</button><button class="btn d sm" data-act="del${k}" data-id="${o.id}">削除</button></div>`).join("") : `<div class="mu" style="margin-top:6px">まだ登録がありません</div>`)
-    + `<div class="btns"><button class="btn s sm" data-act="${k}add">＋ 追加</button></div></div>`;
+  return foldCard(k, title, (list.length ? list.map(o => `<div class="row" style="padding:9px 0;border-top:1px solid var(--bd)"><div class="grow" ${k==="place" ? `data-act="place" data-id="${o.id}"` : ""}>${esc(o.name)}${sub ? `<div class="mu">${sub(o)}</div>` : o.memo ? `<div class="mu">${esc(o.memo)}</div>` : ""}</div><button class="btn s sm" data-act="${k}edit" data-id="${o.id}">編集</button><button class="btn d sm" data-act="del${k}" data-id="${o.id}">削除</button></div>`).join("") : `<div class="mu" style="margin-top:6px">まだ登録がありません</div>`)
+    + `<div class="btns"><button class="btn s sm" data-act="${k}add">＋ 追加</button></div>`);
 }
 function logHtml(l, withName){
   const p = withName && plantById(l.plantId);
@@ -489,6 +497,12 @@ document.addEventListener("click", e => {
     if (el.dataset.t === "water" && S.ferts.length) waterForm(id);
     else if (el.dataset.t === "fert" && S.ferts.length) addLog({type:"fert", plantId:id}, [{n:"fertId",l:"肥料の種類",t:"select",o:[["","指定なし"], ...S.ferts.map(f => [f.id, f.name])],v:lastLog(id,"fert")?.fertId||""}], "肥料を記録");
     else { S.logs.push({id:uid(), type:el.dataset.t, plantId:id, date:today(), value:"", note:"", photo:null, u:now()}); save(); render(); }
+  }
+  else if (a === "fold") {
+    const card = el.closest(".card"), set = foldGet(); card.classList.toggle("shut");
+    card.classList.contains("shut") ? set.add(id) : set.delete(id);
+    el.querySelector(".fa").textContent = card.classList.contains("shut") ? "＋" : "－";
+    try { localStorage.setItem("plant_fold", JSON.stringify([...set])); } catch {}
   }
   else if (a === "theme") { applyTheme(id); render(); }
   else if (a === "mem") openMem(id);
