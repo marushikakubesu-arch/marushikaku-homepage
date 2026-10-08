@@ -102,7 +102,7 @@ h2{font-family:var(--serif);font-size:13px;font-weight:500;letter-spacing:.22em;
 "use strict";
 // ---------- 保存（IndexedDBに全データを1件で保存） ----------
 // 各データ(plants/places/logs)は更新日時 u(ms) を持つ。削除は S.del に {id,u} の印を残す（同期用）。
-let S = {plants:[], places:[], logs:[], ferts:[], mems:[], del:[]};
+let S = {plants:[], places:[], logs:[], ferts:[], mems:[], specs:[], del:[]};
 const dbReq = indexedDB.open("plant_care", 1);
 dbReq.onupgradeneeded = () => dbReq.result.createObjectStore("kv");
 function dbGet(){return new Promise(r=>{const q=dbReq.result.transaction("kv").objectStore("kv").get("state");q.onsuccess=()=>r(q.result);q.onerror=()=>r(null);});}
@@ -111,7 +111,7 @@ function save(){ saveLocal(); scheduleSync(); }
 const now = () => Date.now();
 const touch = o => { o.u = now(); return o; };
 function tomb(ids){ const u = now(); ids.forEach(id => S.del.push({id, u})); }
-function normalize(d){ d.del = d.del || []; d.ferts = d.ferts || []; d.mems = d.mems || []; ["plants","places","logs","ferts","mems"].forEach(k => d[k].forEach(o => { if (typeof o.u !== "number") o.u = 0; })); return d; }
+function normalize(d){ d.del = d.del || []; d.ferts = d.ferts || []; d.mems = d.mems || []; d.specs = d.specs || []; ["plants","places","logs","ferts","mems","specs"].forEach(k => d[k].forEach(o => { if (typeof o.u !== "number") o.u = 0; })); return d; }
 
 // ---------- ユーティリティ ----------
 const $ = s => document.querySelector(s);
@@ -148,7 +148,8 @@ function openForm(title, fields, onOk){
     if (f.t === "select") inp = `<select name="${f.n}">` + f.o.map(([val,lab]) => `<option value="${esc(val)}" ${val===f.v?"selected":""}>${esc(lab)}</option>`).join("") + `</select>`;
     else if (f.t === "textarea") inp = `<textarea name="${f.n}" rows="3">${v}</textarea>`;
     else if (f.t === "photo") inp = `<input type="file" name="${f.n}" accept="image/*">`;
-    else inp = `<input name="${f.n}" type="${f.t||"text"}" value="${v}" ${f.t==="number"?'step="any" inputmode="decimal"':""}>`;
+    else inp = `<input name="${f.n}" type="${f.t||"text"}" value="${v}" ${f.t==="number"?'step="any" inputmode="decimal"':""} ${f.dl?`list="dl_${f.n}" autocomplete="off"`:""}>`
+      + (f.dl ? `<datalist id="dl_${f.n}">${f.dl.map(x => `<option value="${esc(x)}">`).join("")}</datalist>` : "");
     return `<label>${esc(f.l)}${inp}</label>`;
   }).join("") + `<div class="btns"><button class="btn grow">保存</button><button type="button" class="btn s" data-x>キャンセル</button></div></form>`;
   document.body.appendChild(m);
@@ -246,12 +247,15 @@ function render(){
   } else if (tab === "calendar") {
     main.innerHTML = calHtml();
   } else if (tab === "plants") {
-    main.innerHTML = S.plants.length ? `<div class="pg">` + S.plants.map(p => {
+    // 品種名の50音順、同じ品種のなかでは植物名の50音順（品種が空のものは最後）
+    const cmp = (a, b) => (a || "").localeCompare(b || "", "ja");
+    const sorted = [...S.plants].sort((a, b) => (!a.species !== !b.species) ? (a.species ? -1 : 1) : cmp(specKey(a.species), specKey(b.species)) || cmp(specKey(a.name), specKey(b.name)));
+    main.innerHTML = S.plants.length ? `<div class="pg">` + sorted.map(p => {
       const w = dueInfo(p,"water"), f = dueInfo(p,"fert"), pl = placeById(p.placeId);
       return `<div class="pc" data-act="plant" data-id="${p.id}">${p.photo ? `<img class="pi" src="${p.photo}">` : `<div class="pi np">NO PHOTO</div>`}<div class="pb"><div class="pn">${esc(p.name)}</div><div class="mu">${esc(p.species)}</div><div class="mu">${pl ? ""+esc(pl.name) : "場所未設定"}</div><div class="mu" style="margin-top:4px">${w?`水 <span class="${w.due?"due":"ok"}">${w.text}</span> `:""}${f?`肥 <span class="${f.due?"due":"ok"}">${f.text}</span>`:""}</div></div></div>`;
     }).join("") + `</div>` : `<div class="empty">右下の＋で植物を登録</div>`;
   } else {
-    main.innerHTML = manageCard("PLACES　置き場所", S.places, "place", placeSub) + manageCard("FERTILIZERS　肥料の種類", S.ferts, "fert") + `<div class="card"><b>複数端末の同期（Googleドライブ）</b>${!GOOGLE_CLIENT_ID ? `<div class="mu">未設定です（OAuthクライアントIDが必要）</div>` : `<div class="mu" id="syncst">${esc(syncStatus())}</div><div class="btns"><button class="btn" data-act="sync">${lsGet("plant_sync_on")?"今すぐ同期":"Googleドライブと連携"}</button>${lsGet("plant_sync_on")?`<button class="btn s" data-act="syncswitch">別のアカウントで連携し直す</button>`:""}</div>`}</div><div class="card"><b>データのバックアップ</b><div class="mu">データはこの端末のブラウザ内にだけ保存されています。機種変更前に書き出してください。</div><div class="btns"><button class="btn" data-act="export">書き出す</button><button class="btn s" data-act="import">読み込む</button></div></div><div class="mu">植物 ${S.plants.length} / 場所 ${S.places.length} / 記録 ${S.logs.length}</div><div class="mu">購入金額の合計：${yen(S.plants.reduce((s, p) => s + (+p.price || 0), 0))}</div>`;
+    main.innerHTML = manageCard("PLACES　置き場所", S.places, "place", placeSub) + manageCard("SPECIES　品種", [...S.specs].sort((a, b) => a.name.localeCompare(b.name, "ja")), "spec", s => S.plants.filter(p => sameSpec(p.species, s.name)).length + "鉢") + manageCard("FERTILIZERS　肥料の種類", S.ferts, "fert") + `<div class="card"><b>複数端末の同期（Googleドライブ）</b>${!GOOGLE_CLIENT_ID ? `<div class="mu">未設定です（OAuthクライアントIDが必要）</div>` : `<div class="mu" id="syncst">${esc(syncStatus())}</div><div class="btns"><button class="btn" data-act="sync">${lsGet("plant_sync_on")?"今すぐ同期":"Googleドライブと連携"}</button>${lsGet("plant_sync_on")?`<button class="btn s" data-act="syncswitch">別のアカウントで連携し直す</button>`:""}</div>`}</div><div class="card"><b>データのバックアップ</b><div class="mu">データはこの端末のブラウザ内にだけ保存されています。機種変更前に書き出してください。</div><div class="btns"><button class="btn" data-act="export">書き出す</button><button class="btn s" data-act="import">読み込む</button></div></div><div class="mu">植物 ${S.plants.length} / 場所 ${S.places.length} / 記録 ${S.logs.length}</div><div class="mu">購入金額の合計：${yen(S.plants.reduce((s, p) => s + (+p.price || 0), 0))}</div>`;
   }
 }
 
@@ -304,7 +308,7 @@ const placeOpts = () => [["", "未設定"], ...S.places.map(p => [p.id, p.name])
 function plantForm(p){
   const isNew = !p; p = p || {};
   openForm(isNew ? "植物を登録" : "植物を編集", [
-    {n:"name",l:"名前（必須）",v:p.name}, {n:"species",l:"品種",v:p.species}, {n:"bought",l:"購入日",t:"date",v:p.bought}, {n:"price",l:"購入金額（円）",t:"number",v:p.price}, {n:"shop",l:"購入先",v:p.shop},
+    {n:"name",l:"名前（必須）",v:p.name}, {n:"species",l:"品種（入力すると候補が出ます）",v:p.species,dl:speciesNames()}, {n:"bought",l:"購入日",t:"date",v:p.bought}, {n:"price",l:"購入金額（円）",t:"number",v:p.price}, {n:"shop",l:"購入先",v:p.shop},
     {n:"placeId",l:"置き場所",t:"select",o:placeOpts(),v:p.placeId||""},
     {n:"waterDays",l:"水やり間隔（日）",t:"number",v:p.waterDays}, {n:"fertDays",l:"肥料間隔（日）",t:"number",v:p.fertDays},
     {n:"memo",l:"メモ",t:"textarea",v:p.memo}, {n:"photo",l:"写真（変更する場合のみ）",t:"photo"}
@@ -358,6 +362,27 @@ function openMem(id){
     else if (k === "d" && confirm("この思い出を削除しますか？")) { tomb([id]); S.mems = S.mems.filter(x => x.id !== id); save(); render(); box.remove(); }
   };
   document.body.appendChild(box);
+}
+// 品種：設定で登録した名前＋これまで植物に入れた名前を、植物登録の候補に出す
+// 品種の同一判定用：全角半角・大文字小文字・ひらがなカタカナ・空白の違いを無視して比べる（保存する名前は変えない）
+function specKey(s){
+  return String(s || "").normalize("NFKC").replace(/[ぁ-ゖ]/g, c => String.fromCharCode(c.charCodeAt(0) + 0x60)).replace(/\s+/g, "").toLowerCase();
+}
+function sameSpec(a, b){ const k = specKey(a); return k !== "" && k === specKey(b); }
+// 候補：設定で登録した名前を優先し、同じ品種（表記ゆれ）は1つにまとめる
+function speciesNames(){
+  const m = new Map();
+  [...S.specs.map(s => s.name), ...S.plants.map(p => p.species)].filter(Boolean).forEach(n => { const k = specKey(n); if (!m.has(k)) m.set(k, n); });
+  return [...m.values()].sort((a, b) => a.localeCompare(b, "ja"));
+}
+function specForm(s){
+  const isNew = !s; s = s || {};
+  openForm(isNew ? "品種を登録" : "品種を編集", [{n:"name",l:isNew ? "品種名（必須）" : "品種名（変えると、その品種の植物も書き換わります）",v:s.name}],
+    o => {
+      if (!o.name || S.specs.some(x => x.id !== s.id && sameSpec(x.name, o.name))) return;
+      if (isNew) S.specs.push({id:uid(), name:o.name, u:now()});
+      else { const old = s.name; Object.assign(s, {name:o.name, u:now()}); S.plants.forEach(p => { if (sameSpec(p.species, old) && p.species !== o.name) { p.species = o.name; touch(p); } }); }
+    });
 }
 function fertForm(f){
   const isNew = !f; f = f || {};
@@ -421,6 +446,9 @@ document.addEventListener("click", e => {
   }
   else if (a === "placeadd") placeForm();
   else if (a === "placeedit") placeForm(placeById(id));
+  else if (a === "specadd") specForm();
+  else if (a === "specedit") specForm(S.specs.find(s => s.id === id));
+  else if (a === "delspec") { if (confirm("この品種を削除しますか？（植物の品種名は残ります）")) { tomb([id]); S.specs = S.specs.filter(s => s.id !== id); save(); render(); } }
   else if (a === "fertadd") fertForm();
   else if (a === "fertedit") fertForm(fertById(id));
   else if (a === "delfert") { if (confirm("この肥料の種類を削除しますか？（過去の記録は残ります）")) { tomb([id]); S.ferts = S.ferts.filter(f => f.id !== id); save(); render(); } }
@@ -439,7 +467,7 @@ document.addEventListener("click", e => {
   else if (a === "import") {
     const i = document.createElement("input"); i.type = "file"; i.accept = ".json,application/json";
     i.onchange = async () => { try { const d = JSON.parse(await i.files[0].text()); if (!Array.isArray(d.plants) || !Array.isArray(d.places) || !Array.isArray(d.logs)) throw 0;
-      if (confirm("現在のデータを置き換えて読み込みますか？")) { normalize(d); ["plants","places","logs","ferts","mems"].forEach(k => d[k].forEach(touch)); S = d; save(); render(); } } catch { alert("読み込めないファイルです"); } };
+      if (confirm("現在のデータを置き換えて読み込みますか？")) { normalize(d); ["plants","places","logs","ferts","mems","specs"].forEach(k => d[k].forEach(touch)); S = d; save(); render(); } } catch { alert("読み込めないファイルです"); } };
     i.click();
   }
 });
@@ -514,7 +542,7 @@ function mergeState(a, b){
   const del = new Map();
   [...a.del, ...b.del].forEach(d => { if (!del.has(d.id) || del.get(d.id) < d.u) del.set(d.id, d.u); });
   const out = {del: [...del].map(([id, u]) => ({id, u}))};
-  ["plants","places","logs","ferts","mems"].forEach(k => {
+  ["plants","places","logs","ferts","mems","specs"].forEach(k => {
     const m = new Map();
     [...a[k], ...b[k]].forEach(o => { const c = m.get(o.id); if (!c || o.u > c.u) m.set(o.id, o); });
     out[k] = [...m.values()].filter(o => !(del.has(o.id) && del.get(o.id) >= o.u));
