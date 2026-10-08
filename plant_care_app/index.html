@@ -4,25 +4,30 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f7faf8">
+<script>try{var __t=localStorage.getItem("plant_theme");if(__t)document.documentElement.setAttribute("data-theme",__t)}catch(e){}</script>
 <meta name="apple-mobile-web-app-title" content="HOUSE PLANTS">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg">
 <link rel="apple-touch-icon" href="apple_touch_icon.png">
 <title>HOUSE PLANTS</title>
 <style>
-:root{--g:#2f6b4f;--gl:#eef5f0;--bg:#f7faf8;--tx:#1d2b24;--mu:#7d8c84;--bd:#e1ebe5;--red:#b0483e;--bl:#4a7a8c;--gold:#b8975a;--serif:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif}
+:root{--g:#2f6b4f;--gl:#eef5f0;--bg:#f7faf8;--tx:#1d2b24;--mu:#7d8c84;--bd:#e1ebe5;--red:#b0483e;--bl:#4a7a8c;--gold:#b8975a;--card:#fff;--nav:#255c43;--navtx:#a9c9b8;--navon:#e3c98f;--barbg:rgba(247,250,248,.96);--serif:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif}
+/* デザイン（この端末だけの設定。html の data-theme で切替） */
+html[data-theme="night"]{--g:#3f8a63;--gl:#1f3027;--bg:#121c17;--tx:#e8efe9;--mu:#8fa399;--bd:#2a3d33;--red:#d9776c;--bl:#5f93a6;--gold:#c9a965;--card:#1b2a22;--nav:#0b130f;--navtx:#7f958a;--navon:#e3c98f;--barbg:rgba(18,28,23,.96)}
+html[data-theme="sand"]{--g:#8a6f4d;--gl:#f0e8d8;--bg:#f6f1e8;--tx:#2d2a26;--mu:#8a8274;--bd:#e6ddcc;--red:#b0483e;--bl:#5f7f8a;--gold:#a47c3f;--card:#fffdf9;--nav:#5a4a35;--navtx:#cdbfa6;--navon:#f0d9a0;--barbg:rgba(246,241,232,.96)}
+html[data-theme="rose"]{--g:#b45f72;--gl:#f8e9ea;--bg:#fbf5f4;--tx:#3a2a2c;--mu:#9a8a8a;--bd:#f0dfdf;--red:#a63d3d;--bl:#6f8aa0;--gold:#c0996a;--card:#fff;--nav:#8f4455;--navtx:#e8c3ca;--navon:#fff0d0;--barbg:rgba(251,245,244,.96)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:"Hiragino Sans","Yu Gothic",system-ui,sans-serif;letter-spacing:.04em;padding-bottom:80px}
 header{background:var(--bg);color:var(--tx);padding:18px 20px 14px;border-bottom:1px solid var(--gold);position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px}
 header h1{font-family:var(--serif);font-size:18px;font-weight:500;letter-spacing:.18em;margin:0;flex:1}
 header button{background:none;color:var(--g);border:0;padding:6px 4px;font-size:14px;letter-spacing:.08em}
 main{padding:18px 18px}
-nav{position:fixed;bottom:0;left:0;right:0;background:#255c43;display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:5}
-nav button{flex:1;border:0;background:none;padding:18px 0 16px;font-family:Georgia,"Times New Roman",var(--serif);font-size:10px;letter-spacing:.16em;color:#a9c9b8}
-nav button.on{color:#e3c98f;box-shadow:inset 0 2px 0 var(--gold)}
-.card{background:#fff;border:1px solid var(--bd);border-radius:6px;padding:14px;margin-bottom:12px}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--nav);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:5}
+nav button{flex:1;border:0;background:none;padding:18px 0 16px;font-family:Georgia,"Times New Roman",var(--serif);font-size:10px;letter-spacing:.16em;color:var(--navtx)}
+nav button.on{color:var(--navon);box-shadow:inset 0 2px 0 var(--gold)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:6px;padding:14px;margin-bottom:12px}
 .pg{display:grid;grid-template-columns:repeat(2,1fr);gap:16px 14px}
-.pc{background:#fff;border:1px solid var(--bd);border-radius:6px;overflow:hidden}
+.pc{background:var(--card);border:1px solid var(--bd);border-radius:6px;overflow:hidden}
 .pi{width:100%;aspect-ratio:4/5;object-fit:cover;display:flex;align-items:center;justify-content:center;background:var(--gl);font-size:44px;color:var(--gold)}
 .pb{padding:12px 12px 14px}.pn{font-family:var(--serif);font-weight:500;font-size:16px;letter-spacing:.08em;margin-bottom:2px}
 .row{display:flex;gap:10px;align-items:center}
@@ -39,11 +44,11 @@ h2{font-family:var(--serif);font-size:13px;font-weight:500;letter-spacing:.22em;
 .btn.d{background:transparent;color:var(--red);border:1px solid var(--bd)}
 .btn.sm{padding:7px 10px;font-size:13px}
 .btns{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
-.fab{position:fixed;right:16px;bottom:88px;width:54px;height:54px;border-radius:50%;border:0;background:var(--g);color:#e3c98f;font-size:26px;font-weight:300;border:1px solid var(--gold);box-shadow:0 6px 18px rgba(31,42,36,.25);z-index:6}
+.fab{position:fixed;right:16px;bottom:88px;width:54px;height:54px;border-radius:50%;border:0;background:var(--g);color:var(--navon);font-size:26px;font-weight:300;border:1px solid var(--gold);box-shadow:0 6px 18px rgba(31,42,36,.25);z-index:6}
 .modal{position:fixed;inset:0;background:rgba(20,45,34,.45);z-index:20;display:flex;align-items:flex-end}
-.modal form{background:#fff;width:100%;max-height:90vh;overflow:auto;border-radius:12px 12px 0 0;padding:20px}
+.modal form{background:var(--card);width:100%;max-height:90vh;overflow:auto;border-radius:12px 12px 0 0;padding:20px}
 .modal label{display:block;font-size:13px;color:var(--mu);margin-top:10px}
-.modal input,.modal select,.modal textarea{width:100%;font-size:16px;padding:9px;border:1px solid var(--bd);border-radius:8px;margin-top:3px;background:#fff}
+.modal input,.modal select,.modal textarea{width:100%;font-size:16px;padding:9px;border:1px solid var(--bd);border-radius:8px;margin-top:3px;background:var(--card);color:var(--tx)}
 .log{border-top:1px solid var(--bd);padding:8px 0;font-size:14px}
 .log:first-child{border-top:0}
 .tag{display:inline-block;background:var(--gl);color:var(--g);border-radius:6px;padding:1px 7px;font-size:12px;margin-right:4px}
@@ -51,12 +56,14 @@ h2{font-family:var(--serif);font-size:13px;font-weight:500;letter-spacing:.22em;
 .lg{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}.lgc{flex:1;min-width:0}
 .lt{display:block;width:64px;height:64px;object-fit:cover;border-radius:4px;margin-top:6px}
 .mg{display:grid;grid-template-columns:repeat(2,1fr);gap:16px 14px}
-.mc{background:#fff;border:1px solid var(--bd);border-radius:6px;overflow:hidden}
+.mc{background:var(--card);border:1px solid var(--bd);border-radius:6px;overflow:hidden}
 .mp{width:100%;aspect-ratio:1;object-fit:cover;display:flex;align-items:center;justify-content:center;background:var(--gl);font-size:12px;letter-spacing:.3em}
 .mt{padding:9px 11px 11px}.md{font-size:11px;color:var(--mu);letter-spacing:.1em}.mn{font-family:var(--serif);font-size:14px;letter-spacing:.06em;margin-top:2px}
+.th{padding:10px 0;border-top:1px solid var(--bd);cursor:pointer}.th.on b{color:var(--g)}
+.sw{display:inline-flex;flex:none;border:1px solid var(--bd);border-radius:4px;overflow:hidden}.sw i{width:18px;height:28px;display:block}
 .sc{cursor:pointer}.sc.on{border-color:var(--gold);background:var(--gl)}
-.ck{width:26px;height:26px;border:1px solid var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--g);font-size:16px;flex:none;background:#fff}
-.bar{position:fixed;left:0;right:0;bottom:calc(54px + env(safe-area-inset-bottom));padding:10px 18px;background:rgba(247,250,248,.96);border-top:1px solid var(--bd);z-index:6}
+.ck{width:26px;height:26px;border:1px solid var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--g);font-size:16px;flex:none;background:var(--card)}
+.bar{position:fixed;left:0;right:0;bottom:calc(54px + env(safe-area-inset-bottom));padding:10px 18px;background:var(--barbg);border-top:1px solid var(--bd);z-index:6}
 .bar .btn{width:100%}
 .np{font-family:Georgia,"Times New Roman",var(--serif);color:var(--gold);text-align:center;line-height:1.5}
 .thumb.np{font-size:8px;letter-spacing:.12em}.pi.np{font-size:12px;letter-spacing:.3em}
@@ -67,7 +74,7 @@ h2{font-family:var(--serif);font-size:13px;font-weight:500;letter-spacing:.22em;
 @media (prefers-reduced-motion:reduce){#splash{animation-duration:.01s;animation-delay:.6s}#splash img{animation-duration:.01s}}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
 .cal.wk{text-align:center;font-size:12px;color:var(--mu);margin-bottom:3px}
-.cd{border:1px solid var(--bd);background:#fff;border-radius:4px;min-height:64px;padding:3px 1px;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--tx);overflow:hidden}
+.cd{border:1px solid var(--bd);background:var(--card);border-radius:4px;min-height:64px;padding:3px 1px;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--tx);overflow:hidden}
 .cd b{font-size:13px}.cd i{font-style:normal;white-space:nowrap}
 .cd.t{border-color:var(--gold);background:var(--gl)}.cd.sel{outline:1px solid var(--g);outline-offset:1px}
 .alb{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
@@ -114,6 +121,22 @@ const now = () => Date.now();
 const touch = o => { o.u = now(); return o; };
 function tomb(ids){ const u = now(); ids.forEach(id => S.del.push({id, u})); }
 function normalize(d){ d.del = d.del || []; d.ferts = d.ferts || []; d.mems = d.mems || []; d.specs = d.specs || []; ["plants","places","logs","ferts","mems","specs"].forEach(k => d[k].forEach(o => { if (typeof o.u !== "number") o.u = 0; })); return d; }
+
+// ---------- デザイン（この端末だけ。同期しない） ----------
+const THEMES = [
+  {id:"forest", name:"フォレスト", note:"白と緑にゴールド", sw:["#f7faf8","#2f6b4f","#b8975a"], meta:"#f7faf8"},
+  {id:"night",  name:"ナイト",     note:"深い緑黒のダーク", sw:["#121c17","#3f8a63","#c9a965"], meta:"#121c17"},
+  {id:"sand",   name:"サンド",     note:"ベージュとブラウン", sw:["#f6f1e8","#8a6f4d","#a47c3f"], meta:"#f6f1e8"},
+  {id:"rose",   name:"ローズ",     note:"やさしいピンク",   sw:["#fbf5f4","#b45f72","#c0996a"], meta:"#fbf5f4"}
+];
+const curTheme = () => { try { const t = localStorage.getItem("plant_theme"); return THEMES.some(x => x.id === t) ? t : "forest"; } catch { return "forest"; } };
+function applyTheme(id){
+  const t = THEMES.find(x => x.id === id) || THEMES[0];
+  document.documentElement.setAttribute("data-theme", t.id);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", t.meta);
+  try { localStorage.setItem("plant_theme", t.id); } catch {}
+}
+applyTheme(curTheme());
 
 // ---------- ユーティリティ ----------
 const $ = s => document.querySelector(s);
@@ -273,10 +296,15 @@ function render(){
       return `<div class="pc" data-act="plant" data-id="${p.id}">${p.photo ? `<img class="pi" src="${p.photo}">` : `<div class="pi np">NO PHOTO</div>`}<div class="pb"><div class="pn">${esc(p.name)}</div><div class="mu">${esc(p.species)}</div><div class="mu">${pl ? ""+esc(pl.name) : "場所未設定"}</div><div class="mu" style="margin-top:4px">${w?`水 <span class="${w.due?"due":"ok"}">${w.text}</span> `:""}${f?`肥 <span class="${f.due?"due":"ok"}">${f.text}</span>`:""}</div></div></div>`;
     }).join("") + `</div>` : `<div class="empty">右下の＋で植物を登録</div>`;
   } else {
-    main.innerHTML = manageCard("PLACES　置き場所", S.places, "place", placeSub) + manageCard("SPECIES　品種", [...S.specs].sort((a, b) => a.name.localeCompare(b.name, "ja")), "spec", s => S.plants.filter(p => sameSpec(p.species, s.name)).length + "鉢") + manageCard("FERTILIZERS　肥料の種類", S.ferts, "fert") + `<div class="card"><b>複数端末の同期（Googleドライブ）</b>${!GOOGLE_CLIENT_ID ? `<div class="mu">未設定です（OAuthクライアントIDが必要）</div>` : `<div class="mu" id="syncst">${esc(syncStatus())}</div><div class="btns"><button class="btn" data-act="sync">${lsGet("plant_sync_on")?"今すぐ同期":"Googleドライブと連携"}</button>${lsGet("plant_sync_on")?`<button class="btn s" data-act="syncswitch">別のアカウントで連携し直す</button>`:""}</div>`}</div><div class="card"><b>データのバックアップ</b><div class="mu">データはこの端末のブラウザ内にだけ保存されています。機種変更前に書き出してください。</div><div class="btns"><button class="btn" data-act="export">書き出す</button><button class="btn s" data-act="import">読み込む</button></div></div><div class="mu">植物 ${S.plants.length} / 場所 ${S.places.length} / 記録 ${S.logs.length}</div><div class="mu">購入金額の合計：${yen(S.plants.reduce((s, p) => s + (+p.price || 0), 0))}</div>`;
+    main.innerHTML = themeCard() + manageCard("PLACES　置き場所", S.places, "place", placeSub) + manageCard("SPECIES　品種", [...S.specs].sort((a, b) => a.name.localeCompare(b.name, "ja")), "spec", s => S.plants.filter(p => sameSpec(p.species, s.name)).length + "鉢") + manageCard("FERTILIZERS　肥料の種類", S.ferts, "fert") + `<div class="card"><b>複数端末の同期（Googleドライブ）</b>${!GOOGLE_CLIENT_ID ? `<div class="mu">未設定です（OAuthクライアントIDが必要）</div>` : `<div class="mu" id="syncst">${esc(syncStatus())}</div><div class="btns"><button class="btn" data-act="sync">${lsGet("plant_sync_on")?"今すぐ同期":"Googleドライブと連携"}</button>${lsGet("plant_sync_on")?`<button class="btn s" data-act="syncswitch">別のアカウントで連携し直す</button>`:""}</div>`}</div><div class="card"><b>データのバックアップ</b><div class="mu">データはこの端末のブラウザ内にだけ保存されています。機種変更前に書き出してください。</div><div class="btns"><button class="btn" data-act="export">書き出す</button><button class="btn s" data-act="import">読み込む</button></div></div><div class="mu">植物 ${S.plants.length} / 場所 ${S.places.length} / 記録 ${S.logs.length}</div><div class="mu">購入金額の合計：${yen(S.plants.reduce((s, p) => s + (+p.price || 0), 0))}</div>`;
   }
 }
 
+function themeCard(){
+  const cur = curTheme();
+  return `<div class="card"><b>DESIGN　デザイン</b><div class="mu" style="margin:4px 0 6px">この端末だけの設定です（ほかのスマホには反映されません）</div>`
+    + THEMES.map(t => `<div class="row th${t.id === cur ? " on" : ""}" data-act="theme" data-id="${t.id}"><span class="sw">${t.sw.map(c => `<i style="background:${c}"></i>`).join("")}</span><div class="grow"><b>${t.name}</b><div class="mu">${t.note}</div></div><span>${t.id === cur ? "✓" : ""}</span></div>`).join("") + `</div>`;
+}
 // 設定タブの「登録の管理」カード（置き場所・肥料の種類）。k = "place" | "fert"
 // 置き場所の行：鉢数・最新のLUX・空気循環。名前をタップすると詳細（LUX・空気循環の記録）を開く
 function placeSub(pl){
@@ -462,6 +490,7 @@ document.addEventListener("click", e => {
     else if (el.dataset.t === "fert" && S.ferts.length) addLog({type:"fert", plantId:id}, [{n:"fertId",l:"肥料の種類",t:"select",o:[["","指定なし"], ...S.ferts.map(f => [f.id, f.name])],v:lastLog(id,"fert")?.fertId||""}], "肥料を記録");
     else { S.logs.push({id:uid(), type:el.dataset.t, plantId:id, date:today(), value:"", note:"", photo:null, u:now()}); save(); render(); }
   }
+  else if (a === "theme") { applyTheme(id); render(); }
   else if (a === "mem") openMem(id);
   else if (a === "selstart") { sel = new Set(); render(); }
   else if (a === "selcancel") { sel = null; render(); }
