@@ -1,0 +1,9 @@
+{
+  "name": "植物管理",
+  "short_name": "植物管理",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f8f5",
+  "theme_color": "#2f7d4f",
+  "icons": [{"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}]
+}
