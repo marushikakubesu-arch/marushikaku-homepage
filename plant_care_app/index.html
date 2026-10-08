@@ -147,6 +147,7 @@ function dueInfo(p, type){
   const late = dayDiff(today(), l.date) - days;
   return {late, due: late >= 0, text: late > 0 ? `${late}日超過` : late === 0 ? "今日" : `あと${-late}日`, days};
 }
+const yen = v => v === "" || v == null || isNaN(+v) ? "-" : "¥" + Number(v).toLocaleString("ja-JP");
 function thumb(p){return p.photo ? `<img class="thumb" src="${p.photo}">` : `<div class="thumb">🪴</div>`;}
 
 // ---------- カレンダー ----------
@@ -215,7 +216,7 @@ function render(){
       return `<div class="card" data-act="place" data-id="${pl.id}"><b>📍${esc(pl.name)}</b> <span class="mu">${n}鉢</span><div class="mu">☀️${lx ? lx.value+" lux ("+lx.date+")" : "LUX未記録"}</div><div class="mu">🌀${ar ? esc(ar.note||"記録あり")+" ("+ar.date+")" : "空気循環 未記録"}</div></div>`;
     }).join("") : `<div class="empty">右下の＋で置き場所を登録（例：リビング窓際）</div>`;
   } else {
-    main.innerHTML = `<div class="card"><b>複数端末の同期（Googleドライブ）</b>${!GOOGLE_CLIENT_ID ? `<div class="mu">未設定です（OAuthクライアントIDが必要）</div>` : `<div class="mu" id="syncst">${esc(syncStatus())}</div><div class="btns"><button class="btn" data-act="sync">${lsGet("plant_sync_on")?"今すぐ同期":"Googleドライブと連携"}</button>${lsGet("plant_sync_on")?`<button class="btn s" data-act="syncswitch">別のアカウントで連携し直す</button>`:""}</div>`}</div><div class="card"><b>データのバックアップ</b><div class="mu">データはこの端末のブラウザ内にだけ保存されています。機種変更前に書き出してください。</div><div class="btns"><button class="btn" data-act="export">書き出す</button><button class="btn s" data-act="import">読み込む</button></div></div><div class="mu">植物 ${S.plants.length} / 場所 ${S.places.length} / 記録 ${S.logs.length}</div>`;
+    main.innerHTML = `<div class="card"><b>複数端末の同期（Googleドライブ）</b>${!GOOGLE_CLIENT_ID ? `<div class="mu">未設定です（OAuthクライアントIDが必要）</div>` : `<div class="mu" id="syncst">${esc(syncStatus())}</div><div class="btns"><button class="btn" data-act="sync">${lsGet("plant_sync_on")?"今すぐ同期":"Googleドライブと連携"}</button>${lsGet("plant_sync_on")?`<button class="btn s" data-act="syncswitch">別のアカウントで連携し直す</button>`:""}</div>`}</div><div class="card"><b>データのバックアップ</b><div class="mu">データはこの端末のブラウザ内にだけ保存されています。機種変更前に書き出してください。</div><div class="btns"><button class="btn" data-act="export">書き出す</button><button class="btn s" data-act="import">読み込む</button></div></div><div class="mu">植物 ${S.plants.length} / 場所 ${S.places.length} / 記録 ${S.logs.length}</div><div class="mu">購入金額の合計：${yen(S.plants.reduce((s, p) => s + (+p.price || 0), 0))}</div>`;
   }
 }
 
@@ -233,7 +234,7 @@ function renderPlant(main){
   const pl = placeById(p.placeId), w = dueInfo(p,"water"), f = dueInfo(p,"fert");
   const logs = logsOf(l => l.plantId === p.id);
   main.innerHTML = `${p.photo?`<img class="big" src="${p.photo}">`:""}
-  <div class="card"><div>${esc(p.species)||"品種未設定"}</div><div class="mu">購入日：${esc(p.bought)||"-"}　置き場所：${pl?esc(pl.name):"-"}</div>
+  <div class="card"><div>${esc(p.species)||"品種未設定"}</div><div class="mu">購入日：${esc(p.bought)||"-"}　購入金額：${yen(p.price)}　購入先：${esc(p.shop)||"-"}　置き場所：${pl?esc(pl.name):"-"}</div>
   <div class="mu">💧${w?`${w.days}日おき（<span class="${w.due?"due":"ok"}">${w.text}</span>）`:"未設定"}　🧪${f?`${f.days}日おき（<span class="${f.due?"due":"ok"}">${f.text}</span>）`:"未設定"}</div>
   ${p.memo?`<div style="margin-top:6px">${esc(p.memo)}</div>`:""}</div>
   <div class="btns"><button class="btn w" data-act="done" data-id="${p.id}" data-t="water">💧水やり済</button><button class="btn w" data-act="waterphoto" data-id="${p.id}">💧📷水やり＋写真</button><button class="btn" data-act="done" data-id="${p.id}" data-t="fert">🧪肥料済</button><button class="btn s" data-act="growth" data-id="${p.id}">📷成長記録（写真）</button><button class="btn s" data-act="lux" data-id="${p.id}">☀️LUX</button></div>
@@ -258,7 +259,7 @@ const placeOpts = () => [["", "未設定"], ...S.places.map(p => [p.id, p.name])
 function plantForm(p){
   const isNew = !p; p = p || {};
   openForm(isNew ? "植物を登録" : "植物を編集", [
-    {n:"name",l:"名前（必須）",v:p.name}, {n:"species",l:"品種",v:p.species}, {n:"bought",l:"購入日",t:"date",v:p.bought},
+    {n:"name",l:"名前（必須）",v:p.name}, {n:"species",l:"品種",v:p.species}, {n:"bought",l:"購入日",t:"date",v:p.bought}, {n:"price",l:"購入金額（円）",t:"number",v:p.price}, {n:"shop",l:"購入先",v:p.shop},
     {n:"placeId",l:"置き場所",t:"select",o:placeOpts(),v:p.placeId||""},
     {n:"waterDays",l:"水やり間隔（日）",t:"number",v:p.waterDays}, {n:"fertDays",l:"肥料間隔（日）",t:"number",v:p.fertDays},
     {n:"memo",l:"メモ",t:"textarea",v:p.memo}, {n:"photo",l:"写真（変更する場合のみ）",t:"photo"}
