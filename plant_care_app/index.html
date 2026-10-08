@@ -43,6 +43,12 @@ h2{font-size:16px;margin:14px 0 8px}
 .log:first-child{border-top:0}
 .tag{display:inline-block;background:var(--gl);color:var(--g);border-radius:6px;padding:1px 7px;font-size:12px;margin-right:4px}
 .empty{text-align:center;color:var(--mu);padding:30px 10px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal.wk{text-align:center;font-size:12px;color:var(--mu);margin-bottom:3px}
+.cd{border:1px solid var(--bd);background:#fff;border-radius:8px;min-height:64px;padding:3px 1px;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--tx);overflow:hidden}
+.cd b{font-size:13px}.cd i{font-style:normal;white-space:nowrap}
+.cd.t{border-color:var(--g);background:var(--gl)}.cd.sel{outline:2px solid var(--g)}
+.cw{color:var(--bl)}.cf{color:var(--g)}.dn{color:var(--mu)}
 </style>
 </head>
 <body>
@@ -51,6 +57,7 @@ h2{font-size:16px;margin:14px 0 8px}
 <button class="fab" id="fab" hidden>＋</button>
 <nav id="nav">
 <button data-tab="today"><span>📅</span>今日</button>
+<button data-tab="calendar"><span>🗓️</span>カレンダー</button>
 <button data-tab="plants"><span>🪴</span>植物</button>
 <button data-tab="places"><span>📍</span>置き場所</button>
 <button data-tab="settings"><span>⚙️</span>設定</button>
@@ -134,6 +141,45 @@ function dueInfo(p, type){
 }
 function thumb(p){return p.photo ? `<img class="thumb" src="${p.photo}">` : `<div class="thumb">🪴</div>`;}
 
+// ---------- カレンダー ----------
+const pad = n => String(n).padStart(2, "0");
+const ymd = d => d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate());
+const addDays = (s, n) => { const [y,m,d] = s.split("-").map(Number); return ymd(new Date(y, m-1, d+n)); };
+let calM = (() => { const d = new Date(); return {y: d.getFullYear(), m: d.getMonth()}; })(), calSel = today();
+// 範囲内の {日付: [{p,t,done}]}。済み=記録、予定=最後の記録＋間隔から先へ繰り返し（期限超過は今日に表示）
+function calData(from, to){
+  const ev = {}, add = (dt, o) => (ev[dt] = ev[dt] || []).push(o), td = today();
+  S.logs.forEach(l => { const p = plantById(l.plantId); if ((l.type === "water" || l.type === "fert") && p && l.date >= from && l.date <= to) add(l.date, {p, t: l.type, done: true}); });
+  S.plants.forEach(p => ["water","fert"].forEach(t => {
+    const n = Math.round(+p[t === "water" ? "waterDays" : "fertDays"]); if (!(n >= 1)) return;
+    const l = lastLog(p.id, t); let x = l ? addDays(l.date, n) : td; if (x < td) x = td;
+    for (; x <= to; x = addDays(x, n)) if (x >= from) add(x, {p, t, done: false});
+  }));
+  return ev;
+}
+function calHtml(){
+  const {y, m} = calM, first = new Date(y, m, 1), last = new Date(y, m+1, 0), td = today();
+  const ev = calData(ymd(first), ymd(last));
+  let cells = "";
+  for (let i = 0; i < first.getDay(); i++) cells += `<div></div>`;
+  for (let d = 1; d <= last.getDate(); d++) {
+    const dt = y + "-" + pad(m+1) + "-" + pad(d), list = ev[dt] || [];
+    const chip = (t, done) => { const n = list.filter(e => e.t === t && e.done === done).length; return n ? `<i class="${done?"dn":t==="water"?"cw":"cf"}">${done?"✓":""}${t==="water"?"💧":"🧪"}${n}</i>` : ""; };
+    cells += `<button class="cd${dt===td?" t":""}${dt===calSel?" sel":""}" data-act="calday" data-id="${dt}"><b>${d}</b>${chip("water",false)}${chip("fert",false)}${chip("water",true)}${chip("fert",true)}</button>`;
+  }
+  const sel = (ev[calSel] || (() => { const [sy, sm] = calSel.split("-").map(Number); return sy === y && sm === m+1 ? [] : calData(calSel, calSel)[calSel] || []; })());
+  const items = [...sel].sort((a, b) => a.done - b.done || a.p.name.localeCompare(b.p.name));
+  const detail = items.length ? items.map(({p, t, done}) => {
+    const d = !done && calSel === td ? dueInfo(p, t) : null;
+    const st = done ? `<span class="ok">✓済み</span>` : d ? `<span class="${d.late > 0 || d.text === "記録なし" ? "due" : ""}">${d.text}</span>` : "予定";
+    const btn = !done && calSel === td ? `<button class="btn sm ${t==="water"?"w":""}" data-act="done" data-id="${p.id}" data-t="${t}">済</button>` : "";
+    return `<div class="card row" data-act="plant" data-id="${p.id}">${thumb(p)}<div class="grow"><b>${esc(p.name)}</b><div class="mu">${TYPE[t]}　${st}</div></div>${btn}</div>`;
+  }).join("") : `<div class="empty">この日の予定・記録はありません</div>`;
+  return `<div class="row" style="justify-content:space-between;margin-bottom:8px"><button class="btn s sm" data-act="calprev">‹</button><b>${y}年${m+1}月</b><span><button class="btn s sm" data-act="caltoday">今日</button> <button class="btn s sm" data-act="calnext">›</button></span></div>
+  <div class="cal wk"><div style="color:var(--red)">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div style="color:var(--bl)">土</div></div>
+  <div class="cal">${cells}</div><h2>${calSel}</h2>${detail}<div class="mu">※予定は「最後の記録＋間隔」から計算しています</div>`;
+}
+
 // ---------- 画面 ----------
 function render(){
   const main = $("#main"), back = $("#back"), edit = $("#edit"), fab = $("#fab");
@@ -141,13 +187,15 @@ function render(){
   back.hidden = edit.hidden = !view; fab.hidden = !!view || !["plants","places"].includes(tab);
   if (view?.k === "plant") return renderPlant(main);
   if (view?.k === "place") return renderPlace(main);
-  $("#title").textContent = {today:"今日のお世話", plants:"植物", places:"置き場所", settings:"設定"}[tab];
+  $("#title").textContent = {today:"今日のお世話", calendar:"カレンダー", plants:"植物", places:"置き場所", settings:"設定"}[tab];
   if (tab === "today") {
     const items = [];
     S.plants.forEach(p => ["water","fert"].forEach(t => { const d = dueInfo(p, t); if (d?.due) items.push({p,t,d}); }));
     items.sort((a,b) => b.d.late - a.d.late);
     main.innerHTML = items.length ? items.map(({p,t,d}) => `<div class="card row">${thumb(p)}<div class="grow"><b>${esc(p.name)}</b><div class="mu">${TYPE[t]}　<span class="due">${d.text}</span></div></div><button class="btn sm ${t==="water"?"w":""}" data-act="done" data-id="${p.id}" data-t="${t}">済</button></div>`).join("")
       : `<div class="empty">${S.plants.length ? "今日やることはありません 🎉" : "「植物」タブから植物を登録しましょう"}</div>`;
+  } else if (tab === "calendar") {
+    main.innerHTML = calHtml();
   } else if (tab === "plants") {
     main.innerHTML = S.plants.length ? S.plants.map(p => {
       const w = dueInfo(p,"water"), f = dueInfo(p,"fert"), pl = placeById(p.placeId);
@@ -228,7 +276,10 @@ document.addEventListener("click", e => {
   if (nav) { tab = nav.dataset.tab; view = null; return render(); }
   const el = e.target.closest("[data-act]"); if (!el) return;
   const id = el.dataset.id, a = el.dataset.act;
-  if (a === "plant") { view = {k:"plant", id}; render(); scrollTo(0,0); }
+  if (a === "calday") { calSel = id; render(); }
+  else if (a === "calprev" || a === "calnext") { const d = new Date(calM.y, calM.m + (a === "calnext" ? 1 : -1), 1); calM = {y: d.getFullYear(), m: d.getMonth()}; calSel = ymd(d); render(); }
+  else if (a === "caltoday") { const d = new Date(); calM = {y: d.getFullYear(), m: d.getMonth()}; calSel = today(); render(); }
+  else if (a === "plant") { view = {k:"plant", id}; render(); scrollTo(0,0); }
   else if (a === "place") { view = {k:"place", id}; render(); scrollTo(0,0); }
   else if (a === "done") { S.logs.push({id:uid(), type:el.dataset.t, plantId:id, date:today(), value:"", note:"", photo:null, u:now()}); save(); render(); }
   else if (a === "growth") addLog({type:"growth", plantId:id}, [{n:"value",l:"草丈（cm）",t:"number"},{n:"note",l:"メモ",t:"textarea"},{n:"photo",l:"写真",t:"photo"}], "成長記録");
