@@ -71,6 +71,8 @@ h2{font-family:var(--serif);font-size:13px;font-weight:500;letter-spacing:.22em;
 .sw{display:inline-flex;flex:none;border:1px solid var(--bd);border-radius:4px;overflow:hidden}.sw i{width:18px;height:28px;display:block}
 .fh{display:flex;justify-content:space-between;align-items:center;cursor:pointer}.fa{color:var(--gold);font-size:16px;padding-left:12px}
 .fb{margin-top:6px}.shut .fb{display:none}
+.tools{display:flex;gap:8px;margin-bottom:10px}.tools input{flex:1;min-width:0;font-size:16px;padding:9px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx)}
+.tools select{flex:none;font-size:14px;padding:9px 8px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);max-width:42%}
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:4px;-webkit-overflow-scrolling:touch}
 .chip{flex:none;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:999px;padding:7px 14px;font-size:13px;letter-spacing:.04em}
 .chip.on{background:var(--g);color:#f6f2ea;border-color:var(--g)}
@@ -215,6 +217,8 @@ function openForm(title, fields, onOk){
 
 // ---------- 状態 ----------
 let tab = "today", view = null; // view: {k:'plant'|'place', id}
+let plQuery = ""; // PLANTSの検索語
+let plSort = (() => { try { const v = localStorage.getItem("plant_sort"); return ["place","genus","water"].includes(v) ? v : "place"; } catch { return "place"; } })(); // PLANTSの並び："place"=置き場所ごと／"genus"=属名順／"water"=水やりが近い順
 let plFilter = "all"; // PLANTSの絞り込み："all" | 置き場所ID | "none"
 let listScroll = 0; // 植物・置き場所の詳細を開く直前の、一覧のスクロール位置
 let sel = null; // 今日タブの「まとめて済にする」選択中の項目（"植物ID:water|fert" のSet）。通常は null
@@ -285,6 +289,42 @@ function calHtml(){
   <div class="cal">${cells}</div><h2>${calSel}</h2>${detail}<div class="mu">※水・肥の予定は「最後の記録＋間隔」から計算しています。「植」は、植物に入れた植え替え予定日です</div>`;
 }
 
+// PLANTS の一覧部分（検索・置き場所の絞り込み・並び替えを反映）。入力のたびに、この部分だけ描き直す
+function plantsListHtml(){
+  const cmp = (a, b) => (a || "").localeCompare(b || "", "ja");
+  // 属名の50音順、同じ属名のなかでは品種名の50音順（属名が空のものは最後）
+  const byGenus = (a, b) => (!a.species !== !b.species) ? (a.species ? -1 : 1) : cmp(specKey(a.species), specKey(b.species)) || cmp(specKey(a.name), specKey(b.name));
+  const byWater = (a, b) => { const da = dueInfo(a, "water"), db = dueInfo(b, "water"); if (!da !== !db) return da ? -1 : 1; return (da && db && db.late - da.late) || byGenus(a, b); };
+  const tokens = plQuery.split(/\s+/).map(specKey).filter(Boolean);
+  const hay = p => specKey([p.name, p.species, placeById(p.placeId)?.name, p.shop, p.soil, p.memo].join(" "));
+  const list = S.plants.filter(p => { const h = hay(p); return tokens.every(t => h.includes(t)); }).sort(byGenus);
+  if (!list.length) return `<div class="empty">見つかりませんでした</div>`;
+  const pcard = p => {
+    const w = dueInfo(p,"water"), f = dueInfo(p,"fert"), pl = placeById(p.placeId);
+    return `<div class="pc" data-act="plant" data-id="${p.id}">${p.photo ? `<img class="pi" src="${p.photo}">` : `<div class="pi np">NO PHOTO</div>`}<div class="pb"><div class="pn">${esc(p.name)}</div><div class="mu">${esc(p.species)}</div><div class="mu">${pl ? ""+esc(pl.name) : "場所未設定"}</div><div class="mu" style="margin-top:4px">${w?`水 <span class="${w.due?"due":"ok"}">${w.text}</span> `:""}${f?`肥 <span class="${f.due?"due":"ok"}">${f.text}</span>`:""}</div></div></div>`;
+  };
+  const groups = [...S.places].sort((a, b) => a.name.localeCompare(b.name, "ja")).map(pl => ({id: pl.id, name: pl.name, list: list.filter(p => p.placeId === pl.id)}));
+  groups.push({id: "none", name: "場所未設定", list: list.filter(p => !placeById(p.placeId))});
+  const live = groups.filter(g => g.list.length);
+  if (plFilter !== "all" && !live.some(g => g.id === plFilter)) plFilter = "all";
+  const shown = plFilter === "all" ? live : live.filter(g => g.id === plFilter);
+  const chips = live.length > 1 ? `<div class="chips"><button class="chip${plFilter === "all" ? " on" : ""}" data-act="plfilter" data-id="all">すべて ${list.length}</button>${live.map(g => `<button class="chip${plFilter === g.id ? " on" : ""}" data-act="plfilter" data-id="${g.id}">${esc(g.name)} ${g.list.length}</button>`).join("")}</div>` : "";
+  if (plSort === "place") return chips + shown.map(g => (live.length > 1 ? `<div class="gh">${esc(g.name)}<span class="mu">　${g.list.length}鉢</span></div>` : "") + `<div class="pg">${g.list.map(pcard).join("")}</div>`).join("");
+  return chips + `<div class="pg">${shown.flatMap(g => g.list).sort(plSort === "water" ? byWater : byGenus).map(pcard).join("")}</div>`;
+}
+
+// MEMORY：1〜5年前の「今ごろ」（今日の前後3日）の写真を、思い出と植物のアルバムから集めて出す
+function yearsAgoHtml(){
+  const td = today(), out = [];
+  for (let y = 1; y <= 5; y++) {
+    const target = addMonths(td, -12 * y), items = [];
+    S.mems.forEach(m => { if (m.photo && Math.abs(dayDiff(m.date, target)) <= 3) items.push({a:"mem", id:m.id, photo:m.photo, date:m.date, label:m.title || ""}); });
+    S.logs.forEach(l => { const p = plantById(l.plantId); if (p && l.photo && Math.abs(dayDiff(l.date, target)) <= 3) items.push({a:"photo", id:l.id, photo:l.photo, date:l.date, label:p.name}); });
+    if (items.length) out.push(`<div class="gh" style="margin-top:${out.length ? 18 : 0}px">${y}年前の今ごろ</div><div class="alb">` + items.sort((a, b) => a.date.localeCompare(b.date)).map(i => `<div class="ai" data-act="${i.a}" data-id="${i.id}"><img src="${i.photo}"><span>${esc(i.label || i.date)}</span></div>`).join("") + `</div>`);
+  }
+  return out.length ? out.join("") + `<div style="height:8px"></div>` : "";
+}
+
 // ---------- 画面 ----------
 function render(){
   const main = $("#main"), back = $("#back"), edit = $("#edit"), fab = $("#fab");
@@ -311,26 +351,13 @@ function render(){
           + grouped(items, i => `<div class="card row">${info(i)}<button class="btn sm ${i.t==="water"?"w":""}" data-act="done" data-id="${i.p.id}" data-t="${i.t}">${{water:"水やり",fert:"肥料",repot:"植え替え"}[i.t]}</button></div>`));
   } else if (tab === "memory") {
     const ms = [...S.mems].sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
-    main.innerHTML = ms.length ? `<div class="mg">` + ms.map(m => `<div class="mc" data-act="mem" data-id="${m.id}">${m.photo ? `<img class="mp" src="${m.photo}">` : `<div class="mp np">NO PHOTO</div>`}<div class="mt"><div class="md">${esc(m.date)}</div>${m.title ? `<div class="mn">${esc(m.title)}</div>` : ""}</div></div>`).join("") + `</div>`
-      : `<div class="empty">右下の＋で、思い出の写真を残しましょう<br>（お部屋と植物の写真など）</div>`;
+    main.innerHTML = yearsAgoHtml() + (ms.length ? `<div class="mg">` + ms.map(m => `<div class="mc" data-act="mem" data-id="${m.id}">${m.photo ? `<img class="mp" src="${m.photo}">` : `<div class="mp np">NO PHOTO</div>`}<div class="mt"><div class="md">${esc(m.date)}</div>${m.title ? `<div class="mn">${esc(m.title)}</div>` : ""}</div></div>`).join("") + `</div>`
+      : `<div class="empty">右下の＋で、思い出の写真を残しましょう<br>（お部屋と植物の写真など）</div>`);
   } else if (tab === "calendar") {
     main.innerHTML = calHtml();
   } else if (tab === "plants") {
-    // 属名の50音順、同じ属名のなかでは品種名の50音順（属名が空のものは最後）
-    const cmp = (a, b) => (a || "").localeCompare(b || "", "ja");
-    const sorted = [...S.plants].sort((a, b) => (!a.species !== !b.species) ? (a.species ? -1 : 1) : cmp(specKey(a.species), specKey(b.species)) || cmp(specKey(a.name), specKey(b.name)));
-    const pcard = p => {
-      const w = dueInfo(p,"water"), f = dueInfo(p,"fert"), pl = placeById(p.placeId);
-      return `<div class="pc" data-act="plant" data-id="${p.id}">${p.photo ? `<img class="pi" src="${p.photo}">` : `<div class="pi np">NO PHOTO</div>`}<div class="pb"><div class="pn">${esc(p.name)}</div><div class="mu">${esc(p.species)}</div><div class="mu">${pl ? ""+esc(pl.name) : "場所未設定"}</div><div class="mu" style="margin-top:4px">${w?`水 <span class="${w.due?"due":"ok"}">${w.text}</span> `:""}${f?`肥 <span class="${f.due?"due":"ok"}">${f.text}</span>`:""}</div></div></div>`;
-    };
-    const groups = [...S.places].sort((a, b) => a.name.localeCompare(b.name, "ja")).map(pl => ({id: pl.id, name: pl.name, list: sorted.filter(p => p.placeId === pl.id)}));
-    groups.push({id: "none", name: "場所未設定", list: sorted.filter(p => !placeById(p.placeId))});
-    const live = groups.filter(g => g.list.length);
-    if (plFilter !== "all" && !live.some(g => g.id === plFilter)) plFilter = "all";
-    const shown = plFilter === "all" ? live : live.filter(g => g.id === plFilter);
     main.innerHTML = !S.plants.length ? `<div class="empty">右下の＋で植物を登録</div>`
-      : (live.length > 1 ? `<div class="chips"><button class="chip${plFilter === "all" ? " on" : ""}" data-act="plfilter" data-id="all">すべて ${S.plants.length}</button>${live.map(g => `<button class="chip${plFilter === g.id ? " on" : ""}" data-act="plfilter" data-id="${g.id}">${esc(g.name)} ${g.list.length}</button>`).join("")}</div>` : "")
-        + shown.map(g => (live.length > 1 ? `<div class="gh">${esc(g.name)}<span class="mu">　${g.list.length}鉢</span></div>` : "") + `<div class="pg">${g.list.map(pcard).join("")}</div>`).join("");
+      : `<div class="tools"><input id="plq" type="search" placeholder="探す（品種名・属名・置き場所など）" value="${esc(plQuery)}" autocomplete="off"><select id="pls">${[["place","置き場所ごと"],["genus","属名の50音順"],["water","水やりが近い順"]].map(([v, l]) => `<option value="${v}"${v === plSort ? " selected" : ""}>${l}</option>`).join("")}</select></div><div id="plhost">${plantsListHtml()}</div>`;
   } else {
     main.innerHTML = manageCard("PLACES　置き場所", S.places, "place", placeSub) + manageCard("GENUS　属名", [...S.specs].sort((a, b) => a.name.localeCompare(b.name, "ja")), "spec", s => S.plants.filter(p => sameSpec(p.species, s.name)).length + "鉢") + manageCard("FERTILIZERS　肥料の種類", S.ferts, "fert") + themeCard() + foldCard("sync", "複数端末の同期（Googleドライブ）", `${!GOOGLE_CLIENT_ID ? `<div class="mu">未設定です（OAuthクライアントIDが必要）</div>` : `<div class="mu" id="syncst">${esc(syncStatus())}</div><div class="btns"><button class="btn" data-act="sync">${lsGet("plant_sync_on")?"今すぐ同期":"Googleドライブと連携"}</button>${lsGet("plant_sync_on")?`<button class="btn s" data-act="syncswitch">別のアカウントで連携し直す</button>`:""}</div>`}`) + foldCard("backup", "データのバックアップ", `<div class="mu">データはこの端末のブラウザ内にだけ保存されています。機種変更前に書き出してください。</div><div class="btns"><button class="btn" data-act="export">書き出す</button><button class="btn s" data-act="import">読み込む</button></div>`) + `<div class="mu">植物 ${S.plants.length} / 場所 ${S.places.length} / 記録 ${S.logs.length}</div><div class="mu">購入金額の合計：${yen(S.plants.reduce((s, p) => s + (+p.price || 0), 0))}</div>`;
   }
@@ -574,6 +601,8 @@ document.addEventListener("click", e => {
     i.click();
   }
 });
+document.addEventListener("input", e => { if (e.target.id === "plq") { plQuery = e.target.value; $("#plhost").innerHTML = plantsListHtml(); } });
+document.addEventListener("change", e => { if (e.target.id === "pls") { plSort = e.target.value; try { localStorage.setItem("plant_sort", plSort); } catch {} $("#plhost").innerHTML = plantsListHtml(); } });
 $("#back").onclick = () => { view = null; render(); scrollTo(0, listScroll); };
 $("#edit").onclick = () => view.k === "plant" ? plantForm(plantById(view.id)) : placeForm(placeById(view.id));
 $("#fab").onclick = () => tab === "memory" ? memForm() : plantForm();
