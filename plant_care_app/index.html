@@ -75,6 +75,7 @@ h2{font-family:var(--serif);font-size:13px;font-weight:500;letter-spacing:.22em;
 .tools select{flex:none;font-size:14px;padding:9px 8px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);max-width:42%}
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:4px;-webkit-overflow-scrolling:touch}
 .chip{flex:none;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:999px;padding:7px 14px;font-size:13px;letter-spacing:.04em}
+.chips.wrap{flex-wrap:wrap;overflow:visible}.modal .chips{margin:6px 0 2px}
 .chip.on{background:var(--g);color:#f6f2ea;border-color:var(--g)}
 .gh{font-family:var(--serif);font-size:13px;letter-spacing:.14em;color:var(--gold);margin:18px 0 10px}
 .sc{cursor:pointer}.sc.on{border-color:var(--gold);background:var(--gl)}
@@ -172,7 +173,7 @@ const plantById = id => S.plants.find(p => p.id === id);
 const placeById = id => S.places.find(p => p.id === id);
 const fertById = id => S.ferts.find(f => f.id === id);
 const logsOf = (f) => S.logs.filter(f).sort((a,b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
-const TYPE = {water:"水やり", fert:"肥料", repot:"植え替え", growth:"成長", lux:"LUX", air:"空気循環"};
+const TYPE = {water:"水やり", fert:"肥料", check:"確認", repot:"植え替え", growth:"成長", lux:"LUX", air:"空気循環"};
 
 function resizePhoto(file){
   return new Promise(res => {
@@ -229,11 +230,43 @@ function repotNextDate(p){
   if (l) return p.repotNext && p.repotNext > l.date ? p.repotNext : (n >= 1 ? addMonths(l.date, n) : null);
   return p.repotNext || (n >= 1 && p.bought ? addMonths(p.bought, n) : null);
 }
+// ---- 水やり：「確認する日」と実績 ----
+// 水やりは見て決めるので、予定は「そろそろ見る日」。目安は手入力（waterDays）か、空なら実績の平均から自動。
+// 「まだ大丈夫」（type=check）を記録すると、CHECK_AGAIN日後にもう一度確認に出る。
+const CHECK_AGAIN = 2;
+function waterGaps(p){ // 水やりの実際の間隔（日）。dry=その水やりのとき土が乾いていた
+  const ws = S.logs.filter(l => l.plantId === p.id && l.type === "water").sort((a, b) => a.date.localeCompare(b.date)), out = [];
+  for (let i = 1; i < ws.length; i++) { const gap = dayDiff(ws[i].date, ws[i-1].date); if (gap >= 1) out.push({gap, dry: ws[i].soilState === "乾いていた"}); }
+  return out;
+}
+function waterGuide(p){
+  const n = Math.round(+p.waterDays); if (n >= 1) return n;
+  const g = waterGaps(p).slice(-5).map(x => x.gap);
+  return g.length >= 3 ? Math.max(1, Math.round(g.reduce((a, b) => a + b, 0) / g.length)) : null;
+}
+function waterNext(p){
+  const g = waterGuide(p); if (!g) return null;
+  const w = lastLog(p.id, "water"), c = lastLog(p.id, "check");
+  if (!w && !c) return null;
+  return c && (!w || c.date >= w.date) ? addDays(c.date, CHECK_AGAIN) : addDays(w.date, g);
+}
+function waterStats(p){
+  const gaps = waterGaps(p), last = lastLog(p.id, "water");
+  if (!last) return "";
+  const avg = a => (a.reduce((x, y) => x + y, 0) / a.length).toFixed(1), all = gaps.map(g => g.gap), dry = gaps.filter(g => g.dry).map(g => g.gap);
+  return `<div class="mu" style="margin-top:4px">水やりの実績：前回 ${dayDiff(today(), last.date)}日前${all.length ? `　平均 ${avg(all)}日（直近 ${all.slice(-4).join("・")}日）` : ""}${dry.length ? `　乾いていた日だけだと平均 ${avg(dry)}日` : ""}</div>`;
+}
 function dueInfo(p, type){
   if (type === "repot") {
     const next = repotNextDate(p); if (!next) return null;
     const late = dayDiff(today(), next);
     return {late, due: late >= 0, text: late > 0 ? `${late}日超過` : late === 0 ? "今日" : `あと${-late}日`, days: 0};
+  }
+  if (type === "water") {
+    const g = waterGuide(p); if (!g) return null;
+    const next = waterNext(p); if (!next) return {late: 0, text: "記録なし", due: true, days: g};
+    const late = dayDiff(today(), next);
+    return {late, due: late >= 0, text: late > 0 ? `${late}日超過` : late === 0 ? "今日" : `あと${-late}日`, days: g};
   }
   const days = +p[type === "water" ? "waterDays" : "fertDays"];
   if (!days) return null;
@@ -255,6 +288,7 @@ function calData(from, to){
   const ev = {}, add = (dt, o) => (ev[dt] = ev[dt] || []).push(o), td = today();
   S.logs.forEach(l => { const p = plantById(l.plantId); if (["water","fert","repot"].includes(l.type) && p && l.date >= from && l.date <= to) add(l.date, {p, t: l.type, done: true}); });
   S.plants.forEach(p => ["water","fert"].forEach(t => {
+    if (t === "water") { const g = waterGuide(p); if (!g) return; const nx = waterNext(p); for (let x = nx ? (nx < td ? td : nx) : td; x <= to; x = addDays(x, g)) if (x >= from) add(x, {p, t, done: false}); return; }
     const n = Math.round(+p[t === "water" ? "waterDays" : "fertDays"]); if (!(n >= 1)) return;
     const l = lastLog(p.id, t); let x = l ? addDays(l.date, n) : td; if (x < td) x = td;
     for (; x <= to; x = addDays(x, n)) if (x >= from) add(x, {p, t, done: false});
@@ -281,7 +315,7 @@ function calHtml(){
   const detail = items.length ? items.map(({p, t, done}) => {
     const d = !done && calSel === td ? dueInfo(p, t) : null;
     const st = done ? `<span class="ok">✓済み</span>` : d ? `<span class="${d.late > 0 || d.text === "記録なし" ? "due" : ""}">${d.text}</span>` : "予定";
-    const btn = !done && calSel === td ? `<button class="btn sm ${t==="water"?"w":""}" data-act="done" data-id="${p.id}" data-t="${t}">${{water:"水やり",fert:"肥料",repot:"植え替え"}[t]}</button>` : "";
+    const btn = !done && calSel === td ? `<button class="btn sm ${t==="water"?"w":""}" data-act="done" data-id="${p.id}" data-t="${t}">${{water:"確認する",fert:"肥料",repot:"植え替え"}[t]}</button>` : "";
     return `<div class="card row" data-act="plant" data-id="${p.id}">${thumb(p)}<div class="grow"><b>${esc(p.name)}</b><div class="mu">${TYPE[t]}　${st}</div></div>${btn}</div>`;
   }).join("") : `<div class="empty">この日の予定・記録はありません</div>`;
   return `<div class="row" style="justify-content:space-between;margin-bottom:8px"><button class="btn s sm" data-act="calprev">‹</button><b>${y}年${m+1}月</b><span><button class="btn s sm" data-act="caltoday">今日</button> <button class="btn s sm" data-act="calnext">›</button></span></div>
@@ -341,14 +375,14 @@ function render(){
     // 置き場所が2つ以上にまたがるときは、置き場所ごとに見出しを入れて並べる
     const multi = new Set(items.map(i => i.p.placeId || "")).size > 1; let lastPlace = null;
     const grouped = (list, fn) => list.map(i => { const k = i.p.placeId || ""; const h = multi && k !== lastPlace ? `<div class="gh">${esc(placeById(k)?.name || "場所未設定")}</div>` : ""; lastPlace = k; return h + fn(i); }).join("");
-    const info = ({p,t,d}) => `${thumb(p)}<div class="grow"><b>${esc(p.name)}</b><div class="mu">${TYPE[t]}　<span class="due">${d.text}</span></div></div>`;
+    const info = ({p,t,d}) => `${thumb(p)}<div class="grow"><b>${esc(p.name)}</b><div class="mu">${t === "water" ? "水やりの確認" : TYPE[t]}　<span class="due">${d.text}</span></div></div>`;
     if (sel) sel = new Set([...sel].filter(k => items.some(i => i.p.id + ":" + i.t === k)));
     main.innerHTML = !items.length ? `<div class="empty">${S.plants.length ? "今日やることはありません" : "「植物」タブから植物を登録しましょう"}</div>`
       : (sel ? `<div class="btns"><button class="btn s sm" data-act="selall">すべて選ぶ</button><button class="btn d sm" data-act="selcancel">キャンセル</button></div>`
           + grouped(items, i => { const k = i.p.id + ":" + i.t, on = sel.has(k); return `<div class="card row sc${on ? " on" : ""}" data-act="seltoggle" data-id="${k}">${info(i)}<span class="ck">${on ? "✓" : ""}</span></div>`; })
           + `<div style="height:70px"></div><div class="bar"><button class="btn" data-act="selgo">${sel.size ? "選んだ" + sel.size + "件を済にする" : "項目を選んでください"}</button></div>`
         : (items.length > 1 ? `<div class="btns"><button class="btn s sm" data-act="selstart">まとめて済にする</button></div>` : "")
-          + grouped(items, i => `<div class="card row">${info(i)}<button class="btn sm ${i.t==="water"?"w":""}" data-act="done" data-id="${i.p.id}" data-t="${i.t}">${{water:"水やり",fert:"肥料",repot:"植え替え"}[i.t]}</button></div>`));
+          + grouped(items, i => `<div class="card row">${info(i)}<button class="btn sm ${i.t==="water"?"w":""}" data-act="done" data-id="${i.p.id}" data-t="${i.t}">${{water:"確認する",fert:"肥料",repot:"植え替え"}[i.t]}</button></div>`));
   } else if (tab === "memory") {
     const ms = [...S.mems].sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
     main.innerHTML = yearsAgoHtml() + (ms.length ? `<div class="mg">` + ms.map(m => `<div class="mc" data-act="mem" data-id="${m.id}">${m.photo ? `<img class="mp" src="${m.photo}">` : `<div class="mp np">NO PHOTO</div>`}<div class="mt"><div class="md">${esc(m.date)}</div>${m.title ? `<div class="mn">${esc(m.title)}</div>` : ""}</div></div>`).join("") + `</div>`
@@ -386,7 +420,7 @@ function manageCard(title, list, k, sub){
 }
 function logHtml(l, withName){
   const p = withName && plantById(l.plantId);
-  return `<div class="log lg"><div class="lgc"><span class="tag">${TYPE[l.type]}</span>${l.date}${p?" "+esc(p.name):""}${l.type==="fert" && fertById(l.fertId) ? "　"+esc(fertById(l.fertId).name) : ""}
+  return `<div class="log lg"><div class="lgc"><span class="tag">${TYPE[l.type]}</span>${l.date}${p?" "+esc(p.name):""}${l.type==="fert" && fertById(l.fertId) ? "　"+esc(fertById(l.fertId).name) : ""}${l.type==="check" ? "　まだ大丈夫" : ""}${l.soilState ? "　土："+esc(l.soilState) : ""}${l.cond ? "　様子："+esc(l.cond) : ""}${l.how ? "　"+esc(l.how) : ""}
     ${l.value!==""&&l.value!=null ? `<b> ${esc(l.value)}${l.type==="lux"?" lux":l.type==="growth"?" cm":l.type==="air"?" 分":""}</b>` : ""}
     ${l.note?`<div>${esc(l.note)}</div>`:""}${l.photo?`<img class="lt" data-act="photo" data-id="${l.id}" src="${l.photo}">`:""}</div>
     <button class="btn d sm" data-act="dellog" data-id="${l.id}">削除</button></div>`;
@@ -404,7 +438,7 @@ function renderPlant(main){
   const logs = logsOf(l => l.plantId === p.id);
   main.innerHTML = `${p.photo?`<img class="big" src="${p.photo}">`:""}
   <div class="card"><div>${esc(p.species)||"属名未設定"}</div><div class="mu">購入日：${esc(p.bought)||"-"}　購入金額：${yen(p.price)}　購入先：${esc(p.shop)||"-"}　置き場所：${pl?esc(pl.name):"-"}</div>${p.soil ? `<div class="mu">用土：${esc(p.soil)}</div>` : ""}
-  ${repotLine(p)}<div class="mu">水 ${w?`${w.days}日おき（<span class="${w.due?"due":"ok"}">${w.text}</span>）`:"未設定"}　肥 ${f?`${f.days}日おき（<span class="${f.due?"due":"ok"}">${f.text}</span>）`:"未設定"}</div>
+  ${repotLine(p)}<div class="mu">水 ${w?`確認の目安${w.days}日${Math.round(+p.waterDays)>=1?"":"・実績から自動"}（<span class="${w.due?"due":"ok"}">${w.text}</span>）`:"目安なし（水やりを4回以上記録すると、実績から自動で出ます）"}　肥 ${f?`${f.days}日おき（<span class="${f.due?"due":"ok"}">${f.text}</span>）`:"未設定"}</div>${waterStats(p)}
   ${p.memo?`<div style="margin-top:6px">${esc(p.memo)}</div>`:""}</div>
   <div class="btns"><button class="btn w" data-act="done" data-id="${p.id}" data-t="water">水やり</button><button class="btn" data-act="done" data-id="${p.id}" data-t="fert">肥料</button><button class="btn s" data-act="repotlog" data-id="${p.id}">植え替え</button></div>
   <h2>写真アルバム</h2><div class="btns"><button class="btn" data-act="addphoto" data-id="${p.id}">写真を追加</button>${logs.filter(l => l.photo).length > 1 ? `<button class="btn s" data-act="cmplatest" data-id="${p.id}">最初の写真と最新を比較</button>` : ""}</div>${logs.some(l => l.photo) ? `<div class="alb">${logs.filter(l => l.photo).map(l => `<div class="ai" data-act="photo" data-id="${l.id}"><img src="${l.photo}"><span>${l.date.slice(2)}</span></div>`).join("")}</div>` : `<div class="mu">まだ写真がありません</div>`}
@@ -429,7 +463,7 @@ function plantForm(p){
   openForm(isNew ? "植物を登録" : "植物を編集", [
     {n:"species",l:"属名（入力すると候補が出ます）",v:p.species,dl:speciesNames()}, {n:"name",l:"品種名（必須）",v:p.name}, {n:"bought",l:"購入日",t:"date",v:p.bought}, {n:"price",l:"購入金額（円）",t:"number",v:p.price}, {n:"shop",l:"購入先",v:p.shop}, {n:"soil",l:"用土（配合など）",v:p.soil},
     {n:"placeId",l:"置き場所",t:"select",o:placeOpts(),v:p.placeId||""},
-    {n:"repotMonths",l:"植え替えの間隔（ヶ月・任意。例：6）",t:"number",v:p.repotMonths}, {n:"repotNext",l:"次回の植え替え予定日（任意。空欄なら購入日や最後の植え替えから自動計算）",t:"date",v:p.repotNext}, {n:"waterDays",l:"水やり間隔（日）",t:"number",v:p.waterDays}, {n:"fertDays",l:"肥料間隔（日）",t:"number",v:p.fertDays},
+    {n:"repotMonths",l:"植え替えの間隔（ヶ月・任意。例：6）",t:"number",v:p.repotMonths}, {n:"repotNext",l:"次回の植え替え予定日（任意。空欄なら購入日や最後の植え替えから自動計算）",t:"date",v:p.repotNext}, {n:"waterDays",l:"水やり確認の目安（日おき。空欄なら実績から自動）",t:"number",v:p.waterDays}, {n:"fertDays",l:"肥料間隔（日）",t:"number",v:p.fertDays},
     {n:"memo",l:"メモ",t:"textarea",v:p.memo}, {n:"photo",l:"写真（変更する場合のみ）",t:"photo"}
   ], o => {
     if (!o.name) return;
@@ -437,15 +471,33 @@ function plantForm(p){
     if (isNew) S.plants.push({id:uid(), ...o, photo, u:now()}); else Object.assign(p, o, {photo}, {u:now()});
   });
 }
-// 水やりの記録。肥料の種類を選ぶと、同じ日の「肥料」の記録も一緒に残す（肥料の予定が更新される）
-function waterForm(pid){
-  const fields = [{n:"date",l:"日付",t:"date",v:today()}];
-  if (S.ferts.length) fields.push({n:"fertId",l:"肥料の種類（この水やりで使った場合）",t:"select",o:[["","なし（水のみ）"], ...S.ferts.map(f => [f.id, f.name])],v:""});
-  fields.push({n:"note",l:"メモ",t:"textarea"});
-  openForm("水やり", fields, o => {
-    S.logs.push({id:uid(), type:"water", plantId:pid, date:o.date, value:"", note:o.note || "", photo:null, u:now()});
-    if (o.fertId) S.logs.push({id:uid(), type:"fert", plantId:pid, fertId:o.fertId, date:o.date, value:"", note:"", photo:null, u:now()});
-  });
+// 水やり／確認の入力。「水やりをした」→水やりの記録、「まだ大丈夫」→確認だけの記録（CHECK_AGAIN日後にまた確認）。
+// 土の状態・様子・水の与え方・肥料の種類は、選ぶものだけ残す（選ばなくても記録できる）。肥料を選ぶと同じ日の「肥料」の記録も作る
+function waterDialog(pid){
+  const p = plantById(pid); if (!p) return;
+  const st = {soilState: "", cond: "", how: "", fertId: ""};
+  const row = (k, label, opts) => `<label>${label}</label><div class="chips wrap" data-k="${k}">${opts.map(([v, t]) => `<button type="button" class="chip" data-v="${esc(v)}">${esc(t)}</button>`).join("")}</div>`;
+  const m = document.createElement("div"); m.className = "modal";
+  m.innerHTML = `<form><h2 style="margin-top:0">${esc(p.name)}　水やりの確認</h2><label>日付<input type="date" name="date" value="${today()}"></label>`
+    + row("soilState", "土の状態（任意）", [["乾いていた","乾いていた"],["半分くらい","半分くらい"],["まだ湿っていた","まだ湿っていた"]])
+    + row("cond", "植物の様子（任意）", [["元気","元気"],["ふつう","ふつう"],["元気がない","元気がない"]])
+    + row("how", "水の与え方（水をやるとき・任意）", [["たっぷり","たっぷり"],["少なめ","少なめ"],["葉水","葉水"],["腰水","腰水"]])
+    + (S.ferts.length ? row("fertId", "肥料の種類（使った場合）", S.ferts.map(f => [f.id, f.name])) : "")
+    + `<label>メモ<textarea name="note" rows="2"></textarea></label><div class="btns"><button type="button" class="btn w grow" data-do="water">水やりをした</button><button type="button" class="btn s grow" data-do="check">まだ大丈夫</button></div><div class="btns"><button type="button" class="btn s" data-x>キャンセル</button></div></form>`;
+  document.body.appendChild(m);
+  m.onclick = e => {
+    if (e.target === m || e.target.closest("[data-x]")) return m.remove();
+    const c = e.target.closest(".chip");
+    if (c) { const r = c.parentElement, on = c.classList.contains("on"); r.querySelectorAll(".chip").forEach(x => x.classList.remove("on")); if (!on) c.classList.add("on"); st[r.dataset.k] = on ? "" : c.dataset.v; return; }
+    const act = e.target.closest("[data-do]")?.dataset.do; if (!act) return;
+    const f = m.querySelector("form"), date = f.elements.date.value || today(), note = f.elements.note.value.trim();
+    const base = {plantId: pid, date, value: "", note, photo: null, u: now()};
+    if (act === "water") {
+      S.logs.push({id: uid(), type: "water", ...base, ...(st.soilState ? {soilState: st.soilState} : {}), ...(st.cond ? {cond: st.cond} : {}), ...(st.how ? {how: st.how} : {})});
+      if (st.fertId) S.logs.push({id: uid(), type: "fert", plantId: pid, fertId: st.fertId, date, value: "", note: "", photo: null, u: now()});
+    } else S.logs.push({id: uid(), type: "check", ...base, ...(st.soilState ? {soilState: st.soilState} : {}), ...(st.cond ? {cond: st.cond} : {})});
+    save(); render(); m.remove();
+  };
 }
 // 選んだ項目（"植物ID:water|fert"）をまとめて記録。肥料は、肥料の項目を選んだ植物・肥料の種類を選んだ水やりの植物に1件ずつ
 function batchDone(keys, o){
@@ -555,7 +607,7 @@ document.addEventListener("click", e => {
   else if (a === "plant") { listScroll = scrollY; view = {k:"plant", id}; render(); scrollTo(0,0); }
   else if (a === "place") { listScroll = scrollY; view = {k:"place", id}; render(); scrollTo(0,0); }
   else if (a === "done") {
-    if (el.dataset.t === "water" && S.ferts.length) waterForm(id);
+    if (el.dataset.t === "water") waterDialog(id);
     else if (el.dataset.t === "fert" && S.ferts.length) addLog({type:"fert", plantId:id}, [{n:"fertId",l:"肥料の種類",t:"select",o:[["","指定なし"], ...S.ferts.map(f => [f.id, f.name])],v:lastLog(id,"fert")?.fertId||""}], "肥料を記録");
     else { S.logs.push({id:uid(), type:el.dataset.t, plantId:id, date:today(), value:"", note:"", photo:null, u:now()}); save(); render(); }
   }
