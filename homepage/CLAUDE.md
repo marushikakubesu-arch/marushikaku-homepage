@@ -116,6 +116,8 @@ homepage/
 - marushikakubase.comプロパティに`sitemap.xml`を送信し、ステータス「成功」を確認
 
 ## 最終更新日
+2026-10-23（post-18〜21のheadのdescription/og:descriptionの壊れを修正。7行目はmeta name="description"のタグ前半が欠落して説明文が生テキスト化、12行目はog:descriptionが`<meta property="`＋説明文に壊れ、いずれも属性名の欠落と制御文字（0x01）の混入があり、4記事とも説明文がpost-18のコピーになっていた。本文・title・canonical等は未変更。記事ごとに本文に基づく説明文へ差し替え。再発防止：ブログ記事のhead編集時は、descriptionの2行がpost-22と同じ形式か確認する）
+
 2026-10-23（利用者ブログに新規記事post-22「強風の日の水やり」を追加。`index.html`の一覧・`sitemap.xml`も更新。ファイル構成・TODOのpost-18〜21の記載漏れも補完）
 
 2026-10-16（利用者ブログにpost-19「水やりとこれからやりたいこと」を追加。`index.html`の一覧・`sitemap.xml`も更新。ファイル構成にpost-18の記載漏れも補完）
