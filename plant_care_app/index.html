@@ -198,11 +198,22 @@ function openForm(title, fields, onOk){
     if (f.t === "select") inp = `<select name="${f.n}">` + f.o.map(([val,lab]) => `<option value="${esc(val)}" ${val===f.v?"selected":""}>${esc(lab)}</option>`).join("") + `</select>`;
     else if (f.t === "textarea") inp = `<textarea name="${f.n}" rows="3">${v}</textarea>`;
     else if (f.t === "photo") inp = `<input type="file" name="${f.n}" accept="image/*">`;
-    else inp = `<input name="${f.n}" type="${f.t||"text"}" value="${v}" ${f.t==="number"?'step="any" inputmode="decimal"':""} ${f.dl?`list="dl_${f.n}" autocomplete="off"`:""}>`
-      + (f.dl ? `<datalist id="dl_${f.n}">${f.dl.map(x => `<option value="${esc(x)}">`).join("")}</datalist>` : "");
-    return `<label>${esc(f.l)}${inp}</label>`;
+    else inp = `<input name="${f.n}" type="${f.t||"text"}" value="${v}" ${f.t==="number"?'step="any" inputmode="decimal"':""} ${f.dl?`autocomplete="off"`:""}>`;
+    return `<label>${esc(f.l)}${inp}</label>` + (f.dl ? `<div class="chips wrap sg" data-sg="${f.n}"></div>` : "");
   }).join("") + `<div class="btns"><button class="btn grow">保存</button><button type="button" class="btn s" data-x>キャンセル</button></div></form>`;
   document.body.appendChild(m);
+  // 候補ボタン：入力した文字を含むものを絞り込んで表示し、タップで入力欄に入れる（全角半角・ひらがなカタカナ・大文字小文字は区別しない）
+  fields.filter(f => f.dl).forEach(f => {
+    const inp = m.querySelector(`[name="${f.n}"]`), box = m.querySelector(`[data-sg="${f.n}"]`);
+    const draw = () => {
+      const q = specKey(inp.value), list = f.dl.filter(x => specKey(x) !== q && (!q || specKey(x).includes(q)));
+      box.innerHTML = !f.dl.length ? `<span class="mu">まだ候補がありません（設定の「GENUS　属名」で登録できます）</span>`
+        : list.slice(0, 30).map(x => `<button type="button" class="chip" data-v="${esc(x)}">${esc(x)}</button>`).join("");
+    };
+    inp.addEventListener("input", draw);
+    box.onclick = e => { const c = e.target.closest(".chip"); if (c) { inp.value = c.dataset.v; draw(); } };
+    draw();
+  });
   m.querySelector("[data-x]").onclick = () => m.remove();
   m.onclick = e => { if (e.target === m) m.remove(); };
   m.querySelector("form").onsubmit = async e => {
@@ -461,7 +472,7 @@ const placeOpts = () => [["", "未設定"], ...S.places.map(p => [p.id, p.name])
 function plantForm(p){
   const isNew = !p; p = p || {};
   openForm(isNew ? "植物を登録" : "植物を編集", [
-    {n:"species",l:"属名（入力すると候補が出ます）",v:p.species,dl:speciesNames()}, {n:"name",l:"品種名（必須）",v:p.name}, {n:"bought",l:"購入日",t:"date",v:p.bought}, {n:"price",l:"購入金額（円）",t:"number",v:p.price}, {n:"shop",l:"購入先",v:p.shop}, {n:"soil",l:"用土（配合など）",v:p.soil},
+    {n:"species",l:"属名（下の候補をタップでも入力できます）",v:p.species,dl:speciesNames()}, {n:"name",l:"品種名（必須）",v:p.name}, {n:"bought",l:"購入日",t:"date",v:p.bought}, {n:"price",l:"購入金額（円）",t:"number",v:p.price}, {n:"shop",l:"購入先",v:p.shop}, {n:"soil",l:"用土（配合など）",v:p.soil},
     {n:"placeId",l:"置き場所",t:"select",o:placeOpts(),v:p.placeId||""},
     {n:"repotMonths",l:"植え替えの間隔（ヶ月・任意。例：6）",t:"number",v:p.repotMonths}, {n:"repotNext",l:"次回の植え替え予定日（任意。空欄なら購入日や最後の植え替えから自動計算）",t:"date",v:p.repotNext}, {n:"waterDays",l:"水やり確認の目安（日おき。空欄なら実績から自動）",t:"number",v:p.waterDays}, {n:"fertDays",l:"肥料間隔（日）",t:"number",v:p.fertDays},
     {n:"memo",l:"メモ",t:"textarea",v:p.memo}, {n:"photo",l:"写真（変更する場合のみ）",t:"photo"}
