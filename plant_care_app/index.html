@@ -426,7 +426,7 @@ function placeSub(pl){
   return `${n}鉢<br>${pl.lux!==""&&pl.lux!=null ? "LUX "+esc(pl.lux)+" lux" : lx ? "LUX "+esc(lx.value)+" lux ("+lx.date+")" : "LUX 未設定"}<br>${pl.air ? "空気循環 "+esc(pl.air) : ar ? "空気循環 "+esc(ar.note||"記録あり")+" ("+ar.date+")" : "空気循環 未設定"}`;
 }
 function manageCard(title, list, k, sub){
-  return foldCard(k, title, (list.length ? list.map(o => `<div class="row" style="padding:9px 0;border-top:1px solid var(--bd)"><div class="grow" ${k==="place" ? `data-act="place" data-id="${o.id}"` : ""}>${esc(o.name)}${sub ? `<div class="mu">${sub(o)}</div>` : o.memo ? `<div class="mu">${esc(o.memo)}</div>` : ""}</div><button class="btn s sm" data-act="${k}edit" data-id="${o.id}">編集</button><button class="btn d sm" data-act="del${k}" data-id="${o.id}">削除</button></div>`).join("") : `<div class="mu" style="margin-top:6px">まだ登録がありません</div>`)
+  return foldCard(k, title, (k === "spec" ? `<div class="mu" style="margin-bottom:4px">植物を登録・編集すると、属名は自動で追加されます</div>` : "") + (list.length ? list.map(o => `<div class="row" style="padding:9px 0;border-top:1px solid var(--bd)"><div class="grow" ${k==="place" ? `data-act="place" data-id="${o.id}"` : ""}>${esc(o.name)}${sub ? `<div class="mu">${sub(o)}</div>` : o.memo ? `<div class="mu">${esc(o.memo)}</div>` : ""}</div><button class="btn s sm" data-act="${k}edit" data-id="${o.id}">編集</button><button class="btn d sm" data-act="del${k}" data-id="${o.id}">削除</button></div>`).join("") : `<div class="mu" style="margin-top:6px">まだ登録がありません</div>`)
     + `<div class="btns"><button class="btn s sm" data-act="${k}add">＋ 追加</button></div>`);
 }
 function logHtml(l, withName){
@@ -480,6 +480,7 @@ function plantForm(p){
     if (!o.name) return;
     const photo = o.photo || p.photo || null; delete o.photo;
     if (isNew) S.plants.push({id:uid(), ...o, photo, u:now()}); else Object.assign(p, o, {photo}, {u:now()});
+    ensureSpec(o.species);
   });
 }
 // 水やり／確認の入力。「水やりをした」→水やりの記録、「まだ大丈夫」→確認だけの記録（CHECK_AGAIN日後にまた確認）。
@@ -556,6 +557,11 @@ function speciesNames(){
   const m = new Map();
   [...S.specs.map(s => s.name), ...S.plants.map(p => p.species)].filter(Boolean).forEach(n => { const k = specKey(n); if (!m.has(k)) m.set(k, n); });
   return [...m.values()].sort((a, b) => a.localeCompare(b, "ja"));
+}
+function ensureSpec(name){
+  if (!name || S.specs.some(x => sameSpec(x.name, name))) return false;
+  S.specs.push({id: "sp-" + encodeURIComponent(specKey(name)), name, u: now()});
+  return true;
 }
 function specForm(s){
   const isNew = !s; s = s || {};
@@ -779,6 +785,7 @@ function scheduleSync(){
 // ---------- 起動 ----------
 function start(){ dbGet().then(d => {
   if (d) S = normalize(d);
+  try { if (!localStorage.getItem("plant_spec_backfill")) { localStorage.setItem("plant_spec_backfill", "1"); let n = 0; S.plants.forEach(p => { if (ensureSpec(p.species)) n++; }); if (n) saveLocal(); } } catch {}
   const back = takeRedirectToken(); if (back || syncMsg) tab = "settings";
   render(); if (back) syncNow(false); else scheduleSync();
 }); }
