@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>まるしかくベース｜植物販売チラシ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Mochiy+Pop+One&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#EF9D2E;
+    --accent-dark:#C97A17;
+    --accent-tint:#FCE6BD;
+    --green:#6B8F57;
+    --green-dark:#4F7A45;
+    --green-soft:#E3ECDB;
+    --ink:#4A3F35;
+    --ink-soft:#7A6F63;
+    --paper:#FFFAF3;
+    --border:#F0DDB8;
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0; background:#DDDDDD; color:var(--ink);
+    font-family:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic UI","Yu Gothic","Meiryo",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .page{
+    width:210mm; height:297mm; margin:6mm auto;
+    background:var(--paper);
+    box-shadow:0 0 16px rgba(0,0,0,0.18);
+    padding:10mm 11mm 0;
+    display:flex; flex-direction:column; gap:5mm;
+    position:relative; overflow:hidden;
+  }
+
+  /* 背景の大きな円（余白に彩りを足すだけの装飾） */
+  .bg-circle{ position:absolute; border-radius:50%; z-index:0; pointer-events:none; }
+  .bg-circle.c1{ width:120mm; height:120mm; right:-34mm; top:-30mm; background:var(--green-soft); }
+  .bg-circle.c2{ width:70mm; height:70mm; left:-26mm; top:150mm; background:var(--accent-tint); opacity:0.7; }
+
+  /* ===== Z①：上の一本線（左=見出し → 右=主役の写真） ===== */
+  .top{
+    position:relative; z-index:1; flex:none; height:76mm;
+    display:grid; grid-template-columns:1fr 78mm; gap:4mm; align-items:stretch;
+  }
+  .top-left{ display:flex; flex-direction:column; justify-content:space-between; padding-top:1mm; }
+  .brand-row{ display:flex; align-items:center; gap:3mm; }
+  .mark{ width:15mm; height:15mm; border-radius:50%; object-fit:cover; box-shadow:0 0 0 2pt #FFFFFF; }
+  .eyebrow{ margin:0; font-size:9pt; font-weight:700; letter-spacing:0.05em; color:var(--accent-dark); }
+  .brand{ margin:0; font-size:17pt; font-weight:900; line-height:1.15; }
+  .badge{
+    position:absolute; left:0; top:0; width:100mm; height:100mm; z-index:2;
+    overflow:visible; pointer-events:none;
+  }
+  .badge text{
+    font-family:"Mochiy Pop One","Zen Maru Gothic","Zen Kaku Gothic New","Hiragino Sans",sans-serif;
+    font-size:6.8px; font-weight:400; letter-spacing:0.4px; fill:var(--accent-dark);
+    stroke:#FFFFFF; stroke-width:1.3px; paint-order:stroke fill; stroke-linejoin:round;
+  }
+  .headline{ margin:0; font-size:29pt; font-weight:900; line-height:1.28; letter-spacing:0.01em; }
+  .headline .g{ color:var(--green-dark); }
+  .headline .o{ background:linear-gradient(transparent 62%, var(--accent-tint) 62%); }
+  .headline .sm{ font-size:23pt; letter-spacing:0.02em; }
+  .lead{ margin:3mm 0 0; font-size:10pt; font-weight:700; line-height:1.75; color:var(--ink-soft); }
+
+  .hero-wrap{ position:relative; }
+  .hero-photo{
+    position:absolute; inset:0;
+    background:url(images/cta-plant.jpg) center 42%/cover no-repeat;
+    border-radius:42mm 42mm 6mm 42mm;
+    border:2.4mm solid #FFFFFF;
+    box-shadow:0 1.4mm 5mm rgba(122,96,55,0.28);
+  }
+  .hero-tag{
+    position:absolute; left:-9mm; bottom:7mm;
+    background:var(--accent); color:#FFFFFF; border-radius:3mm;
+    padding:2.4mm 4.4mm; box-shadow:0 1mm 3mm rgba(122,96,55,0.3);
+  }
+  .hero-tag small{ display:block; font-size:8.4pt; font-weight:700; letter-spacing:0.05em; }
+  .hero-tag b{ display:block; font-size:13.5pt; font-weight:900; line-height:1.25; }
+
+  /* ===== Z②：斜めの流れ（右上から左下へ。店頭写真はトリミングせず全体を見せる） ===== */
+  .mid{
+    position:relative; z-index:1; flex:none;
+    display:grid; grid-template-columns:150mm 1fr; gap:6mm; align-items:stretch;
+  }
+  .mid-photo{
+    width:150mm; height:112.5mm;
+    background:url(images/shop_interior_1027.jpg) center/100% 100% no-repeat;
+    border-radius:5mm;
+    box-shadow:0 0 0 2.2mm #FFFFFF, 0 1.2mm 5mm rgba(122,96,55,0.25);
+    margin:2.2mm;
+  }
+  .mid-side{ display:flex; flex-direction:column; gap:3mm; margin:2.2mm 0; }
+  .mid-label{
+    background:var(--green-dark); color:#FFFFFF; border-radius:4mm;
+    padding:2mm 2mm; text-align:center;
+  }
+  .mid-label small{ display:block; font-size:7.6pt; font-weight:700; letter-spacing:0.04em; opacity:0.92; }
+  .mid-label b{ display:block; font-size:12pt; font-weight:900; line-height:1.3; }
+  .thumb, .pcard{ margin:0; display:flex; flex-direction:column; gap:1mm; min-height:0; }
+  .thumb{ flex:1; padding:0 1.6mm; }
+  .ph{
+    width:100%; aspect-ratio:1/1; flex:none; border-radius:3.6mm;
+    background-size:cover; background-position:center;
+    box-shadow:0 0 0 1.4mm #FFFFFF, 0 1mm 3mm rgba(122,96,55,0.22);
+  }
+  .thumb figcaption, .pcard figcaption{
+    margin-top:1mm; color:var(--green-dark); font-weight:900; text-align:center; line-height:1.25;
+  }
+  .thumb figcaption{ font-size:6.2pt; }
+  .pcard figcaption{ font-size:7.2pt; }
+  .t1{ background-image:url(images/plant_item_1.jpg); }
+  .t2{ background-image:url(images/plant_item_2.jpg); }
+  .t3{ background-image:url(images/plant_item_3.jpg); }
+
+  /* ===== Z③：下の一本線（左=選ばれる理由 → 右=行動：QR） ===== */
+  .bottom{
+    position:relative; z-index:1; flex:none; height:45.4mm;
+    display:grid; grid-template-columns:1fr 78mm; gap:5mm; align-items:stretch;
+  }
+  .points{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; justify-content:space-between; }
+  .points li{ display:flex; align-items:center; gap:4mm; }
+  .p-num{
+    flex:none; width:9.6mm; height:9.6mm; border-radius:50%;
+    background:var(--green); color:#FFFFFF;
+    display:flex; align-items:center; justify-content:center;
+    font-size:15pt; font-weight:900;
+  }
+  .p-title{ margin:0; font-size:13pt; font-weight:900; line-height:1.3; }
+  .p-sub{ margin:0.4mm 0 0; font-size:8.8pt; font-weight:500; line-height:1.5; color:var(--ink-soft); }
+
+  .plants-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:5mm; margin:1.6mm 2.4mm; align-items:start; }
+  .c4{ background-image:url(images/plant_item_4.jpg); }
+  .c5{ background-image:url(images/plant_item_5.jpg); }
+  .c6{ background-image:url(images/plant_item_6.jpg); }
+
+  .cta{
+    background:var(--accent); color:#FFFFFF; border-radius:6mm;
+    padding:4mm 5mm; text-align:left;
+    display:grid; grid-template-columns:auto 1fr; column-gap:4mm; row-gap:0; align-content:center; align-items:center;
+    box-shadow:0 1.2mm 4mm rgba(201,122,23,0.35);
+  }
+  .cta canvas{ grid-row:1 / span 3; grid-column:1; }
+  .cta p{ grid-column:2; }
+  .cta-lead{ margin:0; font-size:8.6pt; font-weight:900; letter-spacing:0.06em; }
+  .cta-main{ margin:1mm 0 0; font-size:12pt; white-space:nowrap; font-weight:900; line-height:1.2; letter-spacing:0.04em; }
+  .cta canvas{ width:30mm; height:30mm; background:#FFFFFF; border-radius:2.6mm; padding:0.8mm; display:block; }
+  .cta-url{ margin:1.2mm 0 0; font-size:8.6pt; font-weight:900; letter-spacing:0.03em; }
+
+  /* ===== フッター ===== */
+  .foot{
+    position:relative; z-index:1; margin:auto -11mm 0;
+    padding:8.4mm 11mm 6mm; background:var(--green); color:#FFFFFF;
+    clip-path:polygon(0% 22%, 8% 8%, 17% 20%, 26% 5%, 35% 20%, 44% 6%, 53% 20%, 62% 5%, 71% 20%, 80% 7%, 89% 20%, 100% 8%, 100% 100%, 0% 100%);
+    display:flex; align-items:center; justify-content:space-between; gap:6mm;
+  }
+  .foot-name{ margin:0; font-size:11.5pt; font-weight:900; letter-spacing:0.03em; }
+  .foot-addr{ margin:0.8mm 0 0; font-size:9pt; font-weight:500; line-height:1.55; }
+  .foot-right{ text-align:right; }
+  .foot-tel{ margin:0; font-size:19pt; font-weight:900; letter-spacing:0.02em; line-height:1.1; white-space:nowrap; }
+  .foot-hours{ margin:0.8mm 0 0; font-size:9pt; font-weight:700; }
+
+  @media print{
+    html,body{ background:none; }
+    .page{ margin:0; box-shadow:none; }
+    @page{ size:A4 portrait; margin:0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="bg-circle c1"></div>
+  <div class="bg-circle c2"></div>
+
+  <!-- Z① 上段：左=見出し → 右=主役の植物 -->
+  <section class="top">
+    <div class="top-left">
+      <div class="brand-row">
+        <img class="mark" src="images/logo.png" alt="まるしかくベース ロゴ">
+        <div>
+          <p class="eyebrow">就労継続支援B型事業所</p>
+          <h1 class="brand">まるしかくベース</h1>
+        </div>
+      </div>
+      <div>
+        <p class="headline"><span class="g sm">利用者さんが育てた</span><br><span class="o">植物、お迎え</span><br><span class="o">しませんか。</span></p>
+        <p class="lead">店頭とネットショップで販売中。<br>水やりや植え替え、日々の手入れ、撮影、梱包まで、<br>ひと鉢ずつ、ていねいに手がけています。</p>
+      </div>
+    </div>
+    <div class="hero-wrap">
+      <div class="hero-photo" role="img" aria-label="利用者が撮影した、ステファニア・スベローサの鉢植え"></div>
+      <svg class="badge" viewBox="0 0 100 100" aria-label="植物販売中！！">
+        <defs><path id="badge-arc" d="M -3,42 A 45 45 0 0 1 42,-3"/></defs>
+        <text><textPath href="#badge-arc" startOffset="7">植物販売中<tspan dx="-2.6">！</tspan><tspan dx="-4.4">！</tspan></textPath></text>
+      </svg>
+      <div class="hero-tag"><small>利用者さんが撮影</small><b>ステファニア<br>・スベローサ</b></div>
+    </div>
+  </section>
+
+  <!-- Z② 中段：右上→左下の斜め。店頭の様子を広く -->
+  <section class="mid">
+    <div class="mid-photo" role="img" aria-label="事業所内の植物の販売スペース"></div>
+    <div class="mid-side">
+      <figure class="thumb"><div class="ph t1" role="img" aria-label="ユーフォルビア・ラメナ"></div><figcaption>ユーフォルビア<br>ラメナ</figcaption></figure>
+      <figure class="thumb"><div class="ph t2" role="img" aria-label="ユーフォルビア・ギラウミニアナ"></div><figcaption>ユーフォルビア<br>ギラウミニアナ</figcaption></figure>
+      <figure class="thumb"><div class="ph t3" role="img" aria-label="ユーフォルビア・アエルギノーサ"></div><figcaption>ユーフォルビア<br>アエルギノーサ</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- Z③ 下段：左=選ばれる理由 → 右=行動（QR） -->
+  <section class="bottom">
+    <div class="plants-row">
+      <figure class="pcard"><div class="ph c4" role="img" aria-label="サンセベリア・ダンシングドラゴン"></div><figcaption>サンセベリア<br>ダンシングドラゴン</figcaption></figure>
+      <figure class="pcard"><div class="ph c5" role="img" aria-label="モンステラ・エスケレート"></div><figcaption>モンステラ<br>エスケレート</figcaption></figure>
+      <figure class="pcard"><div class="ph c6" role="img" aria-label="アンスリウム・クリスタリナム"></div><figcaption>アンスリウム<br>クリスタリナム</figcaption></figure>
+    </div>
+    <div class="cta">
+      <p class="cta-lead">ONLINE SHOP</p>
+      <p class="cta-main">QRから商品を見る</p>
+      <canvas data-qr="https://marushikaku.base.ec/" width="220" height="220"></canvas>
+      <p class="cta-url">marushikaku.base.ec</p>
+    </div>
+  </section>
+
+  <!-- フッター -->
+  <div class="foot">
+    <div>
+      <p class="foot-name">店頭販売 ＆ BASE（ネット販売）｜株式会社SOL　まるしかくベース</p>
+      <p class="foot-addr">〒513-0801　三重県鈴鹿市神戸8丁目6-16（鈴鹿市駅から徒歩4分）<br>BASE：marushikaku.base.ec　／　HP：marushikakubase.com</p>
+    </div>
+    <div class="foot-right">
+      <p class="foot-tel">059-358-8866</p>
+      <p class="foot-hours">月〜金 10:00〜16:00</p>
+    </div>
+  </div>
+</div>
+
+<script src="vendor/qrcode.min.js"></script>
+<script>
+  (function(){
+    if (!window.QRCode) return;
+    document.querySelectorAll('canvas[data-qr]').forEach(function (canvas) {
+      QRCode.toCanvas(canvas, canvas.getAttribute('data-qr'), {
+        width: 220,
+        margin: 1,
+        color: { dark: '#23302A', light: '#FFFFFF' }
+      }, function (err) {
+        if (err) console.error('QRコード生成に失敗しました:', err);
+        canvas.style.width = '';
+        canvas.style.height = '';
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
