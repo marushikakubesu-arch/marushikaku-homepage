@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>かんべ大盛りあげ企画｜「自分らしく生きる」女性ライブ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Mochiy+Pop+One&display=swap" rel="stylesheet">
+<style>
+  @page{ size:A4; margin:0; }
+  :root{
+    --accent:#EF9D2E;
+    --accent-dark:#C97A17;
+    --accent-tint:#FCE6BD;
+    --pink:#E2568A;
+    --pink-soft:#FBE0EA;
+    --green:#6B8F57;
+    --green-soft:#E3ECDB;
+    --ink:#4A3F35;
+    --ink-soft:#7A6F63;
+    --paper:#FFFAF3;
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0; background:#DDDDDD; color:var(--ink);
+    font-family:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic UI","Yu Gothic","Meiryo",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .page{
+    width:210mm; height:297mm; margin:6mm auto;
+    background:var(--paper);
+    box-shadow:0 0 16px rgba(0,0,0,0.18);
+    padding:9mm 11mm 0;
+    position:relative; overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  @media print{
+    html,body{ background:none; }
+    .page{ margin:0; box-shadow:none; }
+  }
+
+  /* 背景の大きな円（余白に彩りを足す装飾） */
+  .bg-circle{ position:absolute; border-radius:50%; z-index:0; pointer-events:none; }
+  .bg-circle.c1{ width:110mm; height:110mm; right:-36mm; top:-34mm; background:var(--accent-tint); }
+  .bg-circle.c2{ width:80mm; height:80mm; left:-32mm; top:128mm; background:var(--pink-soft); opacity:0.8; }
+  .bg-circle.c3{ width:70mm; height:70mm; right:-28mm; top:170mm; background:var(--green-soft); opacity:0.9; }
+
+  /* ===== タイトル ===== */
+  .head{ position:relative; z-index:1; text-align:center; }
+  .org{
+    display:inline-block; margin:0; padding:1.6mm 7mm; border-radius:99px;
+    background:var(--accent); color:#FFFFFF; font-size:13pt; font-weight:900; letter-spacing:0.12em;
+    box-shadow:none;
+  }
+  .title{
+    margin:4mm 0 0; font-family:"Mochiy Pop One","Zen Kaku Gothic New",sans-serif;
+    font-size:33pt; line-height:1.25; font-weight:400; color:var(--ink);
+  }
+  .title .q{ color:var(--pink); }
+  .title .live{
+    display:inline-block; margin-top:1mm; font-size:41pt; color:#FFFFFF; background:var(--pink);
+    padding:0 7mm 1.4mm; border-radius:5mm; letter-spacing:0.06em;
+    box-shadow:0 1.2mm 0 #B73D6B;
+  }
+  .catch{
+    margin:5mm 0 0; font-size:15pt; font-weight:900; line-height:1.55; color:var(--ink);
+  }
+  .catch .hl{ background:linear-gradient(transparent 62%, var(--accent-tint) 62%); }
+  .catch .sub{ display:block; font-size:12.5pt; color:var(--accent-dark); }
+
+  /* ===== 出演者（丸写真5つ） ===== */
+  .cast{ position:relative; z-index:1; flex:none; height:136mm; margin-top:3mm; }
+  .p{ position:absolute; text-align:center; }
+  .p .ph{
+    border-radius:50%; border:2.2mm solid #FFFFFF; background-size:cover; background-repeat:no-repeat;
+    box-shadow:0 0 0 0.5mm var(--accent-tint);
+  }
+  .p .nm{ margin:2mm 0 0; font-size:12pt; font-weight:900; line-height:1.25; }
+  .p .ds{ margin:0.6mm 0 0; font-size:8.4pt; font-weight:700; line-height:1.45; color:var(--ink-soft); }
+  .p.big .nm{ font-size:15pt; color:var(--pink); }
+  .p.big .ds{ font-size:9pt; }
+
+  .p.ozawa{ left:0; top:0; width:78mm; }
+  .p.ozawa .ph{ width:64mm; height:64mm; margin:0 auto; background-image:url(images/kanbe_live_ozawa.jpg); background-position:50% 18%; background-size:150%; }
+  .p.band{ left:80mm; top:0; width:66mm; }
+  .p.band .ph{ width:64mm; height:40mm; margin:0 auto; border-radius:20mm; background-image:url(images/kanbe_live_band.jpg); background-position:50% 50%; background-size:cover; }
+  .p.tsuki{ left:142mm; top:24mm; width:46mm; }
+  .p.tsuki .ph{ width:46mm; height:46mm; margin:0 auto; background-image:url(images/kanbe_live_tsukineko.jpg); background-position:50% 40%; background-size:130%; }
+  .p.melfy{ left:6mm; top:84mm; width:60mm; }
+  .p.melfy .ph{ width:42mm; height:42mm; margin:0 auto; background-image:url(images/kanbe_live_melfy.jpg); background-position:50% 50%; background-size:cover; }
+  .p.yappi{ left:78mm; top:72mm; width:62mm; }
+  .p.yappi .ph{ width:42mm; height:42mm; margin:0 auto; background-image:url(images/kanbe_live_yappi.jpg); background-position:50% 32%; background-size:135%; }
+
+  /* ===== 日時・会場 ===== */
+  .info{
+    position:relative; z-index:1; flex:none; margin-top:10mm; margin-bottom:10mm;
+    background:#FFFFFF; border:0.8mm solid var(--accent); border-radius:6mm;
+    padding:5.5mm 8mm; display:grid; grid-template-columns:1fr auto; gap:8mm; align-items:center;
+    box-shadow:none;
+  }
+  .row{ display:flex; align-items:baseline; gap:5mm; }
+  .row + .row{ margin-top:3.5mm; padding-top:3.5mm; border-top:0.4mm dashed var(--accent-tint); }
+  .lab{
+    flex:none; width:15mm; text-align:center; font-size:9.5pt; font-weight:900; color:#FFFFFF;
+    background:var(--accent-dark); border-radius:99px; padding:0.8mm 0; position:relative; top:-1mm;
+  }
+  .date{ margin:0; font-size:34pt; font-weight:900; line-height:1.1; letter-spacing:0.01em; color:var(--ink); }
+  .date .d{ font-size:20pt; color:var(--pink); }
+  .time{ margin:0; font-size:25pt; font-weight:900; line-height:1.1; color:var(--accent-dark); }
+  .venue{ margin:0; font-size:20pt; font-weight:900; line-height:1.25; }
+  .free{
+    width:38mm; height:38mm; border-radius:50%; background:var(--pink); color:#FFFFFF;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    box-shadow:0 0 0 1.6mm #FFFFFF, 0 0 0 2.4mm var(--pink); transform:rotate(-6deg);
+    font-weight:900; line-height:1.1; text-align:center; margin-right:2mm;
+  }
+  .free .a{ font-size:12pt; }
+  .free .b{ font-size:27pt; letter-spacing:0.04em; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="bg-circle c1"></div>
+  <div class="bg-circle c2"></div>
+  <div class="bg-circle c3"></div>
+
+  <header class="head">
+    <p class="org">かんべ大盛りあげ企画</p>
+    <h1 class="title">
+      <span class="q">「</span>自分らしく生きる<span class="q">」</span><br>
+      <span class="live">女性ライブ</span>
+    </h1>
+    <p class="catch">
+      <span class="hl">もうあかんべえ〜と言わせない</span>
+      <span class="sub">かんべは元気です</span>
+    </p>
+  </header>
+
+  <section class="cast">
+    <div class="p big ozawa">
+      <div class="ph"></div>
+      <p class="nm">小沢 真彩</p>
+      <p class="ds">「淡き恋かんべ城下町」「あの日の蛍橋」<br>デモ版発表／地元のご当地ソングなど</p>
+    </div>
+    <div class="p band">
+      <div class="ph"></div>
+      <p class="nm">二胡バンド シャンシーズ</p>
+      <p class="ds">心に染みる音色<br>中国スタンダード・ポップス・童謡など</p>
+    </div>
+    <div class="p tsuki">
+      <div class="ph"></div>
+      <p class="nm">ツキネコ</p>
+      <p class="ds">親子バンド<br>ジャズ、ポップス、朗読</p>
+    </div>
+    <div class="p melfy">
+      <div class="ph"></div>
+      <p class="nm">MeLfy（メルフィ）</p>
+      <p class="ds">アイドルグループ<br>高校生と中学生の姉妹</p>
+    </div>
+    <div class="p yappi">
+      <div class="ph"></div>
+      <p class="nm">ヤッピ</p>
+      <p class="ds">パフォーマー、大道芸<br>ジャグリングが得意</p>
+    </div>
+  </section>
+
+  <section class="info">
+    <div>
+      <div class="row"><span class="lab">日にち</span><p class="date">11<span class="d">月</span>21<span class="d">日（土）</span></p></div>
+      <div class="row"><span class="lab">時間</span><p class="time">10:00 〜 12:00</p></div>
+      <div class="row"><span class="lab">会場</span><p class="venue">ジェフリーすずか 大ホール</p></div>
+    </div>
+    <div class="free"><span class="a">入場</span><span class="b">無料</span></div>
+  </section>
+</div>
+</body>
+</html>
