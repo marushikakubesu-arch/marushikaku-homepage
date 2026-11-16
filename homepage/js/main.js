@@ -99,15 +99,17 @@ document.addEventListener('DOMContentLoaded', function () {
   if (wageSimDays && wageSimAmount && wageSimBreakdown) {
     var WAGE_PER_DAY = 900;
     var WEEKS_PER_MONTH = 4.33;
-    var WAGE_BONUS = { 1: 0, 2: 0, 3: 10000, 4: 20000, 5: 30000 };
+    // 出席ボーナス：月の出席日数が12日以上で1万円、16日以上でさらに1万円、20日以上でさらに1万円（累積）
+    var WAGE_BONUS_STEPS = [12, 16, 20];
+    var WAGE_BONUS_UNIT = 10000;
 
     var updateWageSim = function (days) {
       var monthlyDays = Math.round(days * WEEKS_PER_MONTH);
       var baseAmount = WAGE_PER_DAY * monthlyDays;
-      var bonus = WAGE_BONUS[days] || 0;
+      var bonus = WAGE_BONUS_STEPS.filter(function (step) { return monthlyDays >= step; }).length * WAGE_BONUS_UNIT;
       if (bonus > 0) {
         var total = baseAmount + bonus;
-        wageSimBreakdown.textContent = '900円 × ' + monthlyDays + '日 = ' + baseAmount.toLocaleString() + '円 ＋ 週' + days + '日利用ボーナス ' + bonus.toLocaleString() + '円';
+        wageSimBreakdown.textContent = '900円 × ' + monthlyDays + '日 = ' + baseAmount.toLocaleString() + '円 ＋ 出席日数ボーナス ' + bonus.toLocaleString() + '円';
         wageSimAmount.textContent = '合計 約' + total.toLocaleString() + '円';
       } else {
         wageSimBreakdown.textContent = '900円 × ' + monthlyDays + '日';
