@@ -83,6 +83,8 @@
 | flyer_recruitment | 利用者募集チラシ（A4縦・HTML/CSS、Instagram QRコード付き） |
 | management_system | 事業所の業務管理ローカルWebアプリ（Flask+SQLite。利用者名簿・出席・仕事の割り振り・工賃。今後、仕入れ・在庫・広報管理を追加予定）。**非公開の別リポジトリ**で管理（このPublicリポジトリには含めない） |
 | plant_care_app | ケータイで使う植物管理アプリ（PWA。成長記録・水やり肥料・置き場所・LUX・空気循環。端末内保存） |
+| line_stamp | LINEスタンプ（ツンデレ アロカシア・8個）。Pillowで描画して透過PNGを書き出す |
+| plant_lease | 観葉植物リース事業の計画（料金ルール・お客さん向け案内HTML・契約書の下書き。計画段階） |
 | （フォルダ名） | （内容を記入） |
 
 <!--
